@@ -1,0 +1,15 @@
+{
+    "name": "kai/backend",
+    "autoload": {
+        "psr-4": {
+            "Kai\\Backend\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Kai Havlik",
+            "email": "kai@havlik.ch"
+        }
+    ],
+    "require": {}
+}

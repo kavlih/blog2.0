@@ -1,0 +1,40 @@
+<?php
+
+namespace Appplication;
+
+/** @var string $configFile */
+$configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.php';
+/** @var string $autoloadFile */
+$autoloadFile = __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+
+// Checks if config file exists
+if(!file_exists($configFile))
+{
+    trigger_error(
+        "template file ({$configFile}) doesn't exist", 
+        E_USER_ERROR
+    );
+}
+
+// Checks if autoload file exists
+if(!file_exists($autoloadFile))
+{
+    trigger_error(
+        "template file ({$autoloadFile}) doesn't exist", 
+        E_USER_ERROR
+    );
+}
+
+// Require config and autoload files
+require_once $configFile;
+require_once $autoloadFile;
+
+// Error reporting (change status in config file)
+if (DEBUG_MODE) {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
+
+// Create an instance of API and call run method
+(new App())->run();
