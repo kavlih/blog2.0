@@ -1,6 +1,6 @@
 <?php
 
-namespace Appplication;
+namespace application;
 
 /** @var string $configFile */
 $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.php';
@@ -20,7 +20,7 @@ if(!file_exists($configFile))
 if(!file_exists($autoloadFile))
 {
     trigger_error(
-        "template file ({$autoloadFile}) doesn't exist", 
+        "autoload file ({$autoloadFile}) doesn't exist", 
         E_USER_ERROR
     );
 }
@@ -36,5 +36,5 @@ if (DEBUG_MODE) {
     error_reporting(E_ALL);
 }
 
-// Create an instance of API and call run method
-(new App())->run();
+// Create instance of API and call run method
+(new API())->run();

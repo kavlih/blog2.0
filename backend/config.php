@@ -1,15 +1,14 @@
 <?php
 
-namespace Appplication;
+namespace application;
 
 // Database Configuration
-define('DB_NAME', '');
+define('DB_NAME', 'blog2.0');
 define('DB_HOST', 'localhost');
 define('DB_PORT', 8889);
+define('DB_CHARSET', 'utf8');
 define('DB_USER', 'root');
 define('DB_PASS', 'root');
-define('DB_COLLATION', 'utf8');
-define('DB_SOCKET', 'host');
 
 // JSON web token
 
@@ -18,4 +17,4 @@ define('DB_SOCKET', 'host');
 
 
 // Error reporting
-define('DEBUG_MODE', true);
+define('DEBUG_MODE', TRUE);
