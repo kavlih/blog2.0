@@ -12,26 +12,84 @@ use application\Model as AbstractModel;
 final class UserModel extends AbstractModel {
     
     /**
+     * Login method
+     *
+     * Processes POST data from the login form
+     * Compares input data with the database
+     * Returns TRUE if data machtes or FALSE if not
+     * 
+     * @param array $errors
+     * @return bool
+     */
+    function login(array &$errors) : bool {
+        /** @var ?string $input_username */
+        $input_user = strtolower(filter_input(INPUT_POST, 'user'));
+        /** @var ?string $input_password */
+        $input_password = filter_input(INPUT_POST, 'password');
+
+        // Validate user inputs
+        $validations['user'] = !empty($input_user);
+        $validations['password'] = !empty($input_password);
+
+        // Exit method and return FALSE if a input was empty
+        foreach ($validations as $validation)
+        {
+            if(!$validation) {
+                if(!$validations['user']) {
+                    $errors['username'][] = 'Please type in a username or email address';
+                }
+                if(!$$validations['password']) {
+                    $errors['password'][] = 'Please type in a password';
+                }
+
+                return FALSE;
+            }
+        }
+
+        // ? QUESTION unsecure if not only neccessary userdata gets requested? (getUser method gets more userdata from database than needed)
+        // Get user data from database
+        /** @var array ?$user_data */
+        $user_data = $this->DbHandler->getUser($input_user);
+        
+        // If a matching user was found, compare passwords
+        if(!is_null($user_data)) {
+            /** @var bool $compare_passwords */
+            $compare_passwords = $this->comparePasswords($user_data, $input_password);
+        }
+
+        // If no maatching user was found OR the password of a matching user was wrong, exit method and return FALSE
+        if(is_null($user_data) || !$compare_passwords) {
+            $errors['compare'] = 'This combination doesn\'t exist';
+            return FALSE;
+        }
+
+        // TODO: create Session Token
+
+        return TRUE;
+    }
+
+    /**
      * Register method
      *
      * Processes POST data from the registration form
      * Inserts data into database or returns FALSE if data was invalid
      * 
-     * @param array   $errors
+     * @param array $response
+     * @param array $errors
      * @return bool
      */
-    function register(array &$response = [], array &$errors = []) : bool {
+    function register(array &$response, array &$errors) : bool {
         // Get user data
-        /** @var string $input_username */
+        /** @var ?string $input_username */
         $input_username         = filter_input(INPUT_POST, 'username');
-        /** @var string $input_email */
+        /** @var ?string $input_email */
         $input_email            = filter_input(INPUT_POST, 'email');
-        /** @var string $input_password */
+        /** @var ?string $input_password */
         $input_password         = filter_input(INPUT_POST, 'password');
-        /** @var string $input_password_repeat */
+        /** @var ?string $input_password_repeat */
         $input_password_repeat  = filter_input(INPUT_POST, 'password_repeat');
 
-        // Validate user data, methods storing TRUE on valid or FALSE on invalid input data
+        // Validate user inputs, methods storing TRUE on valid or FALSE on invalid input data
         $validations['username']    = $this->validateUsername($errors, $input_username);
         $validations['email']       = $this->validateEmail($errors, $input_email);
         $validations['password']    = $this->validatePassword($errors, $input_password, $input_password_repeat, $input_username);
@@ -42,7 +100,7 @@ final class UserModel extends AbstractModel {
             if(!$validation) return FALSE;
         }
 
-        // ? QUESTION more unsecure if database inserts not wrapped by a "if validations are TRUE" statement and only return FALSE are "excluded" from the rest?
+        // ? QUESTION unsecure if database inserts not wrapped by a "if validations are TRUE" statement and only return FALSE are "excluded" from the rest?
 
         // Hash password
         /** @var string $hashed_salt */
@@ -88,8 +146,29 @@ final class UserModel extends AbstractModel {
     }
 
     /**
+     * Compare passwords
+     * 
+     * Compares the input password with the users password in the database
+     * Returns TRUE if the passwords are matching or FALSE if not
+     *
+     * @param   array   $user_data
+     * @param   string  $input_password
+     * @return  boolean
+     */
+    private function comparePasswords(array $user_data, string $input_password) : bool {
+        /** @var string $hashed_salt */
+        $hashed_salt = $user_data['salt'];
+        /** @var string $hashed_password */
+        $hashed_password = $user_data['password'];
+
+        return $hashed_password === $this->createHashedPassword($input_password, $hashed_salt);
+    }
+
+    /**
      * Create hashed password
      *
+     * @param string|NULL $password
+     * @param string|NULL $salt
      * @return string
      */    
     private function createHashedPassword(?string $password, ?string $salt) : string {
@@ -121,7 +200,7 @@ final class UserModel extends AbstractModel {
      * 
      * Returns TRUE if validation was successful or FALSE if $errors was set
      *
-     * @param array       $errors
+     * @param array $errors
      * @param string|NULL $username
      * @return bool
      */
@@ -161,7 +240,7 @@ final class UserModel extends AbstractModel {
      * 
      * Returns TRUE if validation was successful and FALSE if $error was set
      *
-     * @param array       $errors
+     * @param array $errors
      * @param string|NULL $email
      * @return bool
      */
@@ -203,7 +282,7 @@ final class UserModel extends AbstractModel {
      * 
      * Returns TRUE if validation was successful and FALSE if $error was set
      *
-     * @param array       $errors
+     * @param array $errors
      * @param string|NULL $password
      * @param string|NULL $password_repeat
      * @param string|NULL $username
