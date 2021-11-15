@@ -17,10 +17,10 @@ final class UserModel extends AbstractModel {
      * Processes POST data from the registration form
      * Inserts data into database or returns FALSE if data was invalid
      * 
-     * @param   array   $errors
-     * @return  bool
+     * @param array   $errors
+     * @return bool
      */
-    function register(array &$errors = []) : bool {
+    function register(array &$response = [], array &$errors = []) : bool {
         // Get user data
         /** @var string $input_username */
         $input_username         = filter_input(INPUT_POST, 'username');
@@ -42,7 +42,7 @@ final class UserModel extends AbstractModel {
             if(!$validation) return FALSE;
         }
 
-        // ? more unsecure if database inserts not wrapped by a "if validations are TRUE" statement and only return FALSE are "excluded" from the rest?
+        // ? QUESTION more unsecure if database inserts not wrapped by a "if validations are TRUE" statement and only return FALSE are "excluded" from the rest?
 
         // Hash password
         /** @var string $hashed_salt */
@@ -52,21 +52,37 @@ final class UserModel extends AbstractModel {
 
         // Insert data into database
         /** @var bool $insert_user */
-        $insert_user_db = $this->DbHandler->insertUser($input_username, $input_email, $hashed_password, $hashed_salt);
+        $response['insert_user_db'] = $this->DbHandler->insertUser($input_username, $input_email, $hashed_password, $hashed_salt);
         /** @var bool $insert_additionals */
-        $insert_additionals_db = $this->DbHandler->insertUserAdditionals($input_username);
+        $response['insert_additionals_db'] = $this->DbHandler->insertUserAdditionals($input_username);
         
         // Initialize error controller, if sql execution failed
-        if(!$insert_user_db || !$insert_additionals_db) {
-            // ? alternative to avoid inserting and deleting on failure?
+        if(!$response['insert_user_db'] || !$response['insert_additionals_db']) {
+            // ? QUESTION better alternative to avoid inserting and deleting on failure?
             // Delete already inserted data if only additional inserts failed
-            if(!$insert_additionals_db) {
-                $this->DbHandler->deleteUser($input_username);
+            if(!$response['insert_additionals_db']) {
+                $this->DbHandler->deleteUserPart($input_username);
             }
 
-            // TODO return error, not bool
             return FALSE;
         }
+        
+        //  TODO Adaption if insertUser() returns $response array instead of bool
+        // // Insert data into database
+        // /** @var bool $insert_user */
+        // $response['insert_user_db'] = $this->DbHandler->insertUser($input_username, $input_email, $hashed_password, $hashed_salt);
+        // /** @var bool $insert_additionals */
+        // $response['insert_additionals_db'] = $this->DbHandler->insertUserAdditionals($input_username);
+
+        // // Initialize error controller, if sql execution failed
+        // if($insert_user_db['status'] = 'error' || $insert_additionals_db['status'] = 'error') {
+        //     // Delete already inserted data if only additional inserts failed
+        //     if(!$insert_additionals_db) {
+        //         $this->DbHandler->deleteUserPart($input_username);
+        //     }
+
+        //     return FALSE;
+        // }
 
         return TRUE;
     }
@@ -105,9 +121,9 @@ final class UserModel extends AbstractModel {
      * 
      * Returns TRUE if validation was successful or FALSE if $errors was set
      *
-     * @param   array       $errors
-     * @param   string|NULL $username
-     * @return  bool
+     * @param array       $errors
+     * @param string|NULL $username
+     * @return bool
      */
     private function validateUsername(array &$errors, ?string $username) : bool {
         // If user entered data
@@ -145,9 +161,9 @@ final class UserModel extends AbstractModel {
      * 
      * Returns TRUE if validation was successful and FALSE if $error was set
      *
-     * @param   array       $errors
-     * @param   string|NULL $email
-     * @return  bool
+     * @param array       $errors
+     * @param string|NULL $email
+     * @return bool
      */
     private function validateEmail(array &$errors, ?string $email) : bool
     {
@@ -187,11 +203,11 @@ final class UserModel extends AbstractModel {
      * 
      * Returns TRUE if validation was successful and FALSE if $error was set
      *
-     * @param   array       $errors
-     * @param   string|NULL $password
-     * @param   string|NULL $password_repeat
-     * @param   string|NULL $username
-     * @return  bool
+     * @param array       $errors
+     * @param string|NULL $password
+     * @param string|NULL $password_repeat
+     * @param string|NULL $username
+     * @return bool
      */
     private function validatePassword(array &$errors, ?string $password, ?string $password_repeat, ?string $username) : bool {
         // If user entered data
