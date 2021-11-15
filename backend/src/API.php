@@ -18,9 +18,6 @@ final class API {
     }
 
     function run() : void {
-        // Start session
-        Session::start();
-
         if($this->controllerExists() && $this->methodExists()) {
             /** @var string $controller */
             $controller = $this->request['controller'];
