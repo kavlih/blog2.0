@@ -22,17 +22,20 @@ final class UserController extends AbstractController {
      * @return void
      */
     function register() : void {
-        $errors = [];
+        $validation_errors = [];
+        $sql_response = [];
 
         //if($this->isMethod(self::METHOD_POST) && $this->UserModel->register($errors)) {
-        if($this->UserModel->register($errors)) {
+        if($this->UserModel->register($sql_response, $validation_errors)) {
             $this->responseCode(200);
             $this->printJSON(['Success' => TRUE]);
         }
         else {
             $this->responseCode(400);
-            $this->printJSON(['Error(s)' => $errors]);
+            $this->printJSON(['Validation error(s)' => $validation_errors]);
         }
+        
+        $this->printJSON(['SQL response' => $sql_response]);
     }
 
 }

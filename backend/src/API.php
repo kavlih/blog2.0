@@ -4,7 +4,7 @@ namespace application;
 
 use application\Controller\ErrorController;
 
-final class Api {
+final class API {
 
     const ERROR_CONTROLLER = "application\\Controller\\Error";
     const ERROR_METHOD = 'index';
