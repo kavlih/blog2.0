@@ -4,6 +4,7 @@ namespace application\Controller;
 
 use application\Controller as AbstractController;
 use application\Model\UserModel;
+use application\Authorize;
 
 /**
  * User controller class
@@ -27,7 +28,10 @@ final class UserController extends AbstractController {
         //if($this->isMethod(self::METHOD_POST) && $this->UserModel->register($errors)) {
         if($this->UserModel->login($validation_errors)) {
             $this->responseCode(200);
-            $this->printJSON(['Success' => TRUE]);
+            $this->printJSON([
+                'Success'   => TRUE,
+                'jwt'       => Authorize::createToken()
+            ]);
         }
         else {
             $this->responseCode(400);
@@ -41,20 +45,17 @@ final class UserController extends AbstractController {
      * @return void
      */
     function register() : void {
-        $validation_errors = [];
-        $sql_response = [];
+        $errors = [];
 
         //if($this->isMethod(self::METHOD_POST) && $this->UserModel->register($errors)) {
-        if($this->UserModel->register($sql_response, $validation_errors)) {
+        if($this->UserModel->register($errors)) {
             $this->responseCode(200);
             $this->printJSON(['Success' => TRUE]);
         }
         else {
             $this->responseCode(400);
-            $this->printJSON(['Validation error(s)' => $validation_errors]);
+            $this->printJSON(['Error(s)' => $errors]);
         }
-
-        $this->printJSON(['SQL response' => $sql_response]);
     }
 
 }

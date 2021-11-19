@@ -99,35 +99,25 @@ final class DbHandler extends \PDO {
      * @param string $hashed_salt
      * @return bool
     */
-    function insertUser(string $input_username, string $input_email, string $hashed_password, string $hashed_salt) : bool {
+    function insertUser(array &$errors, string $input_username, string $input_email, string $hashed_password, string $hashed_salt) : bool {
         /** @var string $query */
-        $query = 'INSERT INTO users(username, email, password, salt) VALUES (:username, :email, :password, :salt);';
+        $query = 'INSERT INTO users(username, emsail, password, salt) VALUES (:username, :email, :password, :salt);';
         /** @var \PDOStatement $stmt */
         $stmt = \PDO::prepare($query);
         $stmt->bindValue(':username', $input_username);
         $stmt->bindValue(':email', $input_email);
         $stmt->bindValue(':password', $hashed_password);
         $stmt->bindValue(':salt', $hashed_salt);
-        $stmt->execute();
-        
-        return !empty($stmt->rowCount());
 
-        // TODO catch sql error in the $response array if the execution failed
         // ? PROBLEM catch doesn't catch the error
-        // try {
-        //     $stmt->execute();
-            
-        //     if(!empty($stmt->rowCount())) {
-        //         $this->response["status"] = "success";
-        //         $this->response["message"] = sprintf("%d row(s) insert into Database", $stmt->rowCount());
-        //     }       
-        // } 
-        // catch (\PDOException $e) {
-        //     $this->response["status"] = "error";
-        //     $this->response["message"] = "Insert failed: " . $e->getMessage();
-        // }
+        try {
+            $stmt->execute();
+        } 
+        catch (\PDOException $e) {
+            $errors['insert_db'] = $e->getMessage();
+        }
 
-        // return $this->response;
+        return !empty($stmt->rowCount());
     }
     
     /** 

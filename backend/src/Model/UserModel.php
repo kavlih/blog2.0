@@ -78,7 +78,7 @@ final class UserModel extends AbstractModel {
      * @param array $errors
      * @return bool
      */
-    function register(array &$response, array &$errors) : bool {
+    function register(array &$errors) : bool {
         // Get user data
         /** @var ?string $input_username */
         $input_username         = filter_input(INPUT_POST, 'username');
@@ -110,37 +110,20 @@ final class UserModel extends AbstractModel {
 
         // Insert data into database
         /** @var bool $insert_user */
-        $response['insert_user_db'] = $this->DbHandler->insertUser($input_username, $input_email, $hashed_password, $hashed_salt);
+        $insert_user = $this->DbHandler->insertUser($errors, $input_username, $input_email, $hashed_password, $hashed_salt);
         /** @var bool $insert_additionals */
-        $response['insert_additionals_db'] = $this->DbHandler->insertUserAdditionals($input_username);
+        $insert_additionals = $this->DbHandler->insertUserAdditionals($input_username);
         
         // Initialize error controller, if sql execution failed
-        if(!$response['insert_user_db'] || !$response['insert_additionals_db']) {
+        if(!$insert_user || !$insert_additionals) {
             // ? QUESTION better alternative to avoid inserting and deleting on failure?
             // Delete already inserted data if only additional inserts failed
-            if(!$response['insert_additionals_db']) {
+            if(!$insert_additionals) {
                 $this->DbHandler->deleteUserPart($input_username);
             }
 
             return FALSE;
         }
-        
-        //  TODO Adaption if insertUser() returns $response array instead of bool
-        // // Insert data into database
-        // /** @var bool $insert_user */
-        // $response['insert_user_db'] = $this->DbHandler->insertUser($input_username, $input_email, $hashed_password, $hashed_salt);
-        // /** @var bool $insert_additionals */
-        // $response['insert_additionals_db'] = $this->DbHandler->insertUserAdditionals($input_username);
-
-        // // Initialize error controller, if sql execution failed
-        // if($insert_user_db['status'] = 'error' || $insert_additionals_db['status'] = 'error') {
-        //     // Delete already inserted data if only additional inserts failed
-        //     if(!$insert_additionals_db) {
-        //         $this->DbHandler->deleteUserPart($input_username);
-        //     }
-
-        //     return FALSE;
-        // }
 
         return TRUE;
     }
