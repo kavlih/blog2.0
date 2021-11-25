@@ -109,11 +109,12 @@ final class DbHandler extends \PDO {
         $stmt->bindValue(':password', $hashed_password);
         $stmt->bindValue(':salt', $hashed_salt);
 
-        // ? PROBLEM catch doesn't catch the error
+        // ? PROBLEM catch doesn't return the error the error
         try {
             $stmt->execute();
         } 
-        catch (\PDOException $e) {
+        // ? QUESTION Difference between \PDOException and \Exception
+        catch (\Exception $e) {
             $errors['insert_db'] = $e->getMessage();
         }
 
