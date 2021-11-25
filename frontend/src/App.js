@@ -1,3 +1,4 @@
+import React from 'react';
 import NavMain from './components/menus/NavMain';
 import Router from './Router';
 
