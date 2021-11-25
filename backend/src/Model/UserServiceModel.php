@@ -5,11 +5,11 @@ namespace application\Model;
 use application\Model as AbstractModel;
 
 /**
- * User model class
+ * UserService model class
  * 
  * @package application\Model
  */
-final class UserModel extends AbstractModel {
+final class UserServiceModel extends AbstractModel {
     
     /**
      * Login method
@@ -62,9 +62,7 @@ final class UserModel extends AbstractModel {
             $errors['compare'] = 'This combination doesn\'t exist';
             return FALSE;
         }
-
-        // TODO: create Session Token
-
+        
         return TRUE;
     }
 
