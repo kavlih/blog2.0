@@ -1,14 +1,15 @@
 import React from 'react';
+import LoginForm from '../components/LoginForm';
 
-const HomePage = (props) => {
+const LoginPage = (props) => {
   // const {} = props;
   return (
     <section className="section-home">
       <div className="container">
-        <h1>under construction</h1>
+        <LoginForm />
       </div>
     </section>
   );
 };
 
-export default HomePage;
+export default LoginPage;

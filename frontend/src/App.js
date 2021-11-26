@@ -5,7 +5,9 @@ import Router from './Router';
 const App = () => {
   return (
     <>
-      <NavMain />
+      <header>
+        <NavMain />
+      </header>
       <main id="main">
         <Router />
       </main>
