@@ -5,7 +5,7 @@ const NavMain = (props) => {
   // const {} = props;
   return (
     <>
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
           <div id="logo" className="position-absolute">
             <Link className="nav-link" to="/">
