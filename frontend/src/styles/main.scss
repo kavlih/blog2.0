@@ -1,2 +1,20 @@
 // Frameworks
-@import 'frameworks/index.scss';
+@import 'frameworks/bootstrap5.1.3/bootstrap';
+
+// Plugins
+// @import 'plugins/';
+
+// Fonts
+// @import 'fonts/';
+
+// Icons
+// @import 'icons/';
+
+// Base
+@import 'base/variables.scss';
+@import 'base/colors.scss';
+@import 'base/theme.scss';
+@import 'base/typography.scss';
+
+// Modules
+// @import 'modules/';
