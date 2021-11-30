@@ -2,11 +2,19 @@ body {
     background-color: $primaryDark;
 }
 
+*:focus {
+    box-shadow: 0 0 0 0.1rem $blue;
+}   
+
 #root {
     height: 100vh;
     min-height: 100vh;
     
     #main {
         flex-grow: 1;
+
+        input, .card {
+            border-radius: $defaultBorderRadius;
+        }
     }
 }
