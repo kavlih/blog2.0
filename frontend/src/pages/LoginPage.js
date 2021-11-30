@@ -21,7 +21,7 @@ const LoginPage = (props) => {
     <div id="login-page" className="col align-self-center justify-self-center">
       <form className="form-container d-flex flex-column m-auto">
           <div className="card">
-              <div className="card-body">
+              <div className="card-body d-flex flex-column">
                   <h3 className="text-center">welcome back :)</h3>
                   <div className="mb-3">
                       <label for="inputUser" className="form-label">Email or username</label>
@@ -40,6 +40,7 @@ const LoginPage = (props) => {
                       <input type="checkbox" className="form-check-input" id="checkLogin" disabled/>
                       <label className="form-check-label" for="checkLogin">stay logged in</label>
                   </div>
+                  <a href="/" className="text-center">forgot your password?</a>
               </div>
           </div>
           <button type="submit" className="btn btn-primary-circle" name="submit">
