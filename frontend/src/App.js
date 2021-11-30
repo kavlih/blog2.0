@@ -4,16 +4,14 @@ import Router from './Router';
 
 const App = () => {
   return (
-    <>
-        <header id="header">
-          <NavMain />
-        </header>
-        <main id="main">
-          <div className="container-fluid h-100 d-flex">
-            <Router />
-          </div>
-        </main>
-    </>
+    <div id="wrapper" className="d-flex flex-column h-100 w-100">
+      <NavMain />
+      <main id="main">
+        <div className="container-fluid h-100 d-flex">
+          <Router />
+        </div>
+      </main>
+    </div>
   );
 };
 

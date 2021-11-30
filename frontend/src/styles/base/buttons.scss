@@ -1,0 +1,16 @@
+.btn-primary-circle {
+    background-color: $green;
+    width: 3rem;
+    height: 3rem; 
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    svg {
+        color: $primaryDark;
+        height: 50%;
+        transform: translatey(5%);
+    }
+}

@@ -1,0 +1,29 @@
+.togglePassword {
+    right: 0;
+}
+
+#login-page, #register-page {
+    transform: translatey(-($navHeight/2));
+
+    form {
+        max-width: 350px;
+
+        .card {
+            border-radius: $defaultBorderRadius;
+
+            h3 {
+                margin-top: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            svg {
+                color: $primaryDark;
+            }
+        }
+
+        button[type="submit"] {
+            margin: auto;
+            margin-top: 1.5rem;
+        }
+    }
+}

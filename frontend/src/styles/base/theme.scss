@@ -3,26 +3,10 @@ body {
 }
 
 #root {
-    display: flex;
-    flex-direction: column;
     height: 100vh;
     min-height: 100vh;
-}
-
-#main {
-    flex-grow: 1;
-}
-
-// Navigation
-.navbar {
-     padding-top: 2rem;
-     height: $nav-height;
-}
-
-// 
-#section-login, #section-register {
-    margin-bottom: $nav-height;
-    form {
-        max-width: 350px;
+    
+    #main {
+        flex-grow: 1;
     }
 }
