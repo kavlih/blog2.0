@@ -101,7 +101,7 @@ final class DbHandler extends \PDO {
     */
     function insertUser(array &$errors, string $input_username, string $input_email, string $hashed_password, string $hashed_salt) : bool {
         /** @var string $query */
-        $query = 'INSERT INTO users(username, emsail, password, salt) VALUES (:username, :email, :password, :salt);';
+        $query = 'INSERT INTO users(username, email, password, salt) VALUES (:username, :email, :password, :salt);';
         /** @var \PDOStatement $stmt */
         $stmt = \PDO::prepare($query);
         $stmt->bindValue(':username', $input_username);
