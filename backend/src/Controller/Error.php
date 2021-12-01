@@ -9,7 +9,7 @@ use application\Controller as AbstractController;
  * 
  * @package application\Controller
  */
-final class ErrorController extends AbstractController {
+final class Error extends AbstractController {
 
     /**
      * Index method

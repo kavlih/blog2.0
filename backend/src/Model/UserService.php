@@ -9,7 +9,7 @@ use application\Model as AbstractModel;
  * 
  * @package application\Model
  */
-final class UserServiceModel extends AbstractModel {
+final class UserService extends AbstractModel {
     
     /**
      * Login method

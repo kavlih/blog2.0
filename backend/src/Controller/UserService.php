@@ -3,7 +3,7 @@
 namespace application\Controller;
 
 use application\Controller as AbstractController;
-use application\Model\UserServiceModel;
+use application\Model\UserService as UserServiceModel;
 use application\Authorize;
 
 /**
@@ -11,10 +11,10 @@ use application\Authorize;
  * 
  * @package application\Controller
  */
-final class UserServiceController extends AbstractController {
+final class UserService extends AbstractController {
     
     function __construct() {
-        $this->UserModel = new UserServiceModel();    
+        $this->UserServiceModel = new UserServiceModel();    
     }
 
     /**
@@ -25,8 +25,8 @@ final class UserServiceController extends AbstractController {
     function login() : void {
         $errors = [];
 
-        //if($this->isMethod(self::METHOD_POST) && $this->UserModel->login($errors)) {
-        if($this->UserModel->login($errors)) {
+        //if($this->isMethod(self::METHOD_POST) && $this->UserServiceModel->login($errors)) {
+        if($this->UserServiceModel->login($errors)) {
             $this->responseCode(200);
             $this->printJSON([
                 'Success'   => TRUE,
@@ -47,8 +47,8 @@ final class UserServiceController extends AbstractController {
     function register() : void {
         $errors = [];
 
-        //if($this->isMethod(self::METHOD_POST) && $this->UserModel->register($errors)) {
-        if($this->UserModel->register($errors)) {
+        //if($this->isMethod(self::METHOD_POST) && $this->UserServiceModel->register($errors)) {
+        if($this->UserServiceModel->register($errors)) {
             $this->responseCode(200);
             $this->printJSON(['Success' => TRUE]);
         }
