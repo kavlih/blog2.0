@@ -85,7 +85,7 @@ final class UserService extends AbstractModel {
         /** @var ?string $input_password */
         $input_password         = filter_input(INPUT_POST, 'password');
         /** @var ?string $input_password_repeat */
-        $input_password_repeat  = filter_input(INPUT_POST, 'password_repeat');
+        $input_password_repeat  = filter_input(INPUT_POST, 'passwordRepeat');
 
         // Validate user inputs, methods storing TRUE on valid or FALSE on invalid input data
         $validations['username']    = $this->validateUsername($errors, $input_username);
@@ -312,15 +312,15 @@ final class UserService extends AbstractModel {
         // If user entered data
         if(is_null($password_repeat) || empty($password_repeat))
         {
-            $errors['password_repeat'][] = 'Please repeat your Password';
+            $errors['passwordRepeat'][] = 'Please repeat your Password';
         }
         // If password and password_repeat are the same
         elseif($password !== $password_repeat )
         {
-            $errors['password_repeat'][] = 'Passwords do not match';
+            $errors['passwordRepeat'][] = 'Passwords do not match';
         }
 
-        return (!isset($errors['password'])) && (!isset($errors['password_repeat'])); 
+        return (!isset($errors['password'])) && (!isset($errors['passwordRepeat'])); 
     }
 
 }
