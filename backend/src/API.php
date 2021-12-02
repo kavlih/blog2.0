@@ -2,7 +2,7 @@
 
 namespace application;
 
-use application\Controller\ErrorController;
+use application\Controller\Error as ErrorController;
 
 final class API {
 
