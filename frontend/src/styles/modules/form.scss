@@ -8,22 +8,31 @@
     form {
         max-width: 350px;
 
+        .card {
+            background-color: $white;
+
+            a {
+                font-size: .8rem;
+                align-self: center;
+            }
+    
+            h3 {
+                margin-top: .5rem;
+                margin-bottom: 2rem;
+            }
+            
+            input {
+                background-color: transparent;
+            }
+    
+            svg {
+                color: $primaryDark;
+            }
+        }
+
         button[type="submit"] {
             margin: auto;
             margin-top: 1.5rem;
-        }
-
-        h3 {
-            margin-top: .5rem;
-            margin-bottom: 2rem;
-        }
-
-        input, .card {
-            background-color: $white;
-        }
-
-        svg {
-            color: $primaryDark;
         }
     }
 }
