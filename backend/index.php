@@ -2,6 +2,10 @@
 
 namespace application;
 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: DELETE, POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
 /** @var string $configFile */
 $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.php';
 /** @var string $autoloadFile */
