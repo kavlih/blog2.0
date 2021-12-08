@@ -5,51 +5,44 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const baseURL = "http://localhost:8888/index.php?_url=";
 
-const formSettings = {
-    username: {
-        minLenght: 3,
-        maxLenght: 16,
-    },
-    password: {
-        minLenght: 8,
-        maxLenght: 64,
-    },
-}
-
-// const FormErrors = ({formErrors}) => {
-//   <div className="invalid-feedback">
-//     {Object.keys(formErrors).map((fieldName, i) => {
-//       if(formErrors[fieldName].length > 0){
-//         return (
-//           <p key={i}>{fieldName} {formErrors[fieldName]}</p>
-//         )        
-//       } else {
-//         return '';
-//       }
-//     })}
-//   </div>
-// }
-
 const RegisterForm = (props) => {
+    
+    const formSettings = {
+        username: {
+            minLenght: 3,
+            maxLenght: 16,
+        },
+        password: {
+            minLenght: 8,
+            maxLenght: 64,
+        },
+    }
 
-const initialValues = {
+    const initialValues = {
         username: '',
         email: '',
         password: '',
         passwordRepeat: '',  
         // terms: false
     };
-
+   
+    
     const [formValues, setFormValues] = useState(initialValues);
-    const [formErrors, setFormErrors] = useState({});
+    const [formErrors, setFormErrors] = useState(initialValues);
+    const [stateVal, setStateVal] = useState(initialValues);
     const [isSubmit, setIsSubmit] = useState(false);
 
+    useEffect(() => {
+        // TODO if setStateVal contains "" => add disabled to button, else if setStateVal contains only true => remove disabled from button
+    }, []);
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        Object.entries(formValues).map((input) => {
-            setFormErrors(formValidate(input[0], input[1]));
-        })
+        // Object.entries(formValues).map((input) => {
+        //     setFormErrors(formValidate(input[0], input[1]));
+        //     console.log(input);
+        // })
 
         setIsSubmit(true);
 
@@ -84,73 +77,68 @@ const initialValues = {
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-        // ...formValues -> gets initial states
         setFormValues({...formValues, [name]: value});
+        setFormErrors({...formErrors, [name]: []})
+        setStateVal({...stateVal, [name]: ""});
     };
 
     const handleBlur = (e) => {
+        e.preventDefault();
         setFormErrors(formValidate(e.target.name, e.target.value));
     };
-
-    // useEffect(() => {
-    //     if (Object.keys(formErrors).length === 0 && isSubmit) {
-    //         // console.log(formValues);
-    //     }
-    // }, [formErrors]);
 
     const formValidate = (key, value) => {
 
         const regexEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         const regexUsername = /[^A-Za-z0-9]+/;
-        const errors = {};
+        const errors = {...formErrors};
+
+        errors[key] = [];
 
         switch (key) {
             case "username":
                 if (!value) {
-                    errors.username = "Please type in a username";
-                    // setFormErrors({"username": "Please type in a username"})
+                    errors[key].push("Please type in a username");
                 } else {
                     if (value.length < formSettings.username.minLenght) {
-                    errors.username = `Username requires minimum ${formSettings.username.minLenght} characters`;
+                    errors[key].push(`Username requires minimum ${formSettings.username.minLenght} characters`);
                     }
                     if (value.length > formSettings.username.maxLenght) {
-                    errors.username = `Username should be maximum ${formSettings.username.maxLenght} characters`;
+                    errors[key].push(`Username should be maximum ${formSettings.username.maxLenght} characters`);
                     }
                     if (regexUsername.test(value)) {
-                    errors.username = "Use only letters or numbers";
+                    errors[key].push("Use only letters or numbers");
                     }
                 }
                 break;
             case "email":
                 if (!value) {
-                    errors.email = "Please type in an email";
+                    errors[key] = "Please type in an email";
                 } else if (!regexEmail.test(value)) {
-                    errors.email = "Email is invalid";
+                    errors[key] = "Email is invalid";
                 }
                 break;
             case "password":
                 if (!value) {
-                    errors.password = "Password is required";
+                    errors[key] = "Password is required";
                 }
                 break;
             case "passwordRepeat":
                 if (!value) {
-                    errors.passwordRepeat = "Repeat your password";
+                    errors[key] = "Repeat your password";
                 }
                 break;
         }
 
-        console.log(errors);
+        if(value && errors[key].length === 0) {
+            setStateVal({...stateVal, [key]: true})
+        }
+
         return errors;
     };
 
     return (
         <div id="register-page" className="col align-self-center justify-self-center">
-            {Object.keys(formErrors).length === 0 && isSubmit ? (
-                <div className="">success</div>
-            ) : (
-                <div className="">not successful</div>
-            )}
             <form className="form-container d-flex flex-column m-auto" onSubmit={handleSubmit} noValidate>
                 <div className="card">
                     <div className="card-body">
@@ -159,28 +147,31 @@ const initialValues = {
                             <label htmlFor="InputUsername" className="form-label">Username</label>
                             <input 
                                 type="text" 
-                                className={`form-control ${typeof(formErrors.username) != "undefined" ? "is-invalid" : ""}`} 
+                                className={`form-control ${formErrors.username.length > 0 ? "is-invalid" : ""}`} 
                                 id="InputUsername" name="username" 
                                 value={formValues.username} 
                                 onChange={handleChange} 
                                 onBlur={handleBlur} 
                             />
-                            {typeof(formErrors.username) != "undefined" && (
+                            {formErrors.username.length > 0 && (
                                 <div className="invalid-feedback">{formErrors.username}</div>
                             )}
+                            {/* {formErrors.username.map((e) => {
+                                <div className="invalid-feedback">{e}</div>
+                            })} */}
                         </div>
                         <div className="mb-3">
                             <label htmlFor="inputEmail" className="form-label">Email address</label>
                             <input 
                                 type="email" 
-                                className={`form-control ${typeof(formErrors.email) != "undefined" ? "is-invalid" : ""}`} 
+                                className={`form-control ${formErrors.email.length > 0 ? "is-invalid" : ""}`} 
                                 id="inputEmail" 
                                 name="email" 
                                 value={formValues.email} 
                                 onChange={handleChange}
                                 onBlur={handleBlur} 
                             />
-                            {typeof(formErrors.email) != "undefined" && (
+                            {formErrors.email.length > 0 && (
                                 <div className="invalid-feedback">{formErrors.email}</div>
                             )}
                         </div>
@@ -188,14 +179,14 @@ const initialValues = {
                             <label htmlFor="inputPassword" className="form-label">Password</label>
                             <input 
                                 type="password" 
-                                className={typeof(formErrors.password) != "undefined" ? "is-invalid form-control" : "form-control"} 
+                                className={formErrors.password.length > 0 ? "is-invalid form-control" : "form-control"} 
                                 id="inputPassword" 
                                 name="password" 
                                 value={formValues.password} 
                                 onChange={handleChange}
                                 onBlur={handleBlur} 
                             />
-                            {typeof(formErrors.password) != "undefined" && (
+                            {formErrors.password.length > 0 && (
                                 <div className="invalid-feedback">{formErrors.password}</div>
                             )}
                         </div>
@@ -203,14 +194,14 @@ const initialValues = {
                             <label htmlFor="inputPasswordRepeat" className="form-label">Password repeat</label>
                             <input 
                                 type="password" 
-                                className={typeof(formErrors.passwordRepeat) != "undefined" ? "is-invalid form-control" : "form-control"} 
+                                className={formErrors.passwordRepeat.length > 0 ? "is-invalid form-control" : "form-control"} 
                                 id="inputPasswordRepeat" 
                                 name="passwordRepeat" 
                                 value={formValues.passwordRepeat} 
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                             />
-                            {typeof(formErrors.passwordRepeat) != "undefined" && (
+                            {formErrors.passwordRepeat.length > 0 && (
                                 <div className="invalid-feedback">{formErrors.passwordRepeat}</div>
                             )}
                         </div>
@@ -226,7 +217,7 @@ const initialValues = {
                         </div> */}
                     </div>
                 </div>
-                <button type="submit" className="btn btn-primary-circle" name="submit">
+                <button type="submit" className="btn m-btn m-btn-green" name="submit">
                 <FontAwesomeIcon icon={faArrowRight} />          
                 </button>
             </form>
