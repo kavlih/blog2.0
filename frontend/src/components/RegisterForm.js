@@ -5,8 +5,9 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const baseURL = "http://localhost:8888/index.php?_url=";
 
-// TODO render gap bewteen formValidate and setFormErrors
 // TODO checkbox
+// TODO if username already exists
+// TODO if email is already registered
 
 const RegisterForm = (props) => {
     
@@ -14,10 +15,15 @@ const RegisterForm = (props) => {
         username: {
             minLenght: 3,
             maxLenght: 16,
+            regex: /[^A-Za-z0-9]+/
+        },
+        email: {
+            regex: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         },
         password: {
             minLenght: 8,
             maxLenght: 64,
+            regex: /^(?!.* )(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s:]).+$/
         },
     }
 
@@ -28,7 +34,6 @@ const RegisterForm = (props) => {
         passwordRepeat: '',  
         // terms: ''
     };
-   
     
     const [formValues, setFormValues] = useState(initialValues);
     const [formErrors, setFormErrors] = useState(initialValues);
@@ -75,72 +80,71 @@ const RegisterForm = (props) => {
         // });
     };
 
+    useEffect(() => {
+        // console.log(stateVal);
+        setDisable(stateVal.username && stateVal.email && stateVal.password && stateVal.passwordRepeat ? false : true)
+    }, [stateVal]);
+
     const handleChange = (e) => {
         const {name, value} = e.target;
-        setFormValues({...formValues, [name]: value});
-        setFormErrors({...formErrors, [name]: []})
+        setFormValues({...formValues, [name]: value});        
         setStateVal({...stateVal, [name]: ""});
     };
 
     const handleBlur = (e) => {
         e.preventDefault();
         setFormErrors(formValidate(e.target.name, e.target.value));
-        setDisable(stateVal.username && stateVal.email && stateVal.password && stateVal.passwordRepeat ? false : true)
     };
 
     const formValidate = (key, value) => {
 
-        const regexEmail    = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        const regexUsername = /[^A-Za-z0-9]+/;
-        const regexPassword = /^(?!.* )(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s:]).+$/;
+        const regexEmail    = formSettings.email.regex;
+        const regexUsername = formSettings.username.regex;
+        const regexPassword = formSettings.password.regex;
 
-        const errors = {...formErrors, [key]: []};
+        const errors = {...formErrors, [key]: ""};
 
         switch (key) {
             case "username":
                 if (!value) {
-                    errors[key].push("Please type in a username");
-                } else {
-                    if (value.length < formSettings.username.minLenght || value.length > formSettings.username.maxLenght) {
-                        errors[key].push(`Username has to be ${formSettings.username.minLenght}-${formSettings.username.maxLenght} characters long`);
-                    }
-                    if (regexUsername.test(value)) {
-                        errors[key].push("Use only letters or numbers");
-                    }
-                    // TODO if username already exists
+                    errors[key] = "Please type in a username";
+                }
+                else if (value.length < formSettings.username.minLenght || value.length > formSettings.username.maxLenght) {
+                    errors[key] = `Username has to be ${formSettings.username.minLenght}-${formSettings.username.maxLenght} characters long`;
+                }
+                else if (regexUsername.test(value)) {
+                    errors[key] = "Use only letters or numbers";
                 }
                 break;
 
             case "email":
                 if (!value) {
-                    errors[key].push("Please type in an email");
+                    errors[key] = "Please type in an email";
                 } else if (!regexEmail.test(value)) {
-                    errors[key].push("Email is invalid");
+                    errors[key] = "Email is invalid";
                 }
-                // TODO if email is already registered
                 break;
 
             case "password":
                 if (!value) {
-                    errors[key].push("Password is required");
-                } else {
-                    if (value.length < formSettings.password.minLenght) {
-                        errors[key].push(`Password requires minimum ${formSettings.password.minLenght} characters`);
-                    }
-                    if (value.length > formSettings.password.maxLenght) {
-                        errors[key].push(`Password should be maximum ${formSettings.password.maxLenght} characters long`);
-                    }
-                    if (!regexPassword.test(value)) {
-                        errors[key].push("Password is invalid");
-                    }
+                    errors[key] = "Password is required";
+                } 
+                else if (value.length < formSettings.password.minLenght) {
+                    errors[key] = `Password requires minimum ${formSettings.password.minLenght} characters`;
+                }
+                else if (value.length > formSettings.password.maxLenght) {
+                    errors[key] = `Password should be maximum ${formSettings.password.maxLenght} characters long`;
+                }
+                else if (!regexPassword.test(value)) {
+                    errors[key] = "Password is invalid";
                 }
                 break;
 
             case "passwordRepeat":
                 if (!value) {
-                    errors[key].push("Reapeat your password");
+                    errors[key] = "Reapeat your password";
                 } else if (value !== formValues.password) {
-                    errors[key].push("Passwords do not match");
+                    errors[key] = "Passwords do not match";
                 }
                 break;
 
