@@ -5,6 +5,9 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const baseURL = "http://localhost:8888/index.php?_url=";
 
+// TODO render gap bewteen formValidate and setFormErrors
+// TODO checkbox
+
 const RegisterForm = (props) => {
     
     const formSettings = {
@@ -23,7 +26,7 @@ const RegisterForm = (props) => {
         email: '',
         password: '',
         passwordRepeat: '',  
-        // terms: false
+        // terms: ''
     };
    
     
@@ -31,11 +34,8 @@ const RegisterForm = (props) => {
     const [formErrors, setFormErrors] = useState(initialValues);
     const [stateVal, setStateVal] = useState(initialValues);
     const [isSubmit, setIsSubmit] = useState(false);
+    const [disable, setDisable] = useState(true);
 
-    useEffect(() => {
-        // TODO if setStateVal contains "" => add disabled to button, else if setStateVal contains only true => remove disabled from button
-    }, []);
-    
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -85,49 +85,68 @@ const RegisterForm = (props) => {
     const handleBlur = (e) => {
         e.preventDefault();
         setFormErrors(formValidate(e.target.name, e.target.value));
+        setDisable(stateVal.username && stateVal.email && stateVal.password && stateVal.passwordRepeat ? false : true)
     };
 
     const formValidate = (key, value) => {
 
-        const regexEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const regexEmail    = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         const regexUsername = /[^A-Za-z0-9]+/;
-        const errors = {...formErrors};
+        const regexPassword = /^(?!.* )(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s:]).+$/;
 
-        errors[key] = [];
+        const errors = {...formErrors, [key]: []};
 
         switch (key) {
             case "username":
                 if (!value) {
                     errors[key].push("Please type in a username");
                 } else {
-                    if (value.length < formSettings.username.minLenght) {
-                    errors[key].push(`Username requires minimum ${formSettings.username.minLenght} characters`);
-                    }
-                    if (value.length > formSettings.username.maxLenght) {
-                    errors[key].push(`Username should be maximum ${formSettings.username.maxLenght} characters`);
+                    if (value.length < formSettings.username.minLenght || value.length > formSettings.username.maxLenght) {
+                        errors[key].push(`Username has to be ${formSettings.username.minLenght}-${formSettings.username.maxLenght} characters long`);
                     }
                     if (regexUsername.test(value)) {
-                    errors[key].push("Use only letters or numbers");
+                        errors[key].push("Use only letters or numbers");
+                    }
+                    // TODO if username already exists
+                }
+                break;
+
+            case "email":
+                if (!value) {
+                    errors[key].push("Please type in an email");
+                } else if (!regexEmail.test(value)) {
+                    errors[key].push("Email is invalid");
+                }
+                // TODO if email is already registered
+                break;
+
+            case "password":
+                if (!value) {
+                    errors[key].push("Password is required");
+                } else {
+                    if (value.length < formSettings.password.minLenght) {
+                        errors[key].push(`Password requires minimum ${formSettings.password.minLenght} characters`);
+                    }
+                    if (value.length > formSettings.password.maxLenght) {
+                        errors[key].push(`Password should be maximum ${formSettings.password.maxLenght} characters long`);
+                    }
+                    if (!regexPassword.test(value)) {
+                        errors[key].push("Password is invalid");
                     }
                 }
                 break;
-            case "email":
-                if (!value) {
-                    errors[key] = "Please type in an email";
-                } else if (!regexEmail.test(value)) {
-                    errors[key] = "Email is invalid";
-                }
-                break;
-            case "password":
-                if (!value) {
-                    errors[key] = "Password is required";
-                }
-                break;
+
             case "passwordRepeat":
                 if (!value) {
-                    errors[key] = "Repeat your password";
+                    errors[key].push("Reapeat your password");
+                } else if (value !== formValues.password) {
+                    errors[key].push("Passwords do not match");
                 }
                 break;
+
+            // case "terms":
+                
+            //     break;
         }
 
         if(value && errors[key].length === 0) {
@@ -211,13 +230,13 @@ const RegisterForm = (props) => {
                                 className="form-check-input" 
                                 id="checkTerms"/>
                             <label className="form-check-label" htmlFor="checkTerms" name="terms">I accept our <a href="/">Terms of Use</a> & <a href="/">Privacy Policy</a></label>
-                            {typeof(formErrors.terms) != "undefined" && (
-                                <div className="invalid-feedback">{formErrors.passwordRepeat}</div>
+                            {formErrors.terms.length > 0 && (
+                                <div className="invalid-feedback">{formErrors.terms}</div>
                             )}
                         </div> */}
                     </div>
                 </div>
-                <button type="submit" className="btn m-btn m-btn-green" name="submit">
+                <button type="submit" className="btn m-btn m-btn-green" name="submit" disabled={disable}>
                 <FontAwesomeIcon icon={faArrowRight} />          
                 </button>
             </form>
