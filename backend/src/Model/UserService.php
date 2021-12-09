@@ -84,13 +84,11 @@ final class UserService extends AbstractModel {
         $input_email            = filter_input(INPUT_POST, 'email');
         /** @var ?string $input_password */
         $input_password         = filter_input(INPUT_POST, 'password');
-        /** @var ?string $input_password_repeat */
-        $input_password_repeat  = filter_input(INPUT_POST, 'passwordRepeat');
 
         // Validate user inputs, methods storing TRUE on valid or FALSE on invalid input data
         $validations['username']    = $this->validateUsername($errors, $input_username);
         $validations['email']       = $this->validateEmail($errors, $input_email);
-        $validations['password']    = $this->validatePassword($errors, $input_password, $input_password_repeat, $input_username);
+        $validations['password']    = $this->validatePassword($errors, $input_password);
 
         // Exit method and return FALSE if a input was invalid
         foreach ($validations as $validation)
@@ -249,7 +247,6 @@ final class UserService extends AbstractModel {
      * Validate password
      *
      * Checks if password is not empty
-     * Checks if password is not the same as username
      * Checks if password is minimum 8 characters long
      * Checks if password is maximum 64 characters long
      * Checks if password contains whitespaces
@@ -258,27 +255,18 @@ final class UserService extends AbstractModel {
      * Checks if password contains digits
      * Checks if password contains special characters
      * 
-     * Checks if password_reapeat is not empty
-     * Checks if password_reapeat is the same as password
-     * 
      * Returns TRUE if validation was successful and FALSE if $error was set
      *
      * @param array $errors
      * @param string|NULL $password
-     * @param string|NULL $password_repeat
-     * @param string|NULL $username
      * @return bool
      */
-    private function validatePassword(array &$errors, ?string $password, ?string $password_repeat, ?string $username) : bool {
+    private function validatePassword(array &$errors, ?string $password) : bool {
         // If user entered data
         if(is_null($password) || empty($password)) {
             $errors['password'][] = 'Please type in a password';
         }
         else {
-            // If username matches password
-            if(strtolower($username) === strtolower($password)) {
-                $errors['password'][] = 'Password should not be the same as username';
-            }
             // If password too short
             if(strlen($password) < 8) {
                 $errors['password'][] = 'Password has to be at least 8 characters long';
@@ -309,18 +297,7 @@ final class UserService extends AbstractModel {
             }
         }
 
-        // If user entered data
-        if(is_null($password_repeat) || empty($password_repeat))
-        {
-            $errors['passwordRepeat'][] = 'Please repeat your Password';
-        }
-        // If password and password_repeat are the same
-        elseif($password !== $password_repeat )
-        {
-            $errors['passwordRepeat'][] = 'Passwords do not match';
-        }
-
-        return (!isset($errors['password'])) && (!isset($errors['passwordRepeat'])); 
+        return (!isset($errors['password'])); 
     }
 
 }

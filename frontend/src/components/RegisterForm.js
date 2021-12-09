@@ -57,7 +57,6 @@ const RegisterForm = (props) => {
         username: '',
         email: '',
         password: '',
-        // passwordRepeat: '',
         terms: false
     };
     
@@ -82,7 +81,6 @@ const RegisterForm = (props) => {
         registerFormData.append("username", formValues.username)
         registerFormData.append("email", formValues.email)
         registerFormData.append("password", formValues.password)
-        // registerFormData.append("passwordRepeat", formValues.passwordRepeat)
         
         // for (var pair of registerFormData.entries()) {
         //   console.log(pair[0]+ ', ' + pair[1]); 
@@ -165,14 +163,6 @@ const RegisterForm = (props) => {
                 }
                 break;
 
-            // case "passwordRepeat":
-            //     if (!value) {
-            //         errors[name] = "Reapeat your password";
-            //     } else if (value !== formValues.password) {
-            //         errors[name] = "Passwords do not match";
-            //     }
-            //     break;
-
             case "terms":
                 if (formValues.terms) {
                     errors[name] = "Please accept our terms";
@@ -230,17 +220,6 @@ const RegisterForm = (props) => {
                                 onChange={handleChange}
                             />
                         </div>
-                        {/* <div className="mb-3">
-                            <Input
-                                type="password"
-                                id="inputPasswordRepeat"
-                                name="passwordRepeat"
-                                label="Password repeat"
-                                value={formValues.passwordRepeat}
-                                errors={formErrors.passwordRepeat}
-                                onChange={handleChange}
-                            />
-                        </div> */}
                         <div className="mb-3 form-check">
                             <input 
                                 type="checkbox" 
