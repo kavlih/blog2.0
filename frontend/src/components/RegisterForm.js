@@ -5,7 +5,6 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 const baseURL = "http://localhost:8888/index.php?_url=";
 
-// TODO checkbox
 // TODO if username already exists
 // TODO if email is already registered
 
@@ -31,15 +30,16 @@ const RegisterForm = (props) => {
         username: '',
         email: '',
         password: '',
-        passwordRepeat: '',  
-        // terms: ''
+        passwordRepeat: '',
+        terms: false
     };
     
     const [formValues, setFormValues] = useState(initialValues);
     const [formErrors, setFormErrors] = useState(initialValues);
     const [stateVal, setStateVal] = useState(initialValues);
+
+    const [isButtonDis, setIsButtonDis] = useState(true);
     const [isSubmit, setIsSubmit] = useState(false);
-    const [disable, setDisable] = useState(true);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -81,80 +81,85 @@ const RegisterForm = (props) => {
     };
 
     useEffect(() => {
-        // console.log(stateVal);
-        setDisable(stateVal.username && stateVal.email && stateVal.password && stateVal.passwordRepeat ? false : true)
+        setIsButtonDis(stateVal.username && stateVal.email && stateVal.password && stateVal.passwordRepeat && stateVal.terms ? false : true)
     }, [stateVal]);
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-        setFormValues({...formValues, [name]: value});        
-        setStateVal({...stateVal, [name]: ""});
+
+        if(name === "terms") {
+            // setChecked(!checked);
+            setFormValues({...formValues, [name]: !formValues.terms});
+        } else {
+            setFormValues({...formValues, [name]: value}); 
+        }
+
+        setFormErrors(formValidate(name, value));
     };
 
-    const handleBlur = (e) => {
-        e.preventDefault();
-        setFormErrors(formValidate(e.target.name, e.target.value));
-    };
-
-    const formValidate = (key, value) => {
-
+    const formValidate = (name, value) => {
         const regexEmail    = formSettings.email.regex;
         const regexUsername = formSettings.username.regex;
         const regexPassword = formSettings.password.regex;
 
-        const errors = {...formErrors, [key]: ""};
+        const errors = {...formErrors, [name]: ""};
 
-        switch (key) {
+        switch (name) {
             case "username":
                 if (!value) {
-                    errors[key] = "Please type in a username";
+                    errors[name] = "Please type in a username";
                 }
                 else if (value.length < formSettings.username.minLenght || value.length > formSettings.username.maxLenght) {
-                    errors[key] = `Username has to be ${formSettings.username.minLenght}-${formSettings.username.maxLenght} characters long`;
+                    errors[name] = `Username has to be ${formSettings.username.minLenght}-${formSettings.username.maxLenght} characters long`;
                 }
                 else if (regexUsername.test(value)) {
-                    errors[key] = "Use only letters or numbers";
+                    errors[name] = "Use only letters or numbers";
                 }
                 break;
 
             case "email":
                 if (!value) {
-                    errors[key] = "Please type in an email";
+                    errors[name] = "Please type in an email";
                 } else if (!regexEmail.test(value)) {
-                    errors[key] = "Email is invalid";
+                    errors[name] = "Email is invalid";
                 }
                 break;
 
             case "password":
                 if (!value) {
-                    errors[key] = "Password is required";
+                    errors[name] = "Password is required";
                 } 
                 else if (value.length < formSettings.password.minLenght) {
-                    errors[key] = `Password requires minimum ${formSettings.password.minLenght} characters`;
+                    errors[name] = `Password requires minimum ${formSettings.password.minLenght} characters`;
                 }
                 else if (value.length > formSettings.password.maxLenght) {
-                    errors[key] = `Password should be maximum ${formSettings.password.maxLenght} characters long`;
+                    errors[name] = `Password should be maximum ${formSettings.password.maxLenght} characters long`;
                 }
                 else if (!regexPassword.test(value)) {
-                    errors[key] = "Password is invalid";
+                    errors[name] = "Password is invalid";
                 }
                 break;
 
             case "passwordRepeat":
                 if (!value) {
-                    errors[key] = "Reapeat your password";
+                    errors[name] = "Reapeat your password";
                 } else if (value !== formValues.password) {
-                    errors[key] = "Passwords do not match";
+                    errors[name] = "Passwords do not match";
                 }
                 break;
 
-            // case "terms":
-                
-            //     break;
+            case "terms":
+                if (formValues.terms) {
+                    errors[name] = "Please accept our terms";
+                }
+                break;
         }
 
-        if(value && errors[key].length === 0) {
-            setStateVal({...stateVal, [key]: true})
+        if(value && errors[name].length === 0) {
+            setStateVal({...stateVal, [name]: true})
+        }
+        else {
+            setStateVal({...stateVal, [name]: false})
         }
 
         return errors;
@@ -174,7 +179,6 @@ const RegisterForm = (props) => {
                                 id="InputUsername" name="username" 
                                 value={formValues.username} 
                                 onChange={handleChange} 
-                                onBlur={handleBlur} 
                             />
                             {formErrors.username.length > 0 && (
                                 <div className="invalid-feedback">{formErrors.username}</div>
@@ -192,7 +196,6 @@ const RegisterForm = (props) => {
                                 name="email" 
                                 value={formValues.email} 
                                 onChange={handleChange}
-                                onBlur={handleBlur} 
                             />
                             {formErrors.email.length > 0 && (
                                 <div className="invalid-feedback">{formErrors.email}</div>
@@ -200,14 +203,14 @@ const RegisterForm = (props) => {
                         </div>
                         <div className="mb-3">
                             <label htmlFor="inputPassword" className="form-label">Password</label>
+                            {/* <div data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">Tooltip on top</div> */}
                             <input 
                                 type="password" 
-                                className={formErrors.password.length > 0 ? "is-invalid form-control" : "form-control"} 
+                                className={`form-control ${formErrors.password.length > 0 ? "is-invalid" : ""}`} 
                                 id="inputPassword" 
                                 name="password" 
                                 value={formValues.password} 
                                 onChange={handleChange}
-                                onBlur={handleBlur} 
                             />
                             {formErrors.password.length > 0 && (
                                 <div className="invalid-feedback">{formErrors.password}</div>
@@ -217,30 +220,34 @@ const RegisterForm = (props) => {
                             <label htmlFor="inputPasswordRepeat" className="form-label">Password repeat</label>
                             <input 
                                 type="password" 
-                                className={formErrors.passwordRepeat.length > 0 ? "is-invalid form-control" : "form-control"} 
+                                className={`form-control ${formErrors.passwordRepeat.length > 0 ? "is-invalid" : ""}`} 
                                 id="inputPasswordRepeat" 
                                 name="passwordRepeat" 
                                 value={formValues.passwordRepeat} 
                                 onChange={handleChange}
-                                onBlur={handleBlur}
                             />
                             {formErrors.passwordRepeat.length > 0 && (
                                 <div className="invalid-feedback">{formErrors.passwordRepeat}</div>
                             )}
                         </div>
-                        {/* <div className="mb-3 form-check">
+                        <div className="mb-3 form-check">
                             <input 
                                 type="checkbox" 
-                                className="form-check-input" 
-                                id="checkTerms"/>
-                            <label className="form-check-label" htmlFor="checkTerms" name="terms">I accept our <a href="/">Terms of Use</a> & <a href="/">Privacy Policy</a></label>
+                                className={`form-check-input ${formErrors.terms.length > 0 ? "is-invalid" : ""}`} 
+                                id="checkTerms"
+                                name="terms"
+                                checked={formValues.terms}
+                                onChange={handleChange}
+                                // value={formValues.passwordRepeat} 
+                            />
+                            <label htmlFor="checkTerms" className="form-check-label">I accept our <a href="/">Terms of Use</a> & <a href="/">Privacy Policy</a></label>
                             {formErrors.terms.length > 0 && (
                                 <div className="invalid-feedback">{formErrors.terms}</div>
                             )}
-                        </div> */}
+                        </div>
                     </div>
                 </div>
-                <button type="submit" className="btn m-btn m-btn-green" name="submit" disabled={disable}>
+                <button type="submit" className="btn m-btn m-btn-green" name="submit" disabled={isButtonDis}>
                 <FontAwesomeIcon icon={faArrowRight} />          
                 </button>
             </form>
