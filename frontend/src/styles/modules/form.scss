@@ -21,7 +21,7 @@
                 margin-bottom: 2rem;
             }
             
-            input {
+            input:not([type="checkbox"]) {
                 background-color: transparent;
             }
     
