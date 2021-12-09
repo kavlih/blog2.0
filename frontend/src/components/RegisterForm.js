@@ -2,11 +2,38 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faEye } from "@fortawesome/free-regular-svg-icons";
 
 const baseURL = "http://localhost:8888/index.php?_url=";
 
 // TODO if username already exists
 // TODO if email is already registered
+// TODO password tip
+
+const Input = ({type, errors, name, label, id, value, onChange}) => {
+    return (
+        <>
+            <label htmlFor={id} className="form-label">{label}</label>
+            <div className="input-group">
+                <input 
+                    type={type} 
+                    className={`form-control ${errors.length > 0 ? "is-invalid" : ""}`} 
+                    id={id} name={name} 
+                    value={value} 
+                    onChange={onChange} 
+                />
+                {type === "password" && (
+                    <button className="btn position-absolute togglePassword" type="button" id="button-addon2">
+                        <FontAwesomeIcon icon={faEye} />
+                    </button>
+                )}
+                {errors.length > 0 && (
+                    <div className="invalid-feedback">{errors}</div>
+                )}
+            </div>
+        </>
+    )
+}
 
 const RegisterForm = (props) => {
     
@@ -30,16 +57,16 @@ const RegisterForm = (props) => {
         username: '',
         email: '',
         password: '',
-        passwordRepeat: '',
+        // passwordRepeat: '',
         terms: false
     };
     
-    const [formValues, setFormValues] = useState(initialValues);
-    const [formErrors, setFormErrors] = useState(initialValues);
-    const [stateVal, setStateVal] = useState(initialValues);
+    const [formValues, setFormValues]   = useState(initialValues);
+    const [formErrors, setFormErrors]   = useState(initialValues);
+    const [stateVal, setStateVal]       = useState(initialValues);
 
     const [isButtonDis, setIsButtonDis] = useState(true);
-    const [isSubmit, setIsSubmit] = useState(false);
+    const [isSubmit, setIsSubmit]       = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -51,44 +78,42 @@ const RegisterForm = (props) => {
 
         setIsSubmit(true);
 
-        // // XMLHttpRequest
-        // const registerFormValues = new FormValues();
-        // registerFormValues.append("username", formvalue)
-        // registerFormValues.append("email", formvalue)
-        // registerFormValues.append("password", formValues.password)
-        // registerFormValues.append("passwordRepeat", formValues.passwordRepeat)
+        const registerFormData = new FormData();
+        registerFormData.append("username", formValues.username)
+        registerFormData.append("email", formValues.email)
+        registerFormData.append("password", formValues.password)
+        // registerFormData.append("passwordRepeat", formValues.passwordRepeat)
         
-        // // for (var pair of registerFormValues.entries()) {
-        // //   console.log(pair[0]+ ', ' + pair[1]); 
-        // // }
+        // for (var pair of registerFormData.entries()) {
+        //   console.log(pair[0]+ ', ' + pair[1]); 
+        // }
         
-        // axios({
-        //     method: "post",
-        //     url: baseURL + "userservice/register",
-        //     data: registerFormValues,
-        //     headers: { 
-        //     "Content-Type": "multipart/form-data"
-        //     },
-        // })
-        // .then(function (res) {
-        //     // handle success
-        //     console.log(res);
-        // })
-        // .catch(function (res) {
-        //     // handle error
-        //     console.log(res);
-        // });
+        axios({
+            method: "post",
+            url: baseURL + "userservice/register",
+            data: registerFormData,
+            headers: { 
+            "Content-Type": "multipart/form-data"
+            },
+        })
+        .then(function (res) {
+            // handle success
+            console.log(res);
+        })
+        .catch(function (res) {
+            // handle error
+            console.log(res);
+        });
     };
 
     useEffect(() => {
-        setIsButtonDis(stateVal.username && stateVal.email && stateVal.password && stateVal.passwordRepeat && stateVal.terms ? false : true)
+        setIsButtonDis(stateVal.username && stateVal.email && stateVal.password && stateVal.terms ? false : true)
     }, [stateVal]);
 
     const handleChange = (e) => {
         const {name, value} = e.target;
 
         if(name === "terms") {
-            // setChecked(!checked);
             setFormValues({...formValues, [name]: !formValues.terms});
         } else {
             setFormValues({...formValues, [name]: value}); 
@@ -140,13 +165,13 @@ const RegisterForm = (props) => {
                 }
                 break;
 
-            case "passwordRepeat":
-                if (!value) {
-                    errors[name] = "Reapeat your password";
-                } else if (value !== formValues.password) {
-                    errors[name] = "Passwords do not match";
-                }
-                break;
+            // case "passwordRepeat":
+            //     if (!value) {
+            //         errors[name] = "Reapeat your password";
+            //     } else if (value !== formValues.password) {
+            //         errors[name] = "Passwords do not match";
+            //     }
+            //     break;
 
             case "terms":
                 if (formValues.terms) {
@@ -172,73 +197,58 @@ const RegisterForm = (props) => {
                     <div className="card-body">
                         <h3 className="text-center">register</h3>
                         <div className="mb-3">
-                            <label htmlFor="InputUsername" className="form-label">Username</label>
-                            <input 
-                                type="text" 
-                                className={`form-control ${formErrors.username.length > 0 ? "is-invalid" : ""}`} 
-                                id="InputUsername" name="username" 
-                                value={formValues.username} 
-                                onChange={handleChange} 
-                            />
-                            {formErrors.username.length > 0 && (
-                                <div className="invalid-feedback">{formErrors.username}</div>
-                            )}
-                            {/* {formErrors.username.map((e) => {
-                                <div className="invalid-feedback">{e}</div>
-                            })} */}
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="inputEmail" className="form-label">Email address</label>
-                            <input 
-                                type="email" 
-                                className={`form-control ${formErrors.email.length > 0 ? "is-invalid" : ""}`} 
-                                id="inputEmail" 
-                                name="email" 
-                                value={formValues.email} 
+                            <Input
+                                type="text"
+                                id="inputUsername"
+                                name="username"
+                                label="Username"
+                                value={formValues.username}
+                                errors={formErrors.username}
                                 onChange={handleChange}
                             />
-                            {formErrors.email.length > 0 && (
-                                <div className="invalid-feedback">{formErrors.email}</div>
-                            )}
                         </div>
                         <div className="mb-3">
-                            <label htmlFor="inputPassword" className="form-label">Password</label>
+                            <Input
+                                type="email"
+                                id="inputEmail"
+                                name="email"
+                                label="Email address"
+                                value={formValues.email}
+                                errors={formErrors.email}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="mb-3">
                             {/* <div data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">Tooltip on top</div> */}
-                            <input 
-                                type="password" 
-                                className={`form-control ${formErrors.password.length > 0 ? "is-invalid" : ""}`} 
-                                id="inputPassword" 
-                                name="password" 
-                                value={formValues.password} 
+                            <Input
+                                type="password"
+                                id="inputPassword"
+                                name="password"
+                                label="Password"
+                                value={formValues.password}
+                                errors={formErrors.password}
                                 onChange={handleChange}
                             />
-                            {formErrors.password.length > 0 && (
-                                <div className="invalid-feedback">{formErrors.password}</div>
-                            )}
                         </div>
-                        <div className="mb-3">
-                            <label htmlFor="inputPasswordRepeat" className="form-label">Password repeat</label>
-                            <input 
-                                type="password" 
-                                className={`form-control ${formErrors.passwordRepeat.length > 0 ? "is-invalid" : ""}`} 
-                                id="inputPasswordRepeat" 
-                                name="passwordRepeat" 
-                                value={formValues.passwordRepeat} 
+                        {/* <div className="mb-3">
+                            <Input
+                                type="password"
+                                id="inputPasswordRepeat"
+                                name="passwordRepeat"
+                                label="Password repeat"
+                                value={formValues.passwordRepeat}
+                                errors={formErrors.passwordRepeat}
                                 onChange={handleChange}
                             />
-                            {formErrors.passwordRepeat.length > 0 && (
-                                <div className="invalid-feedback">{formErrors.passwordRepeat}</div>
-                            )}
-                        </div>
+                        </div> */}
                         <div className="mb-3 form-check">
                             <input 
                                 type="checkbox" 
                                 className={`form-check-input ${formErrors.terms.length > 0 ? "is-invalid" : ""}`} 
                                 id="checkTerms"
                                 name="terms"
-                                checked={formValues.terms}
                                 onChange={handleChange}
-                                // value={formValues.passwordRepeat} 
+                                value={formValues.terms} 
                             />
                             <label htmlFor="checkTerms" className="form-check-label">I accept our <a href="/">Terms of Use</a> & <a href="/">Privacy Policy</a></label>
                             {formErrors.terms.length > 0 && (
@@ -248,7 +258,7 @@ const RegisterForm = (props) => {
                     </div>
                 </div>
                 <button type="submit" className="btn m-btn m-btn-green" name="submit" disabled={isButtonDis}>
-                <FontAwesomeIcon icon={faArrowRight} />          
+                    <FontAwesomeIcon icon={faArrowRight} />          
                 </button>
             </form>
         </div>
