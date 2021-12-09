@@ -12,14 +12,14 @@ button:hover {
     padding: 0;
     transition: all ease 0.1s;
 
+    &[disabled] {
+        opacity: 0.4;
+    }
+
     svg {
         color: $primaryDark;
         height: 55%;
         transform: translatey(3%);
-    }
-
-    .disabled {
-        opacity: 0.2;
     }
 }
 
