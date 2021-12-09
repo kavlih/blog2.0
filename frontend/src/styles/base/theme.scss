@@ -15,7 +15,7 @@ body {
     #main {
         flex-grow: 1;
          
-        input, .card {
+        input:not([type="checkbox"]), .card {
             border-radius: $defaultBorderRadius;
         }
     }

@@ -1,17 +1,28 @@
-.btn-primary-circle {
-    background-color: $green;
+button:hover {
+    transform: scale(1.05);
+}
+
+.m-btn {
     width: 2.5rem;
     height: 2.5rem; 
     border-radius: 50%;
-    padding: 0;
-    
     display: flex;
     justify-content: center;
     align-items: center;
-    
+    padding: 0;
+    transition: all ease 0.1s;
+
     svg {
         color: $primaryDark;
         height: 55%;
         transform: translatey(3%);
     }
+
+    .disabled {
+        opacity: 0.2;
+    }
+}
+
+.m-btn-green {
+    background-color: $green;
 }
