@@ -9,7 +9,7 @@ import React from 'react';
 //     this.classList.toggle('bi-eye');
 // };
 
-const FeedPage = (props) => {
+const Feed = (props) => {
   // const {} = props;
   return (
     <>
@@ -17,4 +17,4 @@ const FeedPage = (props) => {
   );
 };
 
-export default FeedPage;
+export default Feed;

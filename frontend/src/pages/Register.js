@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom'
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
@@ -31,9 +32,9 @@ const formSettings = {
 // TODO if username already exists
 // TODO if email is already registered
 // TODO password tip
-// TODO link to login + popup you signed in successfully. we ve send you an email to verficate your account
+// TODO popup you signed in successfully. we ve send you an email to verficate your account
 
-const Input = ({type, errors, name, label, id, value, onChange, togglePwd}) => {
+const Input = ({type, errors, name, label, id, value, onChange, togglePwd, focus}) => {
     return (
         <>
             <label htmlFor={id} className="form-label">{label}</label>
@@ -54,6 +55,7 @@ const Input = ({type, errors, name, label, id, value, onChange, togglePwd}) => {
                     id={id} name={name} 
                     value={value} 
                     onChange={onChange} 
+                    autoFocus={focus}
                 />
                 {errors.length > 0 && (
                     <div className="invalid-feedback">{errors}</div>
@@ -63,8 +65,10 @@ const Input = ({type, errors, name, label, id, value, onChange, togglePwd}) => {
     )
 }
 
-const RegisterForm = (props) => {
+const Register = (props) => {
     
+    const navigate = useNavigate();
+
     const initialValues = {
         username: '',
         email: '',
@@ -83,7 +87,7 @@ const RegisterForm = (props) => {
     useEffect(() => {
         setIsButtonDisabled(stateVal.username && stateVal.email && stateVal.password && stateVal.terms ? false : true)
     }, [stateVal]);
-    
+
     const handleClick = () => {
         setIsPasswordVisible(isPasswordVisible ? false : true);
     }
@@ -105,31 +109,34 @@ const RegisterForm = (props) => {
 
         setIsSubmit(true);
 
-        const registerFormData = new FormData();
-        registerFormData.append("username", formValues.username)
-        registerFormData.append("email", formValues.email)
-        registerFormData.append("password", formValues.password)
-        
-        // for (var pair of registerFormData.entries()) {
-        //   console.log(pair[0]+ ', ' + pair[1]); 
-        // }
-        
-        axios({
-            method: "post",
-            url: baseURL + "userservice/register",
-            data: registerFormData,
-            headers: { 
-            "Content-Type": "multipart/form-data"
-            },
-        })
-        .then(function (res) {
-            // handle success
-            console.log(res);
-        })
-        .catch(function (res) {
-            // handle error
-            console.log(res);
-        });
+        if(isSubmit) {
+            const registerData = new FormData();
+            registerData.append("username", formValues.username)
+            registerData.append("email", formValues.email)
+            registerData.append("password", formValues.password)
+            
+            // for (var pair of registerData.entries()) {
+            //   console.log(pair[0]+ ', ' + pair[1]); 
+            // }
+            
+            axios({
+                method: "post",
+                url: baseURL + "userservice/register",
+                data: registerData,
+                headers: { 
+                "Content-Type": "multipart/form-data"
+                },
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    navigate("/login");
+                }
+            })
+            .catch(function (res) {
+                // handle error
+                console.log(res);
+            });
+        }
     };
 
     const formValidate = (name, value) => {
@@ -207,6 +214,7 @@ const RegisterForm = (props) => {
                                 value={formValues.username}
                                 errors={formErrors.username}
                                 onChange={handleChange}
+                                focus={true}
                             />
                         </div>
                         <div className="mb-3">
@@ -242,7 +250,7 @@ const RegisterForm = (props) => {
                                 onChange={handleChange}
                                 value={formValues.terms} 
                             />
-                            <label htmlFor="checkTerms" className="form-check-label">I accept our <a href="/">Terms of Use</a> & <a href="/">Privacy Policy</a></label>
+                            <label htmlFor="checkTerms" className="form-check-label">I accept our <a href="">Terms of Use</a> & <a href="">Privacy Policy</a></label>
                             {formErrors.terms.length > 0 && (
                                 <div className="invalid-feedback">{formErrors.terms}</div>
                             )}
@@ -257,4 +265,4 @@ const RegisterForm = (props) => {
     );
 };
 
-export default RegisterForm;
+export default Register;

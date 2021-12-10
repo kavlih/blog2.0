@@ -1,6 +1,6 @@
 import React from 'react';
 
-const HomePage = (props) => {
+const Home = (props) => {
   // const {} = props;
   return (
     <section className="section-home">
@@ -11,4 +11,4 @@ const HomePage = (props) => {
   );
 };
 
-export default HomePage;
+export default Home;

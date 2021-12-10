@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const NavMain = (props) => {
+const Nav = (props) => {
   // const {} = props;
   return (
-    <nav className="m-nav-main navbar navbar-expand-lg">
+    <nav className="m-nav- navbar navbar-expand-lg">
       <div className="container-fluid">
         <div id="logo">
           <Link className="nav-link" to="/">
@@ -46,4 +46,4 @@ const NavMain = (props) => {
   );
 };
 
-export default NavMain;
+export default Nav;
