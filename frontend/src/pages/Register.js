@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
+
+import FormInput from '../components/FormInput';
 
 const baseURL = "http://localhost:8888/index.php?_url=";
 
@@ -34,37 +35,6 @@ const formSettings = {
 // TODO password tip
 // TODO popup you signed in successfully. we ve send you an email to verficate your account
 
-const Input = ({type, errors, name, label, id, value, onChange, togglePwd, focus}) => {
-    return (
-        <>
-            <label htmlFor={id} className="form-label">{label}</label>
-            <div className="input-group">
-                {name === "password" && (
-                    <button 
-                        className="btn position-absolute togglePassword" 
-                        type="button" 
-                        id="button-addon2"
-                        onClick={togglePwd} 
-                    >
-                        <FontAwesomeIcon icon={type === "password" ? faEye : faEyeSlash} />
-                    </button>
-                )}
-                <input 
-                    type={type} 
-                    className={`form-control ${errors.length > 0 ? "is-invalid" : ""}`} 
-                    id={id} name={name} 
-                    value={value} 
-                    onChange={onChange} 
-                    autoFocus={focus}
-                />
-                {errors.length > 0 && (
-                    <div className="invalid-feedback">{errors}</div>
-                )}
-            </div>
-        </>
-    )
-}
-
 const Register = (props) => {
     
     const navigate = useNavigate();
@@ -81,16 +51,11 @@ const Register = (props) => {
     const [stateVal, setStateVal] = useState(initialValues);
 
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-    const [isPasswordVisible, setIsPasswordVisible] = useState(false);    
     const [isSubmit, setIsSubmit] = useState(false);
 
     useEffect(() => {
         setIsButtonDisabled(stateVal.username && stateVal.email && stateVal.password && stateVal.terms ? false : true)
     }, [stateVal]);
-
-    const handleClick = () => {
-        setIsPasswordVisible(isPasswordVisible ? false : true);
-    }
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -205,56 +170,43 @@ const Register = (props) => {
                 <div className="card">
                     <div className="card-body">
                         <h3 className="text-center">Sign in</h3>
-                        <div className="mb-3">
-                            <Input
-                                type="text"
-                                id="inputUsername"
-                                name="username"
-                                label="Username"
-                                value={formValues.username}
-                                errors={formErrors.username}
-                                onChange={handleChange}
-                                focus={true}
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <Input
-                                type="email"
-                                id="inputEmail"
-                                name="email"
-                                label="Email address"
-                                value={formValues.email}
-                                errors={formErrors.email}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="mb-3">
-                            {/* <div data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">Tooltip on top</div> */}
-                            <Input
-                                type={isPasswordVisible ? "text" : "password"}
-                                id="inputPassword"
-                                name="password"
-                                label="Password"
-                                value={formValues.password}
-                                errors={formErrors.password}
-                                onChange={handleChange}
-                                togglePwd={handleClick}
-                            />
-                        </div>
-                        <div className="mb-3 form-check">
-                            <input 
-                                type="checkbox" 
-                                className={`form-check-input ${formErrors.terms.length > 0 ? "is-invalid" : ""}`} 
-                                id="checkTerms"
-                                name="terms"
-                                onChange={handleChange}
-                                value={formValues.terms} 
-                            />
-                            <label htmlFor="checkTerms" className="form-check-label">I accept our <a href="">Terms of Use</a> & <a href="">Privacy Policy</a></label>
-                            {formErrors.terms.length > 0 && (
-                                <div className="invalid-feedback">{formErrors.terms}</div>
-                            )}
-                        </div>
+                        <FormInput
+                            type="text"
+                            id="inputUsername"
+                            name="username"
+                            label="Username"
+                            value={formValues.username}
+                            errors={formErrors.username}
+                            onChange={handleChange}
+                            focus={true}
+                        />
+                        <FormInput
+                            type="email"
+                            id="inputEmail"
+                            name="email"
+                            label="Email address"
+                            value={formValues.email}
+                            errors={formErrors.email}
+                            onChange={handleChange}
+                        />
+                        <FormInput
+                            type="password"
+                            id="inputPassword"
+                            name="password"
+                            label="Password"
+                            value={formValues.password}
+                            errors={formErrors.password}
+                            onChange={handleChange}
+                        />
+                        <FormInput
+                            type="checkbox"
+                            id="checkTerms"
+                            name="terms"
+                            label="I accept our Terms of Use & Privacy Policy"
+                            value={formValues.terms}
+                            errors={formErrors.terms}
+                            onChange={handleChange}
+                        />
                     </div>
                 </div>
                 <button type="submit" className="btn m-btn m-btn-green" name="submit" disabled={isButtonDisabled}>
