@@ -29,11 +29,10 @@ const formSettings = {
     },
 }
 
-// TODO start page in input field
 // TODO if username already exists
 // TODO if email is already registered
-// TODO password tip
-// TODO popup you signed in successfully. we ve send you an email to verficate your account
+// TODO password tooltip
+// TODO Email verification
 
 const Register = (props) => {
     
@@ -166,10 +165,10 @@ const Register = (props) => {
 
     return (
         <div id="register-page" className="col align-self-center justify-self-center">
-            <form className="form-container d-flex flex-column m-auto" onSubmit={handleSubmit} noValidate>
+            <form className="d-flex flex-column m-auto" onSubmit={handleSubmit} noValidate>
                 <div className="card">
                     <div className="card-body">
-                        <h3 className="text-center">Sign in</h3>
+                        <h3 className="text-center">SignUp</h3>
                         <FormInput
                             type="text"
                             id="inputUsername"

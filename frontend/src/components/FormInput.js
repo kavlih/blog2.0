@@ -13,9 +13,7 @@ const FormInput = ({ type = "text", name = "default", label = "", id = "", value
   return (
     <div className="mb-3">
         {/* show label if not checkbox */}
-        {type !== "checkbox" && (
-          <label htmlFor={id} className="form-label">{label}</label>
-        )}
+        {type !== "checkbox" && <label htmlFor={id} className="form-label">{label}</label>}
         <div className={`m-input-group ${type === "checkbox" ? "form-check" : "input-group"}`}>
           {/* show input button */}
           {name === "password" && (
@@ -23,7 +21,8 @@ const FormInput = ({ type = "text", name = "default", label = "", id = "", value
                   className="btn position-absolute togglePassword" 
                   type="button" 
                   id="button-addon2"
-                  onClick={handleClick} 
+                  onClick={handleClick}
+                  tabIndex="-1"
               >
                   <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} />
               </button>
@@ -38,13 +37,9 @@ const FormInput = ({ type = "text", name = "default", label = "", id = "", value
             autoFocus={focus}
           />
           {/* show label if checkbox */}
-          {type === "checkbox" && (
-          <label htmlFor={id} className="form-check-label">{label}</label>
-          )}
+          {type === "checkbox" && <label htmlFor={id} className="form-check-label">{label}</label>}
           {/* show errors */}
-          {errors.length > 0 && (
-              <div className="invalid-feedback">{errors}</div>
-          )}
+          {errors.length > 0 && <div className="invalid-feedback">{errors}</div>}
         </div>
     </div>
   );
