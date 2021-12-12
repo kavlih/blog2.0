@@ -42,7 +42,6 @@ const Register = (props) => {
         username: '',
         email: '',
         password: '',
-        terms: false
     };
     
     const [formValues, setFormValues] = useState(initialValues);
@@ -53,18 +52,12 @@ const Register = (props) => {
     const [isSubmit, setIsSubmit] = useState(false);
 
     useEffect(() => {
-        setIsButtonDisabled(stateVal.username && stateVal.email && stateVal.password && stateVal.terms ? false : true)
+        setIsButtonDisabled(stateVal.username && stateVal.email && stateVal.password ? false : true)
     }, [stateVal]);
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-
-        if(name === "terms") {
-            setFormValues({...formValues, [name]: !formValues.terms});
-        } else {
-            setFormValues({...formValues, [name]: value}); 
-        }
-
+        setFormValues({...formValues, [name]: value}); 
         setFormErrors(formValidate(name, value));
     };
 
@@ -145,12 +138,6 @@ const Register = (props) => {
                     errors[name] = "Password is invalid";
                 }
                 break;
-
-            case "terms":
-                if (formValues.terms) {
-                    errors[name] = "Please accept our terms";
-                }
-                break;
         }
 
         if(value && errors[name].length === 0) {
@@ -197,15 +184,7 @@ const Register = (props) => {
                             errors={formErrors.password}
                             onChange={handleChange}
                         />
-                        <FormInput
-                            type="checkbox"
-                            id="checkTerms"
-                            name="terms"
-                            label="I accept our Terms of Use & Privacy Policy"
-                            value={formValues.terms}
-                            errors={formErrors.terms}
-                            onChange={handleChange}
-                        />
+                        <p className="text-center">By signing up you agree to our <a href="">Terms of Use</a> & <a href="">Privacy Policy</a>.</p>
                     </div>
                 </div>
                 <button type="submit" className="btn m-btn m-btn-green" name="submit" disabled={isButtonDisabled}>
