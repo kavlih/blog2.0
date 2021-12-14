@@ -1,0 +1,12 @@
+input:not([type="checkbox"]), .card {
+    border-radius: $defaultBorderRadius;
+}
+
+#root {
+    height: 100vh;
+    min-height: 100vh;
+    
+    main {
+        flex-grow: 1;
+    }
+}

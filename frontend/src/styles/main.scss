@@ -14,9 +14,12 @@
 @import 'base/variables.scss';
 @import 'base/colors.scss';
 @import 'base/buttons.scss';
-@import 'base/theme.scss';
+@import 'base/structure.scss';
 @import 'base/typography.scss';
 
 // Modules
 @import 'modules/form.scss';
 @import 'modules/nav-main.scss';
+
+// Themes
+@import 'themes/default/index.scss';
