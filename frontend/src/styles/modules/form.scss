@@ -1,13 +1,14 @@
-.togglePassword {
+.m-toggle-password {
     right: 0;
 }
 
 #login-page, #register-page {
-    transform: translatey(-($navHeight/5));
+    transform: translatey(-($navHeight/4));
+
+    max-width: 350px;
+    margin: auto;
 
     form {
-        max-width: 350px;
-
         .card {
             background-color: $white;
             
@@ -17,31 +18,69 @@
                     margin-bottom: 2rem;
                 }
 
-                .m-input-group {
-                    &.form-check {
-                        label {
-                            font-size: 0.9rem;
-                        }
+                .m-input-container {
+                    .m-info {
+                        opacity: 0.5;
                     }
-
-                    button {
-                        z-index: 999;
     
-                        svg {
-                            color: $greyLight;
+                    .m-input-group {
+                        position: relative;
+                        display: flex;
+                        flex-wrap: wrap;
+    
+                        &.form-check {
+                            label {
+                                font-size: 0.9rem;
+                            }
+                        }
+    
+                        button {
+                            z-index: 999;
+    
+                            &:focus {
+                                box-shadow: none;
+                            }
+        
+                            svg {
+                                color: $greyLight;
+                            }
+                        }
+    
+                        input {
+                            &.form-control {
+                                background-color: transparent;
+                                background-image: none;
+                            }
+    
+                            &.form-check-input:not(:checked) {
+                                background-color: transparent;
+                            }
+                        }
+    
+                        .m-password-conditions {
+                            margin-top: 0.5rem;
+                            display: none;
+    
+                            ul {
+                                list-style-type: none;
+                                line-height: 1.2rem;
+                            }
+                        }
+
+                        input:focus ~ .m-password-conditions {
+                            display: block;
+    
+                            ul li.valid {
+                                opacity: 0.5;
+                            }
                         }
                     }
+                }
 
-                    input {
-                        &.form-control {
-                            background-color: transparent;
-                            background-image: none;
-                        }
-
-                        &.form-check-input:not(:checked) {
-                            background-color: transparent;
-                        }
-                    }
+                .m-terms {
+                    color: $greyLight;
+                    line-height: 1.4;
+                    margin-bottom: .5rem;
                 }
             }
         }
