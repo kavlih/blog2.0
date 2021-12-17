@@ -1,40 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom'
+// Axios
 import axios from "axios";
+// FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faEye, faEyeSlash, faXmark } from "@fortawesome/free-regular-svg-icons";
 
-import FormInput from '../components/FormInput';
-
 const baseURL = "http://localhost:8888/index.php?_url=";
-
-const formSettings = {
-    username: {
-        minLenght: 3,
-        maxLenght: 16,
-        // only numbers and letters
-        regex: /[^A-Za-z0-9]+/
-    },
-    email: {
-        regex: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    },
-    password: {
-        minLenght: 8,
-        // no whitespaces
-        // 1 upper- and lowercase char
-        // 1 number
-        // 1 speacial char
-        regex: /^(?!.* )(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s:]).+$/
-    },
-}
 
 // TODO if username already exists
 // TODO if email is already registered
 // TODO Email verification
 
 const Register = (props) => {
-    
+
     const navigate = useNavigate();
 
     const initialValues = {
@@ -115,9 +95,13 @@ const Register = (props) => {
     };
 
     const formValidate = (name, value) => {
-        const regexEmail    = formSettings.email.regex;
-        const regexUsername = formSettings.username.regex;
-        const regexPassword = formSettings.password.regex;
+
+        const passwordMinLenght = 8;
+        const usernameMinLenght = 3;
+        const usernameMaxLenght = 16;
+
+        const regexEmail    = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const regexUsername = /[^A-Za-z0-9]+/;
 
         let errors = {...formErrors, [name]: []};
 
@@ -126,8 +110,8 @@ const Register = (props) => {
                 if (!value) {
                     errors[name] = "Please type in a username";
                 }
-                else if (value.length < formSettings.username.minLenght || value.length > formSettings.username.maxLenght) {
-                    errors[name] = `Username has to be ${formSettings.username.minLenght}-${formSettings.username.maxLenght} characters long`;
+                else if (value.length < usernameMinLenght || value.length > usernameMaxLenght) {
+                    errors[name] = `Username has to be ${usernameMinLenght}-${usernameMaxLenght} characters long`;
                 }
                 else if (regexUsername.test(value)) {
                     errors[name] = "Use only letters or numbers";
@@ -147,7 +131,7 @@ const Register = (props) => {
                 if (!value) {
                     errors[name].push("empty");
                 } 
-                if (value.length < formSettings.password.minLenght) {
+                if (value.length < passwordMinLenght) {
                     errors[name].push("lenght");
                 }
                 if (!value.match(/\d/)) {
@@ -178,14 +162,22 @@ const Register = (props) => {
                 <div className="card">
                     <div className="card-body">
                         <h3 className="text-center">Sign Up</h3>
+                        {/* <InputGroup
+                            type="text"
+                            id="inputUsername"
+                            name="username"
+                            label="Username"
+                            value={formValues.username}
+                            errors={formErrors.username}
+                            onChange={handleChange} 
+                            onBlur={handleBlur} 
+                            onFocus={handleFocus} 
+                            autoFocus={true}
+                        />*/}
+
                         <div className="m-input-container mb-3">
                             {/* label */}
                             <label htmlFor="username" className="form-label mb-0">Username</label>
-                            {/* info */}
-                            <small>
-                                <p className="m-info mb-2">{`${formSettings.username.minLenght}-${formSettings.username.maxLenght} characters. Only letters or numbers`}</p>
-                            </small>
-                            {/* input group */}
                             <div className="m-input-group">
                                 {/* input */}
                                 <input 
@@ -199,6 +191,16 @@ const Register = (props) => {
                                     onFocus={handleFocus} 
                                     autoFocus={true}
                                 />
+                                <div className="m-tooltip-container">
+                                    <div className="tooltip show bs-tooltip-start">
+                                        <div className="tooltip-arrow"></div>
+                                        <div className="tooltip-inner username">
+                                            <small className="">
+                                                <p className="mb-0">use 3-16 characters &<br />only letters or numbers</p>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
                                 {/* errors */}
                                 {formErrors.username.length > 0 && !isFocus.username && <div className="invalid-feedback">{formErrors.username}</div>}
                             </div>
@@ -249,15 +251,24 @@ const Register = (props) => {
                                 >
                                     <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} />
                                 </button>
+                                {/* password requirements tooltip */}
+                                {Object.keys(formErrors.password).length > 0 && 
+                                <div className="m-tooltip-container">
+                                    <div className="tooltip show bs-tooltip-start">
+                                        <div className="tooltip-arrow"></div>
+                                        <div className="tooltip-inner password">
+                                            <small className="">
+                                                <ul className="list-group">
+                                                    <li className={`${!formErrors.password.includes("lenght")    ? "valid" : ""}`}>• Use 8 or more characters</li>
+                                                    <li className={`${!formErrors.password.includes("letter")    ? "valid" : ""}`}>• Use upper and lower case characters</li>
+                                                    <li className={`${!formErrors.password.includes("number")    ? "valid" : ""}`}>• Use a number</li>
+                                                    <li className={`${!formErrors.password.includes("special")   ? "valid" : ""}`}>• Use a speacial character</li>
+                                                </ul>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>}
                                 {/* errors */}
-                                {Object.keys(formErrors.password).length > 0 && <small className="m-password-conditions">
-                                    <ul className="list-group">
-                                        <li className={`${!formErrors.password.includes("lenght")    ? "valid" : ""}`}>• Use 8 or more characters</li>
-                                        <li className={`${!formErrors.password.includes("letter")    ? "valid" : ""}`}>• Use upper and lower case characters</li>
-                                        <li className={`${!formErrors.password.includes("number")    ? "valid" : ""}`}>• Use a number</li>
-                                        <li className={`${!formErrors.password.includes("special")   ? "valid" : ""}`}>• Use a speacial character</li>
-                                    </ul>
-                                </small>}
                                 <div className="invalid-feedback">{`${formErrors.password.includes("empty") ? "Please type in a password" : "Password is invalid"}`}</div>
                             </div>
                         </div>
