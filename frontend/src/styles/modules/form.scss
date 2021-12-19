@@ -55,13 +55,14 @@
                         .m-tooltip-container {
                             position: absolute;
                             left: 50%;
-                            top: 125%;
+                            top: 130%;
                             transform: translate(-50%, 0);
                             display: none;
                             z-index: 1000;
 
                             .tooltip {
                                 position: relative;
+                                opacity: 1;
 
                                 .tooltip-arrow {
                                     top: -9px;
@@ -70,8 +71,8 @@
                                 }
     
                                 .tooltip-inner {
-                                    //padding
-                                    //border-radius
+                                    padding: 0.5rem;
+                                    padding-left: 0.75rem;
                                     background-color: $primaryLight;
                                     color: $white;
                                     text-align: left;
@@ -82,7 +83,8 @@
                                     }
                                     
                                     &.password {
-                                        width: 215px;                                    }
+                                        width: 220px;
+                                    }
     
                                     ul {
                                         list-style-type: none;

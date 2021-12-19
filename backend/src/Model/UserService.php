@@ -248,7 +248,6 @@ final class UserService extends AbstractModel {
      *
      * Checks if password is not empty
      * Checks if password is minimum 8 characters long
-     * Checks if password is maximum 64 characters long
      * Checks if password contains whitespaces
      * Checks if password contains lowercase characters
      * Checks if password contains uppercase characters
@@ -271,10 +270,6 @@ final class UserService extends AbstractModel {
             if(strlen($password) < 8) {
                 $errors['password'][] = 'Password has to be at least 8 characters long';
             }
-            // If password too long
-            if(strlen($password) > 64) {
-                $errors['password'][] = 'Password is too long. Use maximum 64 characters';
-            }
             // If password contains whitespaces
             if(preg_match('/\s/', $password)) {
                 $errors['password'][] = 'Password should not contain any whitespace.';
@@ -289,7 +284,7 @@ final class UserService extends AbstractModel {
             }
             // If password contains digits
             if(!preg_match('/\d/', $password)) {
-                $errors['password' ][] = 'Password should contain minimum one digit.';
+                $errors['password' ][] = 'Password should contain minimum one number.';
             }
             // If password contains special characters
             if(!preg_match( '/\W/', $password)) {

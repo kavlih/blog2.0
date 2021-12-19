@@ -5,7 +5,7 @@ import axios from "axios";
 // FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { faEye, faEyeSlash, faXmark } from "@fortawesome/free-regular-svg-icons";
+import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 const baseURL = "http://localhost:8888/index.php?_url=";
 
@@ -110,8 +110,11 @@ const Register = (props) => {
                 if (!value) {
                     errors[name] = "Please type in a username";
                 }
-                else if (value.length < usernameMinLenght || value.length > usernameMaxLenght) {
-                    errors[name] = `Username has to be ${usernameMinLenght}-${usernameMaxLenght} characters long`;
+                else if (value.length < usernameMinLenght) {
+                    errors[name] = `Username is too short`;
+                }
+                else if (value.length > usernameMaxLenght) {
+                    errors[name] = `Username is too long`;
                 }
                 else if (regexUsername.test(value)) {
                     errors[name] = "Use only letters or numbers";
