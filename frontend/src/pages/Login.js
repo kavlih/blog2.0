@@ -16,11 +16,11 @@ const Login = (props) => {
   const [formErrors, setFormErrors] = useState(initialValues);
   const [stateVal, setStateVal]     = useState(initialValues);
 
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   useEffect(() => {
-    setIsButtonDisabled(stateVal.user && stateVal.password ? false : true)
+    setIsSubmitDisabled(stateVal.user && stateVal.password ? false : true)
   }, [stateVal]);
 
   const handleChange = (e) => {
@@ -28,6 +28,12 @@ const Login = (props) => {
     setFormValues({...formValues, [name]: value}); 
     setFormErrors(formValidate(name, value));
   };
+  
+  const handleMouseDown = (e) => {
+    // keeps focus on input
+    e.preventDefault();
+    setIsPasswordVisible(isPasswordVisible ? false : true);
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,12 +50,6 @@ const Login = (props) => {
       console.log(res);
     });
   };
-
-  const handleMouseDown = (e) => {
-    // keeps focus on input
-    e.preventDefault();
-    setIsPasswordVisible(isPasswordVisible ? false : true);
-  }
 
   const formValidate = (name, value) => {
     const errors = {...formErrors, [name]: ""};
@@ -137,7 +137,7 @@ const Login = (props) => {
             </div>
           </div>
         </div>
-        <button type="submit" className="btn m-btn m-btn-green" name="submit" disabled={isButtonDisabled}>
+        <button type="submit" className="btn m-btn m-btn-green" name="submit" disabled={isSubmitDisabled}>
           <FontAwesomeIcon icon={faArrowRight} />          
         </button>
       </form>

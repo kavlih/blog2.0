@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom'
 
 import { accountService } from '../_services';
-import { FormField, FormTooltip, FormErrors } from '../_components/Form'
+import Tooltip from "../_components/Tooltip";
 // FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 // TODO if username already exists
 // TODO if email is already registered
@@ -27,6 +28,7 @@ const Register = () => {
     const [isFocus, setIsFocus]         = useState(initialValues);
 
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     useEffect(() => {
         setIsSubmitDisabled(stateVal.username && stateVal.email && stateVal.password ? false : true)
@@ -48,6 +50,12 @@ const Register = () => {
         setFormValues({...formValues, [name]: value}); 
         setFormErrors(formValidate(name, value));
     };
+  
+    const handleMouseDown = (e) => {
+        // keeps focus on input
+        e.preventDefault();
+        setIsPasswordVisible(isPasswordVisible ? false : true);
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -139,67 +147,85 @@ const Register = () => {
                     <div className="card-body">
                         <h3 className="text-center">Sign Up</h3>
                         <div className="m-input-container mb-3">
-                            <label htmlFor="inputUsername" className="form-label">Username</label>
+                            {/* label */}
+                            <label htmlFor="username" className="form-label">Username</label>
                             <div className="m-input-group">
-                                <FormField 
-                                    fieldName="username"
+                                {/* input */}
+                                <input 
                                     type="text"
+                                    className={`form-control ${formErrors.username.length > 0 && !isFocus.username ? "is-invalid" : ""}`} 
                                     id="inputUsername" 
-                                    className={`${formErrors.username.length > 0 && !isFocus.username ? "is-invalid" : ""}`} 
+                                    name="username"
                                     value={formValues.username} 
                                     onChange={handleChange} 
                                     onBlur={handleBlur} 
                                     onFocus={handleFocus} 
                                     autoFocus={true}
                                 />
-                                <FormTooltip 
-                                    fieldName="username" 
-                                    message={<p className="mb-0">use 3-16 characters &<br />only letters or numbers</p>} 
+                                <Tooltip fieldName="username" message={
+                                    <p className="mb-0">use 3-16 characters &<br />only letters or numbers</p>} 
                                 />
-                                <FormErrors fieldName="username" errors={formErrors.username} fieldFocus={isFocus} />
+                                {/* errors */}
+                                {formErrors.username.length > 0 && !isFocus.username && <div className="invalid-feedback">{formErrors.username}</div>}
                             </div>
                         </div>
                         <div className="m-input-container mb-3">
-                            <label htmlFor="inputEmail" className="form-label">Email</label>
+                            {/* label */}
+                            <label htmlFor="email" className="form-label">Email</label>
+                            {/* input group */}
                             <div className="m-input-group">
-                                <FormField 
-                                    fieldName="email"
+                                {/* input */}
+                                <input 
                                     type="email"
+                                    className={`form-control ${formErrors.email.length > 0 && !isFocus.email ? "is-invalid" : ""}`} 
                                     id="inputEmail" 
-                                    className={`${formErrors.email.length > 0 && !isFocus.email ? "is-invalid" : ""}`} 
+                                    name="email"
                                     value={formValues.email} 
                                     onChange={handleChange} 
-                                    onBlur={handleBlur} 
+                                    onBlur={handleBlur}
                                     onFocus={handleFocus} 
                                 />
-                                <FormErrors fieldName="email" errors={formErrors.email} fieldFocus={isFocus} />
+                                {/* errors */}
+                                {formErrors.email.length > 0 && !isFocus.email && <div className="invalid-feedback">{formErrors.email}</div>}
                             </div>
                         </div>
                         <div className="m-input-container mb-3">
-                            <label htmlFor="inputPassword" className="form-label">Password</label>
+                            {/* label */}
+                            <label htmlFor="password" className="form-label">Password</label>
+                            {/* input group */}
                             <div className="m-input-group">
-                                <FormField 
-                                    fieldName="password"
-                                    type="password"
+                                {/* input */}
+                                <input 
+                                    type={isPasswordVisible ? "text" : "password"}
+                                    className={`form-control ${Object.keys(formErrors.password).length > 0 && !isFocus.password ? "is-invalid" : ""}`} 
                                     id="inputPassword" 
-                                    className={`${Object.keys(formErrors.password).length > 0 && !isFocus.password ? "is-invalid" : ""}`} 
+                                    name="password"
                                     value={formValues.password} 
                                     onChange={handleChange} 
                                     onBlur={handleBlur} 
                                     onFocus={handleFocus} 
                                 />
-                                {Object.keys(formErrors.password).length > 0 &&    
-                                <FormTooltip 
-                                    fieldName="password" 
-                                    message={
-                                        <ul className="list-group">
-                                            <li className={`${!formErrors.password.includes("lenght")    ? "valid" : ""}`}>• Use 8 or more characters</li>
-                                            <li className={`${!formErrors.password.includes("letter")    ? "valid" : ""}`}>• Use upper and lower case characters</li>
-                                            <li className={`${!formErrors.password.includes("number")    ? "valid" : ""}`}>• Use a number</li>
-                                            <li className={`${!formErrors.password.includes("special")   ? "valid" : ""}`}>• Use a speacial character</li>
-                                        </ul>
-                                    } 
+                                {/* input button */}
+                                <button 
+                                    className="btn position-absolute m-toggle-password" 
+                                    type="button" 
+                                    id="button-addon2"
+                                    tabIndex="-1"
+                                    onMouseDown={handleMouseDown}
+                                >
+                                    <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} />
+                                </button>
+                                {/* password requirements tooltip */}
+                                {Object.keys(formErrors.password).length > 0 && 
+                                <Tooltip fieldName="password" message={
+                                    <ul className="list-group">
+                                        <li className={`${!formErrors.password.includes("lenght")    ? "valid" : ""}`}>• Use 8 or more characters</li>
+                                        <li className={`${!formErrors.password.includes("letter")    ? "valid" : ""}`}>• Use upper and lower case characters</li>
+                                        <li className={`${!formErrors.password.includes("number")    ? "valid" : ""}`}>• Use a number</li>
+                                        <li className={`${!formErrors.password.includes("special")   ? "valid" : ""}`}>• Use a speacial character</li>
+                                    </ul>} 
                                 />}
+                                {/* errors */}
                                 <div className="invalid-feedback">{`${formErrors.password.includes("empty") ? "Please type in a password" : "Password is invalid"}`}</div>
                             </div>
                         </div>
