@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom'
-// Axios
-import axios from "axios";
+
+import { accountService } from '../_services';
 // FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
-const baseURL = "http://localhost:8888/index.php?_url=";
-
 // TODO if username already exists
 // TODO if email is already registered
 // TODO Email verification
 
-const Register = (props) => {
+const Register = () => {
 
     const navigate = useNavigate();
 
@@ -29,7 +27,6 @@ const Register = (props) => {
     const [isFocus, setIsFocus]         = useState(initialValues);
 
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-    const [isSubmit, setIsSubmit] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     useEffect(() => {
@@ -61,37 +58,21 @@ const Register = (props) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        setIsSubmit(true);
-
-        if(isSubmit) {
-            const registerData = new FormData();
-            registerData.append("username", formValues.username)
-            registerData.append("email", formValues.email)
-            registerData.append("password", formValues.password)
-            
-            // for (var pair of registerData.entries()) {
-            //   console.log(pair[0]+ ', ' + pair[1]); 
-            // }
-            
-            axios({
-                method: "post",
-                url: baseURL + "userservice/register",
-                data: registerData,
-                headers: { 
-                "Content-Type": "multipart/form-data"
-                },
-            })
-            .then((res) => {
-                if (res.status === 200) {
-                    navigate("/login");
-                }
-            })
-            .catch(function (res) {
-                // handle error
-                console.log(res);
-            });
-        }
+        
+        const fields = new FormData();
+        fields.append("username", formValues.username)
+        fields.append("email", formValues.email)
+        fields.append("password", formValues.password)
+        
+        accountService.register(fields)
+        .then(() => {
+            // alertService.success('Registration successful, please check your email for verification instructions', { keepAfterRouteChange: true });
+            navigate('/login');
+        })
+        .catch(function (res) {
+            // handle error
+            console.log(res);
+        });
     };
 
     const formValidate = (name, value) => {
@@ -147,6 +128,8 @@ const Register = (props) => {
                     errors[name].push("letter");
                 }
                 break;
+            default:
+                break;
         }
 
         if(value && errors[name].length === 0) {
@@ -177,10 +160,9 @@ const Register = (props) => {
                             onFocus={handleFocus} 
                             autoFocus={true}
                         />*/}
-
                         <div className="m-input-container mb-3">
                             {/* label */}
-                            <label htmlFor="username" className="form-label mb-0">Username</label>
+                            <label htmlFor="username" className="form-label">Username</label>
                             <div className="m-input-group">
                                 {/* input */}
                                 <input 
