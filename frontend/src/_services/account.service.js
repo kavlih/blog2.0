@@ -1,18 +1,14 @@
-import axios from "axios";
-
-const baseUrl = "http://localhost:8888/index.php?_url=";
+import { axiosHelper } from '../_helpers';
 
 export const accountService = {
+   login,
    register
 };
 
+function login(data) {
+   return axiosHelper.post(`userservice/login`, data)
+}
+
 function register(data) {
-   return axios({
-      method: "post",
-      url: baseUrl + "userservice/register",
-      data: data,
-      headers: { 
-         "Content-Type": "multipart/form-data"
-      },
-  })
+   return axiosHelper.post(`userservice/register`, data)
 }
