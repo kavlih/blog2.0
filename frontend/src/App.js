@@ -1,5 +1,5 @@
 import React from 'react';
-import Nav from './components/Nav';
+import Nav from './_components/Nav';
 import Router from './Router';
 
 const App = () => {

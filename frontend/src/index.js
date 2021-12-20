@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 
 import App from './App';
 
-import './styles/main.scss';
+import './_styles/main.scss';
 
 render(
     <BrowserRouter>
