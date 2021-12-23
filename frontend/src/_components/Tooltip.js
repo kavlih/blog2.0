@@ -13,4 +13,4 @@ const Tooltip = ({ fieldName, message }) => {
    );
 }
 
-export default Tooltip;
+export { Tooltip };

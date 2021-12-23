@@ -24,10 +24,10 @@ const Nav = (props) => {
         <div className="collapse navbar-collapse justify-content-center" id="navbarNavAltMarkup">
           <div className="navbar-nav">
             {/* if user is NOT logged in */}
-            <Link className="nav-link" to="/login">
+            <Link className="nav-link" to="/account/login">
               Login
             </Link>
-            <Link className="nav-link" to="/register">
+            <Link className="nav-link" to="/account/register">
               Register
             </Link>
             {/* if user IS logged in */}
@@ -46,4 +46,4 @@ const Nav = (props) => {
   );
 };
 
-export default Nav;
+export { Nav };

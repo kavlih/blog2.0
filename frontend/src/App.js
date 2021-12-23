@@ -1,6 +1,10 @@
 import React from 'react';
-import Nav from './_components/Nav';
-import Router from './Router';
+import { Routes, Route } from 'react-router-dom';
+
+import { Nav, PrivateRoute } from './_components';
+
+import { Account } from './account/Index';
+import { Feed } from './feed/Index';
 
 const App = () => {
   return (
@@ -8,11 +12,16 @@ const App = () => {
       <Nav />
       <main>
         <div className="container-fluid h-100 d-flex">
-          <Router />
+          <Routes>
+            <Route path="/feed" element={<PrivateRoute />}>
+              <Route path="" element={<Feed />} />
+            </Route>
+            <Route path="/account/*" element={<Account />} />
+          </Routes>
         </div>
       </main>
     </div>
   );
 };
 
-export default App;
+export { App };
