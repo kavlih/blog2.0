@@ -14,8 +14,6 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 const Register = () => {
-  const navigate = useNavigate();
-
   const initialValues = {
     username: '',
     email: '',
@@ -30,10 +28,12 @@ const Register = () => {
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
+  // Hooks
   useEffect(() => {
     setIsSubmitDisabled(stateVal.username && stateVal.email && stateVal.password ? false : true)
   }, [stateVal]);
 
+  // Handlers
   const handleChange = (e) => {
     const {name, value} = e.target;
     setFormValues({...formValues, [name]: value}); 
@@ -52,14 +52,14 @@ const Register = () => {
   };
 
   const handleMouseDown = (e) => {
-    // keeps focus on input
     e.preventDefault();
     setIsPasswordVisible(isPasswordVisible ? false : true);
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    const navigate = useNavigate();
+
     const fields = new FormData();
     fields.append("username", formValues.username)
     fields.append("email", formValues.email)
@@ -74,6 +74,7 @@ const Register = () => {
     });
   };
 
+  // Other functions
   const formValidate = (name, value) => {
     const passwordMinLenght = 8;
     const usernameMinLenght = 3;
@@ -140,6 +141,7 @@ const Register = () => {
     return errors;
   };
 
+  // Render
   return (
     <form className="d-flex flex-column m-auto" onSubmit={handleSubmit} noValidate>
       <div className="card">
