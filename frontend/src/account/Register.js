@@ -14,6 +14,8 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 const Register = () => {
+  const navigate = useNavigate();
+
   const initialValues = {
     username: '',
     email: '',
@@ -58,7 +60,6 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const navigate = useNavigate();
 
     const fields = new FormData();
     fields.append("username", formValues.username)

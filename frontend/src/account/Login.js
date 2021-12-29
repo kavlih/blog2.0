@@ -1,5 +1,5 @@
-// TODO Alerts on login fail
-// TODO redirect to feed on success
+// TODO Alert on login fail
+// TODO reset password
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom'
@@ -11,6 +11,8 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 const Login = (props) => {
+  const navigate = useNavigate();
+
   const initialValues = {
     user: '',
     password: '',
@@ -19,7 +21,7 @@ const Login = (props) => {
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState(initialValues);
   const [stateVal, setStateVal]     = useState(initialValues);
-
+  
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -39,10 +41,9 @@ const Login = (props) => {
     e.preventDefault();
     setIsPasswordVisible(isPasswordVisible ? false : true);
   }
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const navigate = useNavigate();
 
     const fields = new FormData();
     fields.append("user", formValues.user)
@@ -50,9 +51,10 @@ const Login = (props) => {
     
     accountService.login(fields)
     .then(() => {
+      // redirect
       navigate('/feed');
     })
-    .catch(function (res) {
+    .catch((res) => {
       console.log(res);
     });
   };
