@@ -3,11 +3,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom'
 
+import { accountService } from '../_services';
+
 const Feed = () => {
   const navigate = useNavigate();
-
+  
   const handleLogout = () => {
-    localStorage.clear();
+    accountService.logout()
     navigate("/account/login")
   };
 
