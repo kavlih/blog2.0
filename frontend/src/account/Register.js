@@ -4,7 +4,7 @@
 // TODO Alerts on registration success and fail
 
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 import { accountService } from '../_services';
 import { Tooltip } from "../_components";
@@ -221,7 +221,8 @@ const Register = () => {
               <div className="invalid-feedback">{`${formErrors.password.includes("empty") ? "Please type in a password" : "Password is invalid"}`}</div>
             </div>
           </div>
-          <p className="m-terms text-center"><small>By signing up you agree to our <br /><a href="/">Terms of Use</a> & <a href="/">Privacy Policy</a>.</small></p>
+          <p className="m-form-footer text-center"><small>By signing up you agree to our <br /><a href="/">Terms of Use</a> & <a href="/">Privacy Policy</a>.</small></p>
+          <p className="m-form-footer text-center"><small>Already have an account? <Link to="/account/login">Login</Link></small></p>
         </div>
       </div>
       <button type="submit" className="btn m-btn m-btn-green" name="submit" disabled={isSubmitDisabled}>

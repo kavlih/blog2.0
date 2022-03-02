@@ -13,7 +13,7 @@ const Account = () => {
     if (loggedInUser) {
       navigate("/feed");
     }
-  }, []);
+  });
 
   return (
     <div className="m-account col align-self-center justify-self-center">

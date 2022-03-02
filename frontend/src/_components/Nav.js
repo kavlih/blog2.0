@@ -1,50 +1,24 @@
-// TODO Nav doesn't get rerendered after redirect from login
-
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 const Nav = (props) => {
-  const [user, setUser] = useState({});
-
-  useEffect(() => {
-    const loggedInUser = localStorage.getItem("user");
-    setUser(loggedInUser)
-  }, []);
-
   return (
-    <nav className="m-nav navbar navbar-expand-lg">
-      {/* if user is logged in */}
-      {user && <div className="container-fluid">
-        <div id="logo">
-          <Link className="nav-link col-1" to="/">Logo</Link>
-        </div>
-        <div className="justify-content-center">
-          <div className="navbar-nav">
-            <Link className="nav-link" to="/feed">Feed</Link>
-            <Link className="nav-link" to="/">Channels</Link>
-            <Link className="nav-link" to="/">Profile</Link>
-            <Link className="nav-link" to="/">Users</Link>
+    <nav className="m-nav navbar navbar-expand-sm navbar-dark">
+      <div className="container-fluid">
+        <div></div>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse justify-content-between" id="navbarTogglerDemo02">
+          <div className="col-1"></div>
+          <div className="navbar-nav text-center">
+            <NavLink className="nav-link" to="/feed">Feed</NavLink>
+            <NavLink className="nav-link" to="/">Profile</NavLink>
+            <NavLink className="nav-link" to="/">Users</NavLink>
           </div>
+          <div className="col-1"></div>
         </div>
-        <div>
-          <Link className="nav-link col-1" to="/">Settings</Link>
-        </div>
-      </div>}
-      {/* if user is NOT logged in */}
-      {!user && <div className="container-fluid">
-      <div id="logo" className="col-1">
-          <Link className="nav-link" to="/">Logo</Link>
-        </div>
-        <div className="justify-content-center">
-          <div className="navbar-nav">
-            <Link className="nav-link" to="/account/login">Login</Link>
-            <Link className="nav-link" to="/account/register">Register</Link>
-          </div>
-        </div>
-        <div className="col-1">
-          {/* Placeholder */}
-        </div>
-      </div>}
+      </div>
     </nav>
   );
 };

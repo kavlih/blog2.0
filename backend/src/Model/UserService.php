@@ -46,7 +46,6 @@ final class UserService extends AbstractModel {
             }
         }
 
-        // ? QUESTION unsecure if not only neccessary userdata gets requested? (getUser method gets more userdata from database than needed)
         // Get user data from database
         /** @var array ?$user_data */
         $user_data = $this->DbHandler->getUser($input_user);
@@ -96,8 +95,6 @@ final class UserService extends AbstractModel {
             if(!$validation) return FALSE;
         }
 
-        // ? QUESTION unsecure if database inserts not wrapped by a "if validations are TRUE" statement and only return FALSE are "excluded" from the rest?
-
         // Hash password
         /** @var string $hashed_salt */
         $hashed_salt        = $this->createHashedSalt();
@@ -112,7 +109,6 @@ final class UserService extends AbstractModel {
         
         // Initialize error controller, if sql execution failed
         if(!$insert_user || !$insert_additionals) {
-            // ? QUESTION better alternative to avoid inserting and deleting on failure?
             // Delete already inserted data if only additional inserts failed
             if(!$insert_additionals) {
                 $this->DbHandler->deleteUserPart($input_username);

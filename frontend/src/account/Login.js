@@ -2,7 +2,7 @@
 // TODO reset password
 
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 import { accountService } from '../_services';
 // FontAwesome
@@ -119,6 +119,9 @@ const Login = (props) => {
                 <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} />
               </button>
             </div>
+          </div>
+          <div className="text-center">
+            <p className="m-form-footer text-center"><small>Don't have an account yet? <Link to="/account/register">Register</Link></small></p>
           </div>
         </div>
       </div>
