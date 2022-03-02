@@ -83,6 +83,10 @@
                 
                 &.password {
                   width: 220px;
+
+                  li.valid {
+                    color: $green !important;            
+                  }
                 }
 
                 ul {
@@ -95,10 +99,6 @@
 
           input:focus ~ .m-tooltip-container {
             display: block;
-
-            ul li.valid {
-              color: $green;
-            }
           }
 
           @include media-breakpoint-up(md) {

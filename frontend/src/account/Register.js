@@ -21,36 +21,43 @@ const Register = () => {
     email: '',
     password: '',
   };
-    
-  const [formValues, setFormValues]   = useState(initialValues);
-  const [formErrors, setFormErrors]   = useState(initialValues);
-  const [stateVal, setStateVal]       = useState(initialValues);
-  const [isFocus, setIsFocus]         = useState(initialValues);
+  
+  const [formValues, setFormValues]                   = useState(initialValues);
+  const [formErrors, setFormErrors]                   = useState(initialValues);
+  // const [formErrorsPassword, setFormErrorsPassword]   = useState();
+  const [stateVal, setStateVal]                       = useState(initialValues);
+  const [isFocus, setIsFocus]                         = useState(initialValues);
 
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  // Hooks
+  // HOOKS
+
+  // Sets isSubmitDisabled to FALSE (Enables submit button) if all inputs are valid 
   useEffect(() => {
     setIsSubmitDisabled(stateVal.username && stateVal.email && stateVal.password ? false : true)
   }, [stateVal]);
 
-  // Handlers
+  // HANDLERS
+
+  // Saves targeted input value in formValues on change
+  // Calls formValidate()
+  // Saves returned errors (if any) in formErrors
   const handleChange = (e) => {
     const {name, value} = e.target;
     setFormValues({...formValues, [name]: value}); 
     setFormErrors(formValidate(name, value));
   };
 
+  // Sets isFocus of target to FALSE on blur 
   const handleBlur = (e) => {
     setIsFocus({[e.target.name]: false});
   };
   
+  // Sets isFocus of target to TRUE on focus 
   const handleFocus = (e) => {
     const {name, value} = e.target;
     setIsFocus({[name]: true});
-    setFormValues({...formValues, [name]: value}); 
-    setFormErrors(formValidate(name, value));
   };
 
   const handleMouseDown = (e) => {
@@ -75,7 +82,11 @@ const Register = () => {
     });
   };
 
-  // Other functions
+  // OTHER FUNCTIONS
+
+  // Validates an input
+  // Sets stateVal of targeted input to TRUE if value was valid, to FALSE if not
+  // Returns Errors
   const formValidate = (name, value) => {
     const passwordMinLenght = 8;
     const usernameMinLenght = 3;
@@ -113,19 +124,22 @@ const Register = () => {
 
       case "password":
         if (!value) {
-          errors[name].push("empty");
+          errors[name] = "Please type in a password";
         } 
-        if (value.length < passwordMinLenght) {
-          errors[name].push("lenght");
-        }
-        if (!value.match(/\d/)) {
-          errors[name].push("number");
-        }
-        if (!value.match(/\W/)) {
-          errors[name].push("special");
-        }
-        if (!value.match(/[A-Z]/) || !value.match(/[a-z]/)) {
-          errors[name].push("letter");
+        else if (
+          value.length < passwordMinLenght ||
+          !value.match(/\d/) ||
+          !value.match(/\W/) ||
+          !value.match(/[A-Z]/) || 
+          !value.match(/[a-z]/)
+        ) {
+          errors[name] = "Password is invalid";
+
+          // value.length < passwordMinLenght ? setFormErrorsPassword({...formErrorsPassword, "lenght": false}) : setFormErrorsPassword({...formErrorsPassword, "lenght": true});
+          // value.match(/\d/) ? setFormErrorsPassword({...formErrorsPassword, "number": true}) : setFormErrorsPassword({...formErrorsPassword, "number": false});
+          // value.match(/\W/) ? setFormErrorsPassword({...formErrorsPassword, "special": true}) : setFormErrorsPassword({...formErrorsPassword, "special": false});
+          // value.match(/[A-Z]/) || !value.match(/[a-z]/) ? setFormErrorsPassword({...formErrorsPassword, "letter": true}) : setFormErrorsPassword({...formErrorsPassword, "letter": false});
+          // console.log(formErrorsPassword);
         }
         break;
       default:
@@ -142,7 +156,6 @@ const Register = () => {
     return errors;
   };
 
-  // Render
   return (
     <form className="d-flex flex-column m-auto" onSubmit={handleSubmit} noValidate>
       <div className="card">
@@ -209,16 +222,20 @@ const Register = () => {
               >
                 <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} />
               </button>
-              {Object.keys(formErrors.password).length > 0 && 
+              {Object.keys(stateVal.password) && 
               <Tooltip fieldName="password" message={
                 <ul className="list-group">
-                  <li className={`${!formErrors.password.includes("lenght")    ? "valid" : ""}`}>• Use 8 or more characters</li>
-                  <li className={`${!formErrors.password.includes("letter")    ? "valid" : ""}`}>• Use upper and lower case characters</li>
-                  <li className={`${!formErrors.password.includes("number")    ? "valid" : ""}`}>• Use a number</li>
-                  <li className={`${!formErrors.password.includes("special")   ? "valid" : ""}`}>• Use a speacial character</li>
+                  <li>• Use 8 or more characters</li>
+                  <li>• Use upper and lower case characters</li>
+                  <li>• Use a number</li>
+                  <li>• Use a speacial character</li>
+                  {/* <li className={`${setFormErrorsPassword.lenght   ? "valid" : ""}`}>• Use 8 or more characters</li>
+                  <li className={`${setFormErrorsPassword.letter   ? "valid" : ""}`}>• Use upper and lower case characters</li>
+                  <li className={`${setFormErrorsPassword.number   ? "valid" : ""}`}>• Use a number</li>
+                  <li className={`${setFormErrorsPassword.special  ? "valid" : ""}`}>• Use a speacial character</li> */}
                 </ul>} 
               />}
-              <div className="invalid-feedback">{`${formErrors.password.includes("empty") ? "Please type in a password" : "Password is invalid"}`}</div>
+              {formErrors.password.length > 0 && !isFocus.password && <div className="invalid-feedback">{formErrors.password}</div>}
             </div>
           </div>
           <p className="m-form-footer text-center"><small>By signing up you agree to our <br /><a href="/">Terms of Use</a> & <a href="/">Privacy Policy</a>.</small></p>
