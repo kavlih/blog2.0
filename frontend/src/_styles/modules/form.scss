@@ -49,6 +49,10 @@
             &.form-check-input:not(:checked) {
               background-color: transparent;
             }
+
+            &#inputPassword {
+              padding-right: 2.25rem;
+            }
           }
 
           .m-tooltip-container {
@@ -85,7 +89,7 @@
                   width: 220px;
 
                   li.valid {
-                    color: $green !important;            
+                    opacity: 0.25;            
                   }
                 }
 

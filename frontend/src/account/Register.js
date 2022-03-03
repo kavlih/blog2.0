@@ -22,14 +22,20 @@ const Register = () => {
     password: '',
   };
   
-  const [formValues, setFormValues]                   = useState(initialValues);
-  const [formErrors, setFormErrors]                   = useState(initialValues);
-  // const [formErrorsPassword, setFormErrorsPassword]   = useState();
-  const [stateVal, setStateVal]                       = useState(initialValues);
-  const [isFocus, setIsFocus]                         = useState(initialValues);
-
-  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+  const [formValues, setFormValues] = useState(initialValues);
+  const [formErrors, setFormErrors] = useState(initialValues);
+  const [stateVal, setStateVal]     = useState(initialValues);
+  const [isFocus, setIsFocus]       = useState(initialValues);
+  
+  const [isSubmitDisabled, setIsSubmitDisabled]   = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const [tooltipPassword, setTooltipPassword] = useState({
+    length:   false,
+    letter:   false,
+    number:   false,
+    special:  false
+  });
 
   // HOOKS
 
@@ -134,13 +140,18 @@ const Register = () => {
           !value.match(/[a-z]/)
         ) {
           errors[name] = "Password is invalid";
-
-          // value.length < passwordMinLenght ? setFormErrorsPassword({...formErrorsPassword, "lenght": false}) : setFormErrorsPassword({...formErrorsPassword, "lenght": true});
-          // value.match(/\d/) ? setFormErrorsPassword({...formErrorsPassword, "number": true}) : setFormErrorsPassword({...formErrorsPassword, "number": false});
-          // value.match(/\W/) ? setFormErrorsPassword({...formErrorsPassword, "special": true}) : setFormErrorsPassword({...formErrorsPassword, "special": false});
-          // value.match(/[A-Z]/) || !value.match(/[a-z]/) ? setFormErrorsPassword({...formErrorsPassword, "letter": true}) : setFormErrorsPassword({...formErrorsPassword, "letter": false});
-          // console.log(formErrorsPassword);
         }
+
+        let tips = {...tooltipPassword};
+
+        value.length > passwordMinLenght ? tips["length"] = true : tips["length"] = false;
+        value.match(/\d/) ? tips["number"] = true : tips["number"] = false;
+        value.match(/\W/) ? tips["special"] = true : tips["special"] = false;
+        value.match(/[A-Z]/) && value.match(/[a-z]/) ? tips["letter"] = true : tips["letter"] = false;
+
+        setTooltipPassword(tips);
+        // console.log(tooltipPassword);
+
         break;
       default:
         break;
@@ -225,14 +236,10 @@ const Register = () => {
               {Object.keys(stateVal.password) && 
               <Tooltip fieldName="password" message={
                 <ul className="list-group">
-                  <li>• Use 8 or more characters</li>
-                  <li>• Use upper and lower case characters</li>
-                  <li>• Use a number</li>
-                  <li>• Use a speacial character</li>
-                  {/* <li className={`${setFormErrorsPassword.lenght   ? "valid" : ""}`}>• Use 8 or more characters</li>
-                  <li className={`${setFormErrorsPassword.letter   ? "valid" : ""}`}>• Use upper and lower case characters</li>
-                  <li className={`${setFormErrorsPassword.number   ? "valid" : ""}`}>• Use a number</li>
-                  <li className={`${setFormErrorsPassword.special  ? "valid" : ""}`}>• Use a speacial character</li> */}
+                  <li className={`${tooltipPassword.length   ? "valid" : ""}`}>• Use 8 or more characters</li>
+                  <li className={`${tooltipPassword.letter   ? "valid" : ""}`}>• Use upper and lower case characters</li>
+                  <li className={`${tooltipPassword.number   ? "valid" : ""}`}>• Use a number</li>
+                  <li className={`${tooltipPassword.special  ? "valid" : ""}`}>• Use a speacial character</li>
                 </ul>} 
               />}
               {formErrors.password.length > 0 && !isFocus.password && <div className="invalid-feedback">{formErrors.password}</div>}
