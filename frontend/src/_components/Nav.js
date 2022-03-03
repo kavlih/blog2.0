@@ -13,8 +13,8 @@ const Nav = (props) => {
           <div className="col-1"></div>
           <div className="navbar-nav text-center">
             <NavLink className="nav-link" to="/feed">Feed</NavLink>
-            <NavLink className="nav-link" to="/">Profile</NavLink>
-            <NavLink className="nav-link" to="/">Users</NavLink>
+            <NavLink className="nav-link" to="/profile">Profile</NavLink>
+            <NavLink className="nav-link" to="/users">Users</NavLink>
           </div>
           <div className="col-1"></div>
         </div>

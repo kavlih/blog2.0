@@ -12,7 +12,7 @@ const Feed = () => {
   };
 
   return (
-    <div className="container">
+    <div>
       <h1>Hi!</h1>
       <p>You're logged in with React & JWT!!</p>
       <button onClick={handleLogout}>logout</button>
