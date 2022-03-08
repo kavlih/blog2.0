@@ -15,8 +15,8 @@ const Router = (props) => {
       <Route path="" element={<PrivateRoute />}>
         <Route path="/feed" element={<Feed />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/users" element={<Users />} />
       </Route>
+      <Route path="/users" element={<Users />} />
       <Route path="/account/*" element={<Account />} />
     </Routes>
   );

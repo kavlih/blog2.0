@@ -6,7 +6,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from 'react-router-dom'
 
-// import axios from "axios";
 import { accountService } from '../_services';
 import { Tooltip } from "../_components";
 
@@ -30,13 +29,15 @@ const Register = () => {
     password: '',
   };
   
+  // STATES------------------------------------------------------------------------
+
   const [formValues, setFormValues]   = useState(initialValues);
   const [stateVal, setStateVal]       = useState(initialValues);
   const [isFocus, setIsFocus]         = useState(initialValues);
   const [formErrors, setFormErrors]   = useState(initialValues);
   
-  const [submitErrors, setSubmitErrors]   = useState();
   // const [isSubmit, setIsSubmit] = useState(false);
+  const [submitErrors, setSubmitErrors]   = useState();
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -47,7 +48,7 @@ const Register = () => {
     special:  false
   });
 
-  // HOOKS------------------------------------------------------------------------
+  // EFFECTS------------------------------------------------------------------------
 
   // Sets isSubmitDisabled to FALSE (Enables submit button) if all inputs are valid 
   useEffect(() => {
@@ -93,27 +94,12 @@ const Register = () => {
     accountService.register(fields)
     .then((res) => {
       console.log(res?.data);
-      // navigate('/account/login');
+      navigate('/account/login');
     })
     .catch((res) => {
       setSubmitErrors("Oops. Something went wrong.")
       console.log(res);
     });
-
-    // try {
-    //   const response = await axios({
-    //     method: "post",
-    //     url: "http://localhost:8888/index.php?_url=userservice/register",
-    //     data: fields,
-    //     headers: { 
-    //       "Content-Type": "multipart/form-data"
-    //     },
-    //   });
-    //   console.log(response);
-    //   setFormSuccess(true);
-    // } catch (res) {
-    //   console.log(res);
-    // }
   };
 
   // OTHER FUNCTIONS------------------------------------------------------------------------
@@ -165,14 +151,21 @@ const Register = () => {
 
         let tips = {...tooltipPassword};
 
-        value.length > PASSWORD_MINLENGTH ? tips["length"] = true : tips["length"] = false;
-        value.match(/\d/) ? tips["number"] = true : tips["number"] = false;
-        value.match(/\W/) ? tips["special"] = true : tips["special"] = false;
-        value.match(/[A-Z]/) && value.match(/[a-z]/) ? tips["letter"] = true : tips["letter"] = false;
+        value.length > PASSWORD_MINLENGTH 
+          ? tips["length"] = true 
+          : tips["length"] = false;
+        value.match(/\d/) 
+          ? tips["number"] = true 
+          : tips["number"] = false;
+        value.match(/\W/) 
+          ? tips["special"] = true 
+          : tips["special"] = false;
+        value.match(/[A-Z]/) && value.match(/[a-z]/) 
+          ? tips["letter"] = true 
+          : tips["letter"] = false;
 
-        setTooltipPassword(tips);
         // console.log(tooltipPassword);
-
+        setTooltipPassword(tips);
         break;
       default:
         break;
@@ -193,6 +186,7 @@ const Register = () => {
       <div className="card">
         <div className="card-body">
           <h3 className="text-center">Sign Up</h3>
+          {/* Submit Errors */}      
           {submitErrors && <div className="alert alert-danger" role="alert">{submitErrors}</div>}
           {/* Input username */}      
           <div className="m-input-container mb-3">
@@ -217,7 +211,7 @@ const Register = () => {
               {formErrors.username.length > 0 && !isFocus.username && <div className="invalid-feedback">{formErrors.username}</div>}
             </div>
           </div>
-          {/* Input emial */}
+          {/* Input email */}
           <div className="m-input-container mb-3">
             <label htmlFor="email" className="form-label">Email</label>
             <div className="m-input-group">
