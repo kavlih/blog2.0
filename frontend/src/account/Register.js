@@ -1,17 +1,25 @@
 // TODO if username already exists
 // TODO if email is already registered
 // TODO Email verification
-// TODO Alerts on registration success and fail
+// TODO Alert on registration success
 
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from 'react-router-dom'
 
+// import axios from "axios";
 import { accountService } from '../_services';
 import { Tooltip } from "../_components";
-// FontAwesome
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
+
+const PASSWORD_MINLENGTH = 8;
+const USERNAME_MINLENGTH = 3;
+const USERNAME_MAXLENGTH = 16;
+
+const REGEX_EMAIL    = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const REGEX_USERNAME = /[^A-Za-z0-9]+/;
 
 const Register = () => {
   const navigate = useNavigate();
@@ -22,12 +30,14 @@ const Register = () => {
     password: '',
   };
   
-  const [formValues, setFormValues] = useState(initialValues);
-  const [formErrors, setFormErrors] = useState(initialValues);
-  const [stateVal, setStateVal]     = useState(initialValues);
-  const [isFocus, setIsFocus]       = useState(initialValues);
+  const [formValues, setFormValues]   = useState(initialValues);
+  const [stateVal, setStateVal]       = useState(initialValues);
+  const [isFocus, setIsFocus]         = useState(initialValues);
+  const [formErrors, setFormErrors]   = useState(initialValues);
   
-  const [isSubmitDisabled, setIsSubmitDisabled]   = useState(true);
+  const [submitErrors, setSubmitErrors]   = useState();
+  // const [isSubmit, setIsSubmit] = useState(false);
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const [tooltipPassword, setTooltipPassword] = useState({
@@ -37,14 +47,14 @@ const Register = () => {
     special:  false
   });
 
-  // HOOKS
+  // HOOKS------------------------------------------------------------------------
 
   // Sets isSubmitDisabled to FALSE (Enables submit button) if all inputs are valid 
   useEffect(() => {
     setIsSubmitDisabled(stateVal.username && stateVal.email && stateVal.password ? false : true)
   }, [stateVal]);
 
-  // HANDLERS
+  // HANDLERS------------------------------------------------------------------------
 
   // Saves targeted input value in formValues on change
   // Calls formValidate()
@@ -62,10 +72,10 @@ const Register = () => {
   
   // Sets isFocus of target to TRUE on focus 
   const handleFocus = (e) => {
-    const {name, value} = e.target;
-    setIsFocus({[name]: true});
+    setIsFocus({[e.target.name]: true});
   };
 
+  // Toggles isPasswordVisible on click 
   const handleMouseDown = (e) => {
     e.preventDefault();
     setIsPasswordVisible(isPasswordVisible ? false : true);
@@ -73,6 +83,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // setIsSubmit(true);
 
     const fields = new FormData();
     fields.append("username", formValues.username)
@@ -80,27 +91,37 @@ const Register = () => {
     fields.append("password", formValues.password)
     
     accountService.register(fields)
-    .then(() => {
-      navigate('/account/login');
+    .then((res) => {
+      console.log(res?.data);
+      // navigate('/account/login');
     })
     .catch((res) => {
+      setSubmitErrors("Oops. Something went wrong.")
       console.log(res);
     });
+
+    // try {
+    //   const response = await axios({
+    //     method: "post",
+    //     url: "http://localhost:8888/index.php?_url=userservice/register",
+    //     data: fields,
+    //     headers: { 
+    //       "Content-Type": "multipart/form-data"
+    //     },
+    //   });
+    //   console.log(response);
+    //   setFormSuccess(true);
+    // } catch (res) {
+    //   console.log(res);
+    // }
   };
 
-  // OTHER FUNCTIONS
+  // OTHER FUNCTIONS------------------------------------------------------------------------
 
   // Validates an input
   // Sets stateVal of targeted input to TRUE if value was valid, to FALSE if not
   // Returns Errors
-  const formValidate = (name, value) => {
-    const passwordMinLenght = 8;
-    const usernameMinLenght = 3;
-    const usernameMaxLenght = 16;
-
-    const regexEmail    = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    const regexUsername = /[^A-Za-z0-9]+/;
-
+  const formValidate = (name, value) => { 
     let errors = {...formErrors, [name]: []};
 
     switch (name) {
@@ -108,13 +129,13 @@ const Register = () => {
         if (!value) {
           errors[name] = "Please type in a username";
         }
-        else if (value.length < usernameMinLenght) {
+        else if (value.length < USERNAME_MINLENGTH) {
           errors[name] = `Username is too short`;
         }
-        else if (value.length > usernameMaxLenght) {
+        else if (value.length > USERNAME_MAXLENGTH) {
           errors[name] = `Username is too long`;
         }
-        else if (regexUsername.test(value)) {
+        else if (REGEX_USERNAME.test(value)) {
           errors[name] = "Use only letters or numbers";
         }
         break;
@@ -123,7 +144,7 @@ const Register = () => {
         if (!value) {
           errors[name] = "Please type in an email";
         } 
-        else if (!regexEmail.test(value)) {
+        else if (!REGEX_EMAIL.test(value)) {
           errors[name] = "Email is invalid";
         }
         break;
@@ -133,7 +154,7 @@ const Register = () => {
           errors[name] = "Please type in a password";
         } 
         else if (
-          value.length < passwordMinLenght ||
+          value.length < PASSWORD_MINLENGTH ||
           !value.match(/\d/) ||
           !value.match(/\W/) ||
           !value.match(/[A-Z]/) || 
@@ -144,7 +165,7 @@ const Register = () => {
 
         let tips = {...tooltipPassword};
 
-        value.length > passwordMinLenght ? tips["length"] = true : tips["length"] = false;
+        value.length > PASSWORD_MINLENGTH ? tips["length"] = true : tips["length"] = false;
         value.match(/\d/) ? tips["number"] = true : tips["number"] = false;
         value.match(/\W/) ? tips["special"] = true : tips["special"] = false;
         value.match(/[A-Z]/) && value.match(/[a-z]/) ? tips["letter"] = true : tips["letter"] = false;
@@ -172,20 +193,23 @@ const Register = () => {
       <div className="card">
         <div className="card-body">
           <h3 className="text-center">Sign Up</h3>
-          {/* Input username */}          
+          {submitErrors && <div className="alert alert-danger" role="alert">{submitErrors}</div>}
+          {/* Input username */}      
           <div className="m-input-container mb-3">
             <label htmlFor="username" className="form-label">Username</label>
             <div className="m-input-group">
               <input 
                 type="text"
-                className={`form-control ${formErrors.username.length > 0 && !isFocus.username ? "is-invalid" : ""}`} 
                 id="inputUsername" 
+                className={`form-control ${formErrors.username.length > 0 && !isFocus.username ? "is-invalid" : ""}`} 
                 name="username"
                 value={formValues.username} 
                 onChange={handleChange} 
                 onBlur={handleBlur} 
                 onFocus={handleFocus} 
                 autoFocus={true}
+                autoComplete="off"
+                required
               />
               <Tooltip fieldName="username" message={
                 <p className="mb-0">use 3-16 characters &<br />only letters or numbers</p>} 
@@ -199,13 +223,14 @@ const Register = () => {
             <div className="m-input-group">
               <input 
                 type="email"
-                className={`form-control ${formErrors.email.length > 0 && !isFocus.email ? "is-invalid" : ""}`} 
                 id="inputEmail" 
+                className={`form-control ${formErrors.email.length > 0 && !isFocus.email ? "is-invalid" : ""}`} 
                 name="email"
                 value={formValues.email} 
                 onChange={handleChange} 
                 onBlur={handleBlur}
                 onFocus={handleFocus} 
+                required
               />
               {formErrors.email.length > 0 && !isFocus.email && <div className="invalid-feedback">{formErrors.email}</div>}
             </div>
@@ -216,13 +241,14 @@ const Register = () => {
             <div className="m-input-group">
               <input 
                 type={isPasswordVisible ? "text" : "password"}
-                className={`form-control ${Object.keys(formErrors.password).length > 0 && !isFocus.password ? "is-invalid" : ""}`} 
                 id="inputPassword" 
+                className={`form-control ${Object.keys(formErrors.password).length > 0 && !isFocus.password ? "is-invalid" : ""}`} 
                 name="password"
                 value={formValues.password} 
                 onChange={handleChange} 
                 onBlur={handleBlur} 
                 onFocus={handleFocus} 
+                required
               />
               <button 
                 className="btn position-absolute m-toggle-password" 
