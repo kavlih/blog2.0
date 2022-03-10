@@ -19,9 +19,9 @@ final class UserService extends AbstractModel {
      * Returns TRUE if data machtes or FALSE if not
      * 
      * @param array $errors
-     * @return bool
+     * @return array||NULL
      */
-    function login(array &$errors) : bool {
+    function login(array &$errors) : ?array {
         /** @var ?string $input_username */
         $input_user = strtolower(filter_input(INPUT_POST, 'user'));
         /** @var ?string $input_password */
@@ -41,7 +41,7 @@ final class UserService extends AbstractModel {
                 if(!$$validations['password']) {
                     $errors['password'][] = 'Please type in a password';
                 }
-                return FALSE;
+                return NULL;
             }
         }
 
@@ -55,12 +55,12 @@ final class UserService extends AbstractModel {
             $compare_passwords = $this->comparePasswords($user_data, $input_password);
         }
 
-        // If no maatching user was found OR the password of a matching user was wrong, exit method and return FALSE
+        // If no matching user was found OR the password of a matching user was wrong, exit method and return FALSE
         if(is_null($user_data) || !$compare_passwords) {
             $errors['compare'] = 'This combination doesn\'t exist';
-            return FALSE;
+            return NULL;
         }
-        return TRUE;
+        return $user_data;
     }
 
     /**

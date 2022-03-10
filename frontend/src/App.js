@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Nav, Router } from './_components';
+import { Nav, Router, UserContext } from './_components';
 
 const App = () => {
+  const [user, setUser] = useState(localStorage.getItem('user'))
+
   return (
-    <div id="wrapper" className="d-flex flex-column h-100 w-100">
-      <Nav />
-      <main>
-        <div className="container-fluid h-100 d-flex">
+    <UserContext.Provider value={{ user, setUser }}>    
+      <div id="wrapper" className="d-flex flex-column h-100 w-100">
+        <Nav />
+        <main>
           <Router />
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </UserContext.Provider>
   );
 };
 

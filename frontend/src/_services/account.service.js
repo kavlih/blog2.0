@@ -1,12 +1,11 @@
-// TODO get users data after login from database
-// TODO store users data in a useContext hook after successful login
-
 import { axiosHelper } from '../_helpers';
 
 const login = (data) => {
   return axiosHelper.post('userservice/login', data)
     .then((res) => {
-      localStorage.setItem("user", JSON.stringify(res.data));
+      localStorage.setItem("jwt", JSON.stringify(res.data.jwt));
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      // console.log(JSON.stringify(res.data));
       return res;
     })
 }

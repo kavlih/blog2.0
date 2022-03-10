@@ -1,9 +1,7 @@
 import React from 'react';
-
 import { Routes, Route } from 'react-router-dom';
 
 import { PrivateRoute } from './PrivateRoute';
-
 import { Account } from '../account/Index';
 import { Feed } from '../feed/Index';
 import { Profile } from '../profile/Index';

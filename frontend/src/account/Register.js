@@ -177,17 +177,17 @@ const Register = () => {
     else {
       setStateVal({...stateVal, [name]: false})
     }
-
     return errors;
   };
 
   return (
+  <>
     <form className="d-flex flex-column m-auto" onSubmit={handleSubmit} noValidate>
       <div className="card">
         <div className="card-body">
           <h3 className="text-center">Sign Up</h3>
           {/* Submit Errors */}      
-          {submitErrors && <div className="alert alert-danger" role="alert">{submitErrors}</div>}
+          {submitErrors && <div className="alert alert-danger py-2 border-0" role="alert">{submitErrors}</div>}
           {/* Input username */}      
           <div className="m-input-container mb-3">
             <label htmlFor="username" className="form-label">Username</label>
@@ -265,7 +265,7 @@ const Register = () => {
               {formErrors.password.length > 0 && !isFocus.password && <div className="invalid-feedback">{formErrors.password}</div>}
             </div>
           </div>
-          <p className="m-form-footer text-center"><small>By signing up you agree to our <br /><a href="/">Terms of Use</a> & <a href="/">Privacy Policy</a>.</small></p>
+          <p className="m-form-footer text-center"><small>By signing up you agree to our <br /><Link to="/">Terms of Use</Link> & <Link to="/">Privacy Policy</Link>.</small></p>
           <p className="m-form-footer text-center"><small>Already have an account? <Link to="/account/login">Login</Link></small></p>
         </div>
       </div>
@@ -273,6 +273,7 @@ const Register = () => {
         <FontAwesomeIcon icon={faArrowRight} />          
       </button>
     </form>
+  </>             
   );
 };
 

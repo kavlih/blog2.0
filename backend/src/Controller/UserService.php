@@ -24,13 +24,19 @@ final class UserService extends AbstractController {
      */
     function login() : void {
         $errors = [];
+        $login = $this->UserServiceModel->login($errors);
 
-        //if($this->isMethod(self::METHOD_POST) && $this->UserServiceModel->login($errors)) {
-        if($this->UserServiceModel->login($errors)) {
+        if(!is_null($login)) {
             $this->responseCode(200);
             $this->printJSON([
-                'Success'   => TRUE,
-                'jwt'       => Authorize::createToken()
+                'jwt'       => Authorize::createToken(),
+                'user'      => [
+                    'id'        => $login['id'],
+                    'role'      => $login['role'],
+                    'username'  => $login['username'],
+                    'email'     => $login['email'],
+                    'identicon' => $login['identicon'],
+                ]
             ]);
         }
         else {
@@ -52,6 +58,9 @@ final class UserService extends AbstractController {
             $this->responseCode(200);
             $this->printJSON(['Success' => TRUE]);
         }
+        // else if ($errors['username']['exists']) {
+        
+        // }
         else {
             $this->responseCode(400);
             $this->printJSON(['Error(s)' => $errors]);

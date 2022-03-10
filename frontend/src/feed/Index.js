@@ -1,22 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom'
 
 import { accountService } from '../_services';
+import { UserContext } from "../_components";
 
 const Feed = () => {
+  const { user, setUser } = useContext(UserContext)
   const navigate = useNavigate();
-  
+
   const handleLogout = () => {
     accountService.logout()
     navigate("/account/login")
   };
 
   return (
-    <div>
-      <h1>Hi!</h1>
-      <p>You're logged in with React & JWT!!</p>
+  <>
+    <div className="container-fluid h-100">
+      <p>{JSON.stringify(user)}</p>
       <button onClick={handleLogout}>logout</button>
     </div>
+  </>
   );
 }
 

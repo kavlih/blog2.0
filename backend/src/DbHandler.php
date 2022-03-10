@@ -67,13 +67,13 @@ final class DbHandler extends \PDO {
      * $user_data can contain a username OR an email address
      * 
      * @param string $user_data
-     * @return bool
+     * @return array||NULL
     */
     function getUser(string $user_data) : ?array {
         /** @var string $query */
         $query = 'SELECT u.*, i.identicon FROM users AS u
-                  LEFT JOIN identicon AS i ON i.user_id = u.id 
-                  WHERE u.username = :user_data OR u.email = :user_data;';
+            LEFT JOIN identicon AS i ON i.user_id = u.id 
+            WHERE u.username = :user_data OR u.email = :user_data;';
 
         /** @var \PDOStatement $stmt */
         $stmt = \PDO::prepare($query);
@@ -109,7 +109,7 @@ final class DbHandler extends \PDO {
         $stmt->bindValue(':password', $hashed_password);
         $stmt->bindValue(':salt', $hashed_salt);
 
-        // ? PROBLEM catch doesn't return the error the error
+        // ? PROBLEM catch doesn't return the error
         try {
             $stmt->execute();
         } 
@@ -136,7 +136,7 @@ final class DbHandler extends \PDO {
 
         /** @var string $query */
         $query = 'INSERT INTO identicon(user_id, identicon) VALUES (:user_id, :user_id);
-                  INSERT INTO followers(follower_id, receiver_id) VALUES (:user_id, :user_id);';
+            INSERT INTO followers(follower_id, receiver_id) VALUES (:user_id, :user_id);';
 
         /** @var \PDOStatement $stmt */
         $stmt = \PDO::prepare($query);

@@ -16,12 +16,16 @@ const Account = () => {
   });
 
   return (
-    <div className="m-account col align-self-center justify-self-center">
-      <Routes>
-        <Route path={`/login`} element={<Login />} />
-        <Route path={`/register`} element={<Register />} />
-      </Routes>
+  <>
+    <div className="container-fluid h-100 d-flex">
+      <div className="m-account col align-self-center justify-self-center">
+        <Routes>
+          <Route path={`/login`} element={<Login />} />
+          <Route path={`/register`} element={<Register />} />
+        </Routes>
+      </div>
     </div>
+  </>
   );
 }
 

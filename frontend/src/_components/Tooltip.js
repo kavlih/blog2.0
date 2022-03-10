@@ -6,7 +6,9 @@ const Tooltip = ({ fieldName, message }) => {
       <div className="tooltip show bs-tooltip-start">
         <div className="tooltip-arrow"></div>
         <div className={`tooltip-inner ${fieldName}`}>
-          <small>{message}</small>
+          <small>
+            {message}
+          </small>
         </div>
       </div>
     </div>

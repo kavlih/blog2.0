@@ -1,16 +1,17 @@
-// TODO Alert on login fail
 // TODO reset password
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, Link } from 'react-router-dom'
 
 import { accountService } from '../_services';
+import { UserContext } from "../_components";
 // FontAwesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 const Login = (props) => {
+  const { user, setUser } = useContext(UserContext)
   const navigate = useNavigate();
 
   const initialValues = {
@@ -22,6 +23,7 @@ const Login = (props) => {
   const [formErrors, setFormErrors] = useState(initialValues);
   const [stateVal, setStateVal]     = useState(initialValues);
   
+  const [submitErrors, setSubmitErrors]   = useState();
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -55,6 +57,7 @@ const Login = (props) => {
       navigate('/feed');
     })
     .catch((res) => {
+      setSubmitErrors("Login or password is invalid")
       console.log(res);
     });
   };
@@ -84,10 +87,13 @@ const Login = (props) => {
 
   // Render
   return (
+  <>
     <form className="form-container d-flex flex-column" onSubmit={handleSubmit} noValidate>
       <div className="card">
         <div className="card-body">
           <h3 className="text-center">Login</h3>
+          {/* Submit Errors */}      
+          {submitErrors && <div className="alert alert-danger py-2 border-0" role="alert">{submitErrors}</div>}
           {/* Input user */}
           <div className="m-input-container mb-3">
             <label htmlFor="username" className="form-label">Username or email</label>
@@ -120,15 +126,15 @@ const Login = (props) => {
               </button>
             </div>
           </div>
-          <div className="text-center">
-            <p className="m-form-footer text-center"><small>Don't have an account yet? <Link to="/account/register">Register</Link></small></p>
-          </div>
+          <p className="m-form-footer text-center mb-0"><small>New to Woosh? <Link to="/account/register">Sign up</Link></small></p>
+          <p className="m-form-footer text-center"><small><Link to="/">Forgot your password?</Link></small></p>
         </div>
       </div>
       <button type="submit" className="btn m-btn m-btn-green" name="submit" disabled={isSubmitDisabled}>
         <FontAwesomeIcon icon={faArrowRight} />          
       </button>
     </form>
+  </>
   );
 };
 

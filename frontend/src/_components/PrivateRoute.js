@@ -7,7 +7,7 @@ const PrivateRoute = () => {
 }
 
 const useAuth = () => {
-  const loggedInUser = localStorage.getItem("user");
+  const loggedInUser = localStorage.getItem("jwt");
   return loggedInUser;
 }
 
