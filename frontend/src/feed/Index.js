@@ -2,10 +2,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom'
 
 import { accountService, postsService } from '../_services';
-import { UserContext, Post } from "../_components";
+import { UserContext, Post, CreatePost } from "../_components";
 
 const Feed = () => {
-  const { user, setUser } = useContext(UserContext)
+  const { user } = useContext(UserContext)
   const navigate = useNavigate();  
 
   const [posts, setPosts] = useState(null)
@@ -15,21 +15,7 @@ const Feed = () => {
     navigate("/account/login")
   };
 
-  const handleSubmitPost = async (e) => {
-    e.preventDefault();
-
-    let formData = new FormData();
-    formData.append('user_id', '1');
-    formData.append('message', 'Post Content, for some reason i need to type some more letters...');
-
-    postsService.createPost(formData)
-    .then((res) => {
-      console.log(res?.data);
-    })
-    .catch((res) => {
-      console.log(res);
-    });
-  }
+  
 
   useEffect(() => {
     const formData = new FormData();
@@ -48,17 +34,16 @@ const Feed = () => {
 
   return (
   <>
-    {posts && <div className="container-fluid h-100">
-      <p>{JSON.stringify(user)}</p>
-      <button onClick={handleLogout}>logout</button>
-      <button onClick={handleSubmitPost}>create post</button>
-      {posts.map(item => {
-        // console.log(item);
-        return (
-          <Post key={item.id} post={item} />
-        );
-      })}
-    </div>}
+    {posts && <div className="m-main-section m-auto col">
+        <button onClick={handleLogout}>logout</button>
+        <CreatePost />
+        {posts.map(item => {
+          // console.log(item);
+          return (
+            <Post key={item.id} post={item} />
+          );
+        })}
+      </div>}
     {!posts && <p>no posts</p>}
   </>
   );

@@ -9,7 +9,7 @@ const App = () => {
     <UserContext.Provider value={{ user, setUser }}>    
       <div id="wrapper" className="d-flex flex-column h-100 w-100">
         <Nav />
-        <main>
+        <main className="container-fluid h-100 d-flex">
           <Router />
         </main>
       </div>
