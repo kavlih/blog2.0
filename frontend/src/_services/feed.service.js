@@ -1,7 +1,7 @@
 import { axiosHelper } from '../_helpers';
 
 const getPosts = (data) => {
-  return axiosHelper.post('feed', data)
+  return axiosHelper.post('posts', data)
     .then((res) => {
       // console.log(res);
       return res;

@@ -3,17 +3,17 @@
 namespace application\Controller;
 
 use application\Controller as AbstractController;
-use application\Model\Feed as FeedModel;
+use application\Model\Posts as PostsModel;
 
 /**
- * Feed controller class
+ * post controller class
  * 
  * @package application\Controller
  */
-final class Feed extends AbstractController {
+final class Posts extends AbstractController {
     
     function __construct() {
-        $this->FeedModel = new FeedModel();    
+        $this->PostsModel = new PostsModel();    
     }
 
     /**
@@ -25,7 +25,7 @@ final class Feed extends AbstractController {
         /** @var array $result */
         $result = [];
 
-        if ($this->isMethod(self::METHOD_POST) && $this->FeedModel->getPosts($errors, $result)) {
+        if ($this->isMethod(self::METHOD_POST) && $this->PostsModel->getPosts($errors, $result)) {
             $this->responseCode(200);
             $this->printJSON(['Success' => TRUE, 'result' => $result]);
         }
@@ -34,4 +34,6 @@ final class Feed extends AbstractController {
             $this->printJSON(['Errors' => $errors]);
         }
     }
+
+
 }

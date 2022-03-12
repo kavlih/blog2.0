@@ -61,14 +61,14 @@ final class DbHandler extends \PDO {
     }
 
     /**
-     * Get feed posts method
+     * Get all posts method
      *
      * Used in feed
      * Get all posts from users that the logged in user follows
      * 
      * @return bool
      */
-    function getFeedPosts(array &$errors, array &$result, int $user_id) : bool {
+    function getAllPosts(array &$errors, array &$result, int $user_id) : bool {
         /** @var string||NULL $query */
         $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
             FROM followers AS f
