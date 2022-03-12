@@ -3,35 +3,33 @@
 namespace application\Controller;
 
 use application\Controller as AbstractController;
-use application\Model\UserService as UserServiceModel;
-use application\Authorize;
+use application\Model\Account as AccountModel;
 
 /**
- * UserService controller class
+ * Account controller class
  * 
  * @package application\Controller
  */
-final class UserService extends AbstractController {
-    
+final class Account extends AbstractController {
+
     function __construct() {
-        $this->UserServiceModel = new UserServiceModel();    
+        $this->AccountModel = new AccountModel();    
     }
 
     /**
      * Login method
-     *
-     * @return void
+     * @POST
      */
     function login() : void {
         $errors = [];
-        $login = $this->UserServiceModel->login($errors);
+        $login = $this->AccountModel->login($errors);
 
-        if(!is_null($login)) {
+        if($this->isMethod(self::METHOD_POST) && !is_null($login)) {
             $this->responseCode(200);
             $this->printJSON([
-                'jwt'       => Authorize::createToken(),
+                'success'   => TRUE,
                 'user'      => [
-                    'id'        => $login['id'],
+                    'id'        => $login['user_id'],
                     'role'      => $login['role'],
                     'username'  => $login['username'],
                     'email'     => $login['email'],
@@ -41,29 +39,27 @@ final class UserService extends AbstractController {
         }
         else {
             $this->responseCode(400);
-            $this->printJSON(['Error(s)' => $errors]);
+            $this->printJSON(['errors' => $errors]);
         }
     }
 
     /**
      * Register method
-     *
-     * @return void
+     * @POST
      */
     function register() : void {
         $errors = [];
 
-        //if($this->isMethod(self::METHOD_POST) && $this->UserServiceModel->register($errors)) {
-        if($this->UserServiceModel->register($errors)) {
+        if($this->isMethod(self::METHOD_POST) && $this->AccountModel->register($errors)) {
             $this->responseCode(200);
-            $this->printJSON(['Success' => TRUE]);
+            $this->printJSON(['success' => TRUE]);
         }
         // else if ($errors['username']['exists']) {
         
         // }
         else {
             $this->responseCode(400);
-            $this->printJSON(['Error(s)' => $errors]);
+            $this->printJSON(['errors' => $errors]);
         }
     }
 

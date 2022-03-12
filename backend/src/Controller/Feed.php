@@ -10,16 +10,28 @@ use application\Model\Feed as FeedModel;
  * 
  * @package application\Controller
  */
-final class UserService extends AbstractController {
+final class Feed extends AbstractController {
     
     function __construct() {
         $this->FeedModel = new FeedModel();    
     }
 
     /**
-     * Get posts method
+     * index method
      */
-    function getPosts() {
-      
+    public function index() : void {
+        /** @var array $errors */
+        $errors = [];
+        /** @var array $result */
+        $result = [];
+
+        if ($this->isMethod(self::METHOD_POST) && $this->FeedModel->getPosts($errors, $result)) {
+            $this->responseCode(200);
+            $this->printJSON(['Success' => TRUE, 'result' => $result]);
+        }
+        else {
+            $this->responseCode(400);
+            $this->printJSON(['Errors' => $errors]);
+        }
     }
 }

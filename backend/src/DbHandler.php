@@ -60,6 +60,35 @@ final class DbHandler extends \PDO {
         return !empty($stmt->rowCount());
     }
 
+    /**
+     * Get feed posts method
+     *
+     * Used in feed
+     * Get all posts from users that the logged in user follows
+     * 
+     * @return bool
+     */
+    function getFeedPosts(array &$errors, array &$result, int $user_id) : bool {
+        /** @var string||NULL $query */
+        $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
+            FROM followers AS f
+            INNER JOIN posts AS p ON f.receiver_id = p.user_id 
+            INNER JOIN users AS u ON p.user_id = u.user_id
+            INNER JOIN identicon AS i ON u.user_id = i.user_id
+            WHERE follower_id = :user_id
+            ORDER BY p.id DESC;';
+
+        /** @var \PDOStatement $pdo */
+        $stmt = \PDO::prepare($query);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        /** @var array||FALSE $result */
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC) ;
+        
+        return !empty($stmt->rowCount());
+    }
+
     /** 
      * Get user method
      * 
@@ -72,7 +101,7 @@ final class DbHandler extends \PDO {
     function getUser(string $user_data) : ?array {
         /** @var string $query */
         $query = 'SELECT u.*, i.identicon FROM users AS u
-            LEFT JOIN identicon AS i ON i.user_id = u.id 
+            LEFT JOIN identicon AS i ON i.user_id = u.user_id 
             WHERE u.username = :user_data OR u.email = :user_data;';
 
         /** @var \PDOStatement $stmt */
@@ -140,7 +169,7 @@ final class DbHandler extends \PDO {
 
         /** @var \PDOStatement $stmt */
         $stmt = \PDO::prepare($query);
-        $stmt->bindValue(':user_id', $user_data['id']);
+        $stmt->bindValue(':user_id', $user_data['user_id']);
         $stmt->execute();
 
         return !empty($stmt->rowCount());

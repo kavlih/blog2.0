@@ -1,17 +1,15 @@
 // TODO reset password
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from 'react-router-dom'
 
 import { accountService } from '../_services';
-import { UserContext } from "../_components";
 // FontAwesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
 const Login = (props) => {
-  const { user, setUser } = useContext(UserContext)
   const navigate = useNavigate();
 
   const initialValues = {

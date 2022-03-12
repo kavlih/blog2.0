@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Nav, Router, UserContext } from './_components';
 
 const App = () => {
-  const [user, setUser] = useState(localStorage.getItem('user'))
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')))
 
   return (
     <UserContext.Provider value={{ user, setUser }}>    

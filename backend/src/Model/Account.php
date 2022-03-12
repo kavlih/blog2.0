@@ -5,11 +5,11 @@ namespace application\Model;
 use application\Model as AbstractModel;
 
 /**
- * UserService model class
+ * Account model class
  * 
  * @package application\Model
  */
-final class UserService extends AbstractModel {
+final class Account extends AbstractModel {
     
     /**
      * Login method
