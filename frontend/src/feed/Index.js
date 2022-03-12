@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom'
 
-import { accountService, feedService } from '../_services';
+import { accountService, postsService } from '../_services';
 import { UserContext } from "../_components";
 // import { Post } from "../_components";
 
@@ -11,28 +11,45 @@ const Feed = () => {
 
   const [posts, setPosts] = useState(null)
 
+  const handleLogout = () => {
+    accountService.logout()
+    navigate("/account/login")
+  };
+
+  const handleSubmitPost = async (e) => {
+    e.preventDefault();
+
+    let formData = new FormData();
+    formData.append('user_id', '1');
+    formData.append('message', 'Post Content, for some reason i need to type some more letters...');
+
+    postsService.createPost(formData)
+    .then((res) => {
+      console.log(res?.data);
+    })
+    .catch((res) => {
+      console.log(res);
+    });
+  }
+
   useEffect(() => {
     const formData = new FormData();
     formData.append("user_id", user.id)
     
-    feedService.getPosts(formData)
+    postsService.getPosts(formData)
     .then((res) => {
       setPosts(res.data.result)
     })
     .catch((res) => {
       console.log(res);
     });
-  }, []);
-
-  const handleLogout = () => {
-    accountService.logout()
-    navigate("/account/login")
-  };
+  }, [handleSubmitPost]);
 
   return (
   <>
     {posts && <div className="container-fluid h-100">
       <p>{JSON.stringify(user)}</p>
+      <button onClick={handleSubmitPost}>create post</button>
       {posts.map(item => {
         return (
           <li key={item.id} className="m-post-container d-flex w-100 mb-4"> 

@@ -40,6 +40,28 @@ final class DbHandler extends \PDO {
         parent::__construct($dsn, $dbuser, $dbpass, $options);
     }
 
+    /**
+     * Create post method
+     * 
+     * @param array $errors
+     * @param int $user_id
+     * @param string $message
+     * @return bool
+     */
+    function createPostHandler(array &$errors, int $user_id, string $message) : bool {
+        /** @var string||NULL $query */
+        $query = 'INSERT INTO posts(user_id, message, timestamp) VALUES (:user_id, :message, :timestamp);';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = \PDO::prepare($query);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->bindValue(':message', $message);
+        $stmt->bindValue(':timestamp', $_SERVER['REQUEST_TIME']);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
     /** 
      * Delete user part method
      * 
@@ -61,14 +83,17 @@ final class DbHandler extends \PDO {
     }
 
     /**
-     * Get all posts method
+     * Get posts method
      *
      * Used in feed
      * Get all posts from users that the logged in user follows
      * 
+     * @param array $errors
+     * @param array $result
+     * @param int $user_id
      * @return bool
      */
-    function getAllPosts(array &$errors, array &$result, int $user_id) : bool {
+    function getPostsHandler(array &$errors, array &$result, int $user_id) : bool {
         /** @var string||NULL $query */
         $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
             FROM followers AS f

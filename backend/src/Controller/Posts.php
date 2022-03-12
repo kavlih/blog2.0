@@ -19,21 +19,34 @@ final class Posts extends AbstractController {
     /**
      * index method
      */
-    public function index() : void {
+    function index() : void {
         /** @var array $errors */
         $errors = [];
         /** @var array $result */
         $result = [];
 
-        if ($this->isMethod(self::METHOD_POST) && $this->PostsModel->getPosts($errors, $result)) {
+        if($this->isMethod(self::METHOD_POST) && $this->PostsModel->getPosts($errors, $result)) {
             $this->responseCode(200);
-            $this->printJSON(['Success' => TRUE, 'result' => $result]);
+            $this->printJSON(['success' => TRUE, 'result' => $result]);
         }
         else {
             $this->responseCode(400);
-            $this->printJSON(['Errors' => $errors]);
+            $this->printJSON(['errors' => $errors]);
         }
     }
 
+    function create() : void {
+        /** @var array $errors */
+        $errors = [];
+
+        if($this->isMethod(self::METHOD_POST) && $this->PostsModel->createPost($errors)) {
+            $this->responseCode(200);
+            $this->printJSON(['success' => TRUE]);
+        } 
+        else {
+            $this->responseCode(400);
+            $this->printJSON(['errors' => $errors]);
+        }
+    }
 
 }
