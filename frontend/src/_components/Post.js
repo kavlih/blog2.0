@@ -1,32 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 
-const Post = (props) => {
+import { identiconService } from '../_services';
+
+const Post = ({post}) => {
   return (
   <>
-    <li className="m-post-container d-flex w-100"> 
-      <div className="d-flex">
-        <div className="avatar-thumb">
-          <Link to="/" className="d-flex justify-content-center align-items-center w-100 h-100">
-            <img className="default-img w-60" src="" alt="identicon"/>
-          </Link>
+    <li className="m-post-container d-flex mb-4"> 
+      <Link to="/" className="m-post-avatar">
+          <img className="default-img w-100 h-100" src={identiconService.get(post.identicon)} alt="identicon"/>
+      </Link>
+  
+      <div className="m-post-inner col d-flex flex-column">
+        <div className="post-header d-flex justify-content-between">
+          <div className="post-username">
+            <Link to="/">{post.username}</Link>
+          </div>
+          <div className="post-date">
+            <p>{post.timestamp}</p>
+          </div>
         </div>
-      </div>
 
-      <div className="post-inner col d-flex">
-        <div className="box">
-          <div className="post-header d-flex justify-content-between">
-            <div className="post-username">
-              <Link to="/">username</Link>
-            </div>
-            <div className="post-date">
-              <p>0000000</p>
-            </div>
-          </div>
-
-          <div className="post-message">
-            <p>blablabla</p>
-          </div>
+        <div className="post-message">
+          <p>{post.message}</p>
         </div>
       </div>
     </li>
