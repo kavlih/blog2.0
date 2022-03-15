@@ -62,26 +62,6 @@ final class DbHandler extends \PDO {
         return !empty($stmt->rowCount());
     }
 
-    /** 
-     * Delete user part method
-     * 
-     * Used at registration
-     * Deletes part of the users data in the database. Used when additional data insert failed
-     * 
-     * @param string $username
-     * @return bool
-    */
-    function deleteUserPart($username) : bool {
-        /** @var string $query */
-        $query = 'DELETE FROM users WHERE username = :username;';
-        /** @var \PDOStatement $stmt */
-        $stmt = \PDO::prepare($query);
-        $stmt->bindValue(':username', $username);
-        $stmt->execute();
-
-        return !empty($stmt->rowCount());
-    }
-
     /**
      * Get posts method
      *
@@ -114,6 +94,98 @@ final class DbHandler extends \PDO {
         return !empty($stmt->rowCount());
     }
 
+    /**
+     * Get likes method
+     *
+     * Used in post component
+     * Gets user ids of accounts which liked the posts
+     * 
+     * @param array $errors
+     * @param array $result
+     * @param int $user_id
+     * @return array||NULL
+     */
+    function getLikesHandler(array &$errors, array &$result, int $post_id) {
+        /** @var string||NULL $query */
+        $query = 'SELECT l.user_id FROM likes AS l  WHERE post_id = :post_id;';
+
+        /** @var \PDOStatement $pdo */
+        $stmt = \PDO::prepare($query);
+        $stmt->bindValue(':post_id', $post_id);
+        $stmt->execute();
+
+        /** @var array||FALSE $result */
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC) ;
+        
+        return !$result ? NULL : $result;
+    }
+    
+    /**
+     * Get like method
+     * 
+     * @param array $errors
+     * @param int $user_id
+     * @param int $post_id
+     * @return bool
+     */
+    function getLike(array &$errors, int $user_id, int $post_id) : bool {
+        /** @var string||NULL $query */
+        $query = 'SELECT id FROM likes WHERE post_id = :post_id AND user_id = :user_id;';
+
+        /** @var \PDOStatement $pdo */
+        $stmt = \PDO::prepare($query);
+        $stmt->bindValue(':post_id', $post_id);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+    
+    /**
+     * toggle like method
+     * 
+     * @param array $errors
+     * @param int $user_id
+     * @param int $post_id
+     * @return bool
+     */
+    function toggleLikeHandler(array &$errors, int $user_id, int $post_id) : bool {
+        /** @var bool $getLike */
+        $getLike = $this->getLike($errors, $user_id, $post_id);
+
+        $getLike 
+            ? $query = 'DELETE FROM likes WHERE post_id = :post_id AND user_id = :user_id;'
+            : $query = 'INSERT INTO likes (post_id, user_id) VALUES (:post_id, :user_id);';
+
+        /** @var \PDOStatement $pdo */
+        $stmt = \PDO::prepare($query);
+        $stmt->bindValue(':post_id', $post_id);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
+    /** 
+     * Delete user part method
+     * 
+     * Used at registration
+     * Deletes part of the users data in the database. Used when additional data insert failed
+     * 
+     * @param string $username
+     * @return bool
+    */
+    function deleteUserPart($username) : bool {
+        /** @var string $query */
+        $query = 'DELETE FROM users WHERE username = :username;';
+        /** @var \PDOStatement $stmt */
+        $stmt = \PDO::prepare($query);
+        $stmt->bindValue(':username', $username);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
     /** 
      * Get user method
      * 
@@ -137,7 +209,6 @@ final class DbHandler extends \PDO {
         /** @var array||FALSE $result */
         $result = $stmt->fetch(\PDO::FETCH_ASSOC) ;
         
-        // Return data or NULL
         return !$result ? NULL : $result;
     }
 
@@ -163,11 +234,11 @@ final class DbHandler extends \PDO {
         $stmt->bindValue(':password', $hashed_password);
         $stmt->bindValue(':salt', $hashed_salt);
 
-        // ? PROBLEM catch doesn't return the error
         try {
             $stmt->execute();
         } 
-        // ? QUESTION Difference between \PDOException and \Exception
+        // ? catch doesn't return the error
+        // ? Difference between \PDOException and \Exception?
         catch (\Exception $e) {
             $errors['insert_db'] = $e->getMessage();
         }
@@ -199,5 +270,4 @@ final class DbHandler extends \PDO {
 
         return !empty($stmt->rowCount());
     }
-
 }

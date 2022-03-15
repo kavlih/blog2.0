@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 
-const Login = (props) => {
+const Login = () => {
   const navigate = useNavigate();
 
   const initialValues = {
@@ -25,23 +25,28 @@ const Login = (props) => {
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  // Hooks
+  // Sets isSubmitDisabled to false if all inputs are valid 
   useEffect(() => {
     setIsSubmitDisabled(stateVal.user && stateVal.password ? false : true)
   }, [stateVal]);
 
-  // Handlers
+  // Saves input value of target in formValues
+  // Calls formValidate()
+  // Saves errors in formErrors
   const handleChange = (e) => {
     const {name, value} = e.target;
     setFormValues({...formValues, [name]: value}); 
     setFormErrors(formValidate(name, value));
   };
   
+  // Toggles isPasswordVisible
   const handleMouseDown = (e) => {
     e.preventDefault();
     setIsPasswordVisible(isPasswordVisible ? false : true);
   }
   
+  // Submits form and calls accountService.login()
+  // Navigates to feed on succes, else throws errors
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -51,16 +56,13 @@ const Login = (props) => {
     
     accountService.login(fields)
     .then(() => {
-      // redirect
       navigate('/feed');
     })
-    .catch((res) => {
+    .catch((error) => {
       setSubmitErrors("Login or password is invalid")
-      console.log(res);
     });
   };
 
-  // Other functions
   const formValidate = (name, value) => {
     const errors = {...formErrors, [name]: ""};
 
@@ -83,7 +85,6 @@ const Login = (props) => {
     return errors;
   };
 
-  // Render
   return (
   <>
     <form className="form-container d-flex flex-column" onSubmit={handleSubmit} noValidate>

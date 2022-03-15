@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 
 import { UserContext, Avatar } from '../_components';
 import { postsService } from '../_services';
@@ -6,19 +6,28 @@ import { postsService } from '../_services';
 const CreatePost = () => {
   const { user } = useContext(UserContext)
 
-  const handleSubmitPost = async (e) => {
+  const [ messageValue, setMessageValue ] = useState("")
+  const [ formErrors, setFormErrors ] = useState()
+
+  const handleChange = (e) => {
+    const {value} = e.target;
+    setMessageValue(value);
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     let formData = new FormData();
-    formData.append('user_id', '1');
-    formData.append('message', 'Post Content, for some reason i need to type some more letters...');
+    formData.append("user_id", user.id);
+    formData.append("message", messageValue);
 
-    postsService.createPost(formData)
+    postsService.create(formData)
     .then((res) => {
       console.log(res?.data);
     })
-    .catch((res) => {
-      console.log(res);
+    .catch((error) => {
+      setFormErrors(error.response.data.errors)
+      console.log(error.response.data.errors);
     });
   }
 
@@ -30,14 +39,21 @@ const CreatePost = () => {
       <form method="POST" id="create-post-form" className="create-post col-12 flex-column">
         <div className="create-post-inner col-sm d-flex flex-wrap w-100">
           <Avatar identicon={user.identicon} />
-
-          <textarea name="post" className="form-control box" placeholder="What's on your mind"></textarea> 
-                    
+          <textarea 
+            name="message" 
+            className="form-control box" 
+            placeholder="What's on your mind" 
+            value={messageValue}
+            onChange={handleChange}
+            required
+          />          
           <div className="errors col-12">
           </div>
         </div>
 
-        <button onClick={handleSubmitPost}>create post</button>
+        <p className='text-danger'>{formErrors}</p>
+
+        <button onClick={handleSubmit}>create post</button>
       </form>
     </div>
   </>

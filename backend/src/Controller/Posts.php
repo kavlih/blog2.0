@@ -16,9 +16,6 @@ final class Posts extends AbstractController {
         $this->PostsModel = new PostsModel();    
     }
 
-    /**
-     * index method
-     */
     function index() : void {
         /** @var array $errors */
         $errors = [];
@@ -49,4 +46,34 @@ final class Posts extends AbstractController {
         }
     }
 
+    function likes(?string $post_id = NULL) : void {
+        /** @var array $errors */
+        $errors = [];
+        /** @var array $result */
+        $result = [];
+
+        if($this->isMethod(self::METHOD_GET) && $this->PostsModel->getLikes($errors, $result, $post_id)) {
+            $this->responseCode(200);
+            $this->printJSON(['success' => TRUE, 'result' => $result]);
+        } 
+        // else {
+        //     $this->responseCode(400);
+        //     $this->printJSON(['errors' => $errors]);
+        // }
+    }
+    
+    function like(?string $post_id = NULL) : void {
+        /** @var array $errors */
+        $errors = [];
+
+        if($this->isMethod(self::METHOD_POST) && $this->PostsModel->toggleLike($errors, $post_id)) {
+            $this->responseCode(200);
+            $this->printJSON(['success' => TRUE]);
+        } 
+        else {
+            $this->responseCode(400);
+            $this->printJSON(['errors' => $errors]);
+        }
+    }
+    
 }

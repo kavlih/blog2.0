@@ -1,7 +1,5 @@
-// TODO if username already exists
-// TODO if email is already registered
 // TODO Email verification
-// TODO Alert on registration success
+// TODO Alert on successful registration
 
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from 'react-router-dom'
@@ -29,59 +27,48 @@ const Register = () => {
     password: '',
   };
   
-  // STATES------------------------------------------------------------------------
-
-  const [formValues, setFormValues]   = useState(initialValues);
-  const [stateVal, setStateVal]       = useState(initialValues);
-  const [isFocus, setIsFocus]         = useState(initialValues);
-  const [formErrors, setFormErrors]   = useState(initialValues);
+  const [formValues, setFormValues] = useState(initialValues);
+  const [stateVal, setStateVal]     = useState(initialValues);
+  const [isFocus, setIsFocus]       = useState(initialValues);
+  const [formErrors, setFormErrors] = useState(initialValues);
+  const [tooltipPassword, setTooltipPassword] = useState(initialValues);
   
-  // const [isSubmit, setIsSubmit] = useState(false);
   const [submitErrors, setSubmitErrors]   = useState();
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const [tooltipPassword, setTooltipPassword] = useState({
-    length:   false,
-    letter:   false,
-    number:   false,
-    special:  false
-  });
-
-  // EFFECTS------------------------------------------------------------------------
-
-  // Sets isSubmitDisabled to FALSE (Enables submit button) if all inputs are valid 
+  // Sets isSubmitDisabled to false if all inputs are valid 
   useEffect(() => {
     setIsSubmitDisabled(stateVal.username && stateVal.email && stateVal.password ? false : true)
   }, [stateVal]);
 
-  // HANDLERS------------------------------------------------------------------------
-
-  // Saves targeted input value in formValues on change
+  // Saves input value of target in formValues
   // Calls formValidate()
-  // Saves returned errors (if any) in formErrors
+  // Saves errors in formErrors
   const handleChange = (e) => {
     const {name, value} = e.target;
     setFormValues({...formValues, [name]: value}); 
     setFormErrors(formValidate(name, value));
   };
 
-  // Sets isFocus of target to FALSE on blur 
+  // Sets isFocus of target to false
   const handleBlur = (e) => {
     setIsFocus({[e.target.name]: false});
   };
   
-  // Sets isFocus of target to TRUE on focus 
+  // Sets isFocus of target to true
   const handleFocus = (e) => {
     setIsFocus({[e.target.name]: true});
   };
 
-  // Toggles isPasswordVisible on click 
+  // Toggles isPasswordVisible
   const handleMouseDown = (e) => {
     e.preventDefault();
     setIsPasswordVisible(isPasswordVisible ? false : true);
   }
 
+  // Submits form and calls accountService.register()
+  // Navigates to login on succes, else throws errors
   const handleSubmit = async (e) => {
     e.preventDefault();
     // setIsSubmit(true);
@@ -96,16 +83,23 @@ const Register = () => {
       console.log(res?.data);
       navigate('/account/login');
     })
-    .catch((res) => {
-      setSubmitErrors("Oops. Something went wrong.")
-      console.log(res);
+    .catch((error) => {
+      let errors = error.response.data.errors;
+
+      for (const [key, value] of Object.entries(errors)) {        
+        if (value) {
+          setStateVal({...stateVal, [key]: false})
+          setFormErrors({...formErrors, [key]: value});
+        }
+      }
+      
+      console.log(stateVal);
+      console.log(formErrors);
     });
   };
 
-  // OTHER FUNCTIONS------------------------------------------------------------------------
-
   // Validates an input
-  // Sets stateVal of targeted input to TRUE if value was valid, to FALSE if not
+  // Sets stateVal of input to true if value was valid, to false if not
   // Returns Errors
   const formValidate = (name, value) => { 
     let errors = {...formErrors, [name]: []};
@@ -149,22 +143,19 @@ const Register = () => {
           errors[name] = "Password is invalid";
         }
 
-        let tips = {...tooltipPassword};
-
-        value.length > PASSWORD_MINLENGTH 
-          ? tips["length"] = true 
-          : tips["length"] = false;
-        value.match(/\d/) 
-          ? tips["number"] = true 
-          : tips["number"] = false;
-        value.match(/\W/) 
-          ? tips["special"] = true 
-          : tips["special"] = false;
-        value.match(/[A-Z]/) && value.match(/[a-z]/) 
-          ? tips["letter"] = true 
-          : tips["letter"] = false;
-
-        // console.log(tooltipPassword);
+        // Sets tooltips
+        let tips = {
+          length:   false,
+          letter:   false,
+          number:   false,
+          special:  false
+        };
+    
+        tips.length   = value.length >= PASSWORD_MINLENGTH;
+        tips.number   = value.match(/\d/);
+        tips.special  = value.match(/\W/);
+        tips.letter   = value.match(/[A-Z]/) && value.match(/[a-z]/);
+    
         setTooltipPassword(tips);
         break;
       default:

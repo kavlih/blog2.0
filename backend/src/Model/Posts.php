@@ -17,8 +17,7 @@ final class Posts extends AbstractModel {
      * @param   array $errors
      * @return  boolean
      */
-     function createPost(array &$errors) : bool
-     {
+     function createPost(array &$errors) : bool {
           /** @var string $user_id */
           $user_id = filter_input( INPUT_POST, 'user_id' );
           /** @var string $message */
@@ -30,11 +29,35 @@ final class Posts extends AbstractModel {
      }
 
      /**
+     * Get likes
+     * 
+     * @param   array $errors
+     * @param   array $result
+     * @param   int $post_id
+     */
+     function getlikes(array &$errors, array &$result, int $post_id) {
+          return $this->DbHandler->getLikesHandler($errors, $result, $post_id);
+     }
+     
+     /**
+     * Toggle like
+     * 
+     * @param   array $errors
+     * @param   array $result
+     * @param   int $post_id
+     */
+     function toggleLike(array &$errors, int $post_id) {
+          /** @var string $user_id */
+          $user_id = filter_input( INPUT_POST, 'user_id' );
+
+          return $this->DbHandler->toggleLikeHandler($errors, $user_id, $post_id);
+     }
+
+     /**
      * Get posts
      * 
      * @param   array $errors
      * @param   array $result
-     * @return  boolean
      */
      function getPosts(array &$errors, array &$result) {
           /** @var string $user_id */
@@ -55,18 +78,18 @@ final class Posts extends AbstractModel {
      private function validate_message(array &$errors, ?string $message) : bool {
           // If message is empty
           if(is_null($message) || empty($message)) {
-               $errors['message'][] = 'You can\'t post nothing';            
+               $errors[] = 'Message is empty';            
           }
           // If message is too short
           elseif(strlen($message) < 15) {
-               $errors['message'][] = 'Oh no. Your message is too short';
+               $errors[] = 'Message is too short';
           }
           // If message is too long
           elseif(strlen($message) > 400) {
-               $errors['message'][] = 'Oh no. Your message is too long';
+               $errors[] = 'Message is too long';
           }
 
-          return !isset($errors['message']);
+          return !isset($errors);
      }
 
 }

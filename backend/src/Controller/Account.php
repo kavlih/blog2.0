@@ -54,9 +54,6 @@ final class Account extends AbstractController {
             $this->responseCode(200);
             $this->printJSON(['success' => TRUE]);
         }
-        // else if ($errors['username']['exists']) {
-        
-        // }
         else {
             $this->responseCode(400);
             $this->printJSON(['errors' => $errors]);

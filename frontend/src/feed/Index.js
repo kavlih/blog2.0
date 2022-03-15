@@ -15,8 +15,6 @@ const Feed = () => {
     navigate("/account/login")
   };
 
-  
-
   useEffect(() => {
     const formData = new FormData();
     formData.append("user_id", user.id)
@@ -25,12 +23,10 @@ const Feed = () => {
     .then((res) => {
       setPosts(res.data.result)
     })
-    .catch((res) => {
-      console.log(res);
+    .catch((error) => {
+      console.log(error.response.data.errors);
     });
   }, []);
-  // ?? console.log(item)
-  // }, [handleSubmitPost]);
 
   return (
   <>
@@ -38,9 +34,9 @@ const Feed = () => {
         <button onClick={handleLogout}>logout</button>
         <CreatePost />
         {posts.map(item => {
-          // console.log(item);
+          console.log(item);
           return (
-            <Post key={item.id} post={item} />
+            <Post key={item.id} post={item}/>
           );
         })}
       </div>}

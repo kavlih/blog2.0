@@ -1,6 +1,6 @@
 import { axiosHelper } from '../_helpers';
 
-const createPost = (data) => {
+const create = (data) => {
   return axiosHelper.post('posts/create', data)
     .then((res) => {
       // console.log(res);
@@ -16,7 +16,25 @@ const getPosts = (data) => {
     })
 }
 
+const getLikes = (post_id) => {
+  return axiosHelper.get(`posts/likes/${post_id}`)
+    .then((res) => {
+      // console.log(res);
+      return res;
+    })
+}
+
+const toggleLike = (post_id, data) => {
+  return axiosHelper.post(`posts/like/${post_id}`, data)
+    .then((res) => {
+      // console.log(res);
+      return res;
+    })
+}
+
 export const postsService = {
-  createPost,
-  getPosts
+  create,
+  getPosts,
+  getLikes,
+  toggleLike
 };
