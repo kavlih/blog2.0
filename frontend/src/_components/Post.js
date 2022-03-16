@@ -20,31 +20,29 @@ const Post = ({post}) => {
     postsService.getLikes(post.id)
       .then((res) => {
         let likeArr = res.data.result;
-        console.log(likeArr);
         
         if (likeArr) {
           setLikeCounter(Object.keys(likeArr).length)
           setLikeStatus(likeExists(likeArr, user.id));
-          console.log(Object.values(likeArr));
-        }
-        else {
-          setLikeCounter(0)
         }
       })
-  }, [likeStatus])
+      .catch((errors) => {
+        setLikeCounter(0)
+      });
+  }, [])
+  
   
   const handleLike = () => {
     const fields = new FormData();
     fields.append("user_id", user.id)
     
     postsService.toggleLike(post.id, fields)
-    .then((res) => {
+    .then(() => {
+      setLikeCounter(likeStatus ? likeCounter-1 : likeCounter+1);
       setLikeStatus(!likeStatus);
-      console.log(res);      
     })
     .catch((error) => {
       // setSubmitErrors("Something went wrong")
-      console.log(error);
     });
   };
 

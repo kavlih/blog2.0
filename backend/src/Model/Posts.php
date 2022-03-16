@@ -14,8 +14,8 @@ final class Posts extends AbstractModel {
      /**
      * Create post
      * 
-     * @param   array $errors
-     * @return  boolean
+     * @param  array $errors
+     * @return bool
      */
      function createPost(array &$errors) : bool {
           /** @var string $user_id */
@@ -31,22 +31,24 @@ final class Posts extends AbstractModel {
      /**
      * Get likes
      * 
-     * @param   array $errors
-     * @param   array $result
-     * @param   int $post_id
+     * @param  array $errors
+     * @param  array $result
+     * @param  int $post_id
+     * @return bool
      */
-     function getlikes(array &$errors, array &$result, int $post_id) {
+     function getlikes(array &$errors, array &$result, int $post_id) : bool {
           return $this->DbHandler->getLikesHandler($errors, $result, $post_id);
      }
      
      /**
      * Toggle like
      * 
-     * @param   array $errors
-     * @param   array $result
-     * @param   int $post_id
+     * @param  array $errors
+     * @param  array $result
+     * @param  int $post_id
+     * @return bool
      */
-     function toggleLike(array &$errors, int $post_id) {
+     function toggleLike(array &$errors, int $post_id) : bool {
           /** @var string $user_id */
           $user_id = filter_input( INPUT_POST, 'user_id' );
 
@@ -56,35 +58,33 @@ final class Posts extends AbstractModel {
      /**
      * Get posts
      * 
-     * @param   array $errors
-     * @param   array $result
+     * @param  array $errors
+     * @param  array $result
+     * @return bool
      */
-     function getPosts(array &$errors, array &$result) {
-          /** @var string $user_id */
-          $user_id = filter_input( INPUT_POST, 'user_id' );
-
+     function getPosts(array &$errors, array &$result, string $user_id) : bool {
           return $this->DbHandler->getPostsHandler($errors, $result, $user_id);
      }
 
     /**
      * Validate message
-     * 
      * Called in 'create_post' method
+     * 
+     * If message is empty
+     * If message is too short
+     * If message is too long
      *
-     * @param   array       $errors
-     * @param   string|NULL $message
-     * @return  boolean
+     * @param  array       $errors
+     * @param  string|NULL $message
+     * @return bool
      */
      private function validate_message(array &$errors, ?string $message) : bool {
-          // If message is empty
           if(is_null($message) || empty($message)) {
                $errors[] = 'Message is empty';            
           }
-          // If message is too short
           elseif(strlen($message) < 15) {
                $errors[] = 'Message is too short';
           }
-          // If message is too long
           elseif(strlen($message) > 400) {
                $errors[] = 'Message is too long';
           }

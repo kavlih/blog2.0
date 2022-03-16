@@ -54,8 +54,10 @@ const Login = () => {
     fields.append("user", formValues.user)
     fields.append("password", formValues.password)
     
+    // ?? feed already tries to access user before it got saved in local storage
     accountService.login(fields)
-    .then(() => {
+    .then((res) => {
+      localStorage.setItem("user", JSON.stringify(res.data.user));
       navigate('/feed');
     })
     .catch((error) => {

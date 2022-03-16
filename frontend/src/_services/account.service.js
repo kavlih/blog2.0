@@ -1,11 +1,7 @@
 import { axiosHelper } from '../_helpers';
 
 const login = (data) => {
-  return axiosHelper.post('account/login', data)
-    .then((res) => {
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      return res;
-    })
+  return axiosHelper.post('/account/login', data)
 }
 
 const logout = () => {
@@ -13,7 +9,7 @@ const logout = () => {
 }
 
 const register = (data) => {
-  return axiosHelper.post('account/register', data)
+  return axiosHelper.post('/account/register', data)
 }
 
 export const accountService = {

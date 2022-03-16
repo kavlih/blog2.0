@@ -14,6 +14,7 @@ final class Error extends AbstractController {
     /**
      * Index method
      *
+     * @param int $status
      * @return void
      */
     function index(int $status = 404) : void {

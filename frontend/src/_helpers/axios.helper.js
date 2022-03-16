@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const CONFIG = "http://localhost:8888/index.php?_url=";
+const CONFIG = "http://localhost:8888";
 
 const get = (url) => {
   return axios({

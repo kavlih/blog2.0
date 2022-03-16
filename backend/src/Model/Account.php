@@ -46,7 +46,7 @@ final class Account extends AbstractModel {
         }
 
         // Get user data from database
-        /** @var array ?$user_data */
+        /** @var array $result */
         $user_data = $this->DbHandler->getUser($input_user);
         
         // If a matching user was found, compare passwords
@@ -54,9 +54,8 @@ final class Account extends AbstractModel {
             /** @var bool $compare_passwords */
             $compare_passwords = $this->comparePasswords($user_data, $input_password);
         }
-
-        // If no matching user was found OR the password of a matching user was wrong, exit method and return FALSE
-        if(is_null($user_data) || !$compare_passwords) {
+        // If no matching user was found or passwords don't match
+        else if(is_null($user_data) || !$compare_passwords) {
             $errors['compare'] = 'This combination doesn\'t exist';
             return NULL;
         }
@@ -69,7 +68,6 @@ final class Account extends AbstractModel {
      * Processes POST data from the registration form
      * Inserts data into database or returns FALSE if data was invalid
      * 
-     * @param array $response
      * @param array $errors
      * @return bool
      */

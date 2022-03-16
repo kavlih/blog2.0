@@ -102,10 +102,10 @@ final class DbHandler extends \PDO {
      * 
      * @param array $errors
      * @param array $result
-     * @param int $user_id
-     * @return array||NULL
+     * @param int $post_id
+     * @return bool
      */
-    function getLikesHandler(array &$errors, array &$result, int $post_id) {
+    function getLikesHandler(array &$errors, array &$result, int $post_id) : bool {
         /** @var string||NULL $query */
         $query = 'SELECT l.user_id FROM likes AS l  WHERE post_id = :post_id;';
 
@@ -117,7 +117,7 @@ final class DbHandler extends \PDO {
         /** @var array||FALSE $result */
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC) ;
         
-        return !$result ? NULL : $result;
+        return !empty($stmt->rowCount());
     }
     
     /**
@@ -175,7 +175,7 @@ final class DbHandler extends \PDO {
      * @param string $username
      * @return bool
     */
-    function deleteUserPart($username) : bool {
+    function deleteUserPart(string $username) : bool {
         /** @var string $query */
         $query = 'DELETE FROM users WHERE username = :username;';
         /** @var \PDOStatement $stmt */

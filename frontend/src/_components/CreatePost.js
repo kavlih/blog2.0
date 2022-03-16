@@ -18,16 +18,14 @@ const CreatePost = () => {
     e.preventDefault();
 
     let formData = new FormData();
-    formData.append("user_id", user.id);
     formData.append("message", messageValue);
 
-    postsService.create(formData)
+    postsService.create(user.id, formData)
     .then((res) => {
       console.log(res?.data);
     })
     .catch((error) => {
       setFormErrors(error.response.data.errors)
-      console.log(error.response.data.errors);
     });
   }
 

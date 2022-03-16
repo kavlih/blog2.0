@@ -16,10 +16,7 @@ const Feed = () => {
   };
 
   useEffect(() => {
-    const formData = new FormData();
-    formData.append("user_id", user.id)
-    
-    postsService.getPosts(formData)
+    postsService.getPosts(user.id)
     .then((res) => {
       setPosts(res.data.result)
     })
@@ -34,7 +31,7 @@ const Feed = () => {
         <button onClick={handleLogout}>logout</button>
         <CreatePost />
         {posts.map(item => {
-          console.log(item);
+          // console.log(item);
           return (
             <Post key={item.id} post={item}/>
           );

@@ -80,12 +80,12 @@ const Register = () => {
     
     accountService.register(fields)
     .then((res) => {
-      console.log(res?.data);
       navigate('/account/login');
     })
     .catch((error) => {
       let errors = error.response.data.errors;
 
+      // ?? states wont get updated
       for (const [key, value] of Object.entries(errors)) {        
         if (value) {
           setStateVal({...stateVal, [key]: false})
