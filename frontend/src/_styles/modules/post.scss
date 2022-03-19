@@ -4,8 +4,42 @@
   }
   
   .m-post-inner {
-    background-color: white;
+    background-color: transparent;
     border-radius: 0.5rem;
-    padding: 0.5rem 1rem;
+    border: 1px solid $greyDark;
+    padding: 15px 20px 20px 20px;
+
+    section {
+      &:not(:last-Child) {
+        margin-bottom: 0.5rem; 
+      }
+
+      p {
+        margin-bottom: 0;
+      }
+    }
+
+    .m-post-username {
+      text-decoration: none;
+
+      font-family: 'Roboto Mono';
+      font-weight: 400;
+      font-size: 11pt;
+      color: $white;
+    }
+    
+    .m-post-date {
+      font-family: 'Roboto Mono';
+      font-weight: 400;
+      font-size: 11pt;
+      color: $greyLight;
+    }
+
+    .m-post-message {
+      font-family: 'Roboto';
+      font-weight: 400;
+      font-size: 12pt;
+      color: $white;
+    }
   }
 }

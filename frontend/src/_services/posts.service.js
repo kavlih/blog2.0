@@ -1,7 +1,11 @@
 import { axiosHelper } from '../_helpers';
 
-const create = (user_id, data) => {
+const createPost = (user_id, data) => {
   return axiosHelper.post(`/posts/create/${user_id}`, data)
+}
+
+const deletePost = (post_id) => {
+  return axiosHelper.delete(`/posts/delete/${post_id}`)
 }
 
 const getPosts = (user_id) => {
@@ -17,7 +21,8 @@ const toggleLike = (post_id, data) => {
 }
 
 export const postsService = {
-  create,
+  createPost,
+  deletePost,
   getPosts,
   getLikes,
   toggleLike

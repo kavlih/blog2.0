@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 import { accountService, postsService } from '../_services';
-import { UserContext, Post, CreatePost } from "../_components";
+import { UserContext, Post, CreatePost, Avatar } from "../_components";
 
 const Feed = () => {
   const { user } = useContext(UserContext)
@@ -27,17 +27,24 @@ const Feed = () => {
 
   return (
   <>
-    {posts && <div className="m-main-section m-auto col">
+    <div className="m-main-section m-auto col">
+      <div className='d-flex'>
+        <Avatar identicon={user.identicon} />
+        <p className='text-white'>{user.username}</p>
+        {/* {user.role < 3 && <p>{user.role}</p>} */}
         <button onClick={handleLogout}>logout</button>
-        <CreatePost />
-        {posts.map(item => {
-          // console.log(item);
+        <Link to="/settings">Settings</Link>
+      </div>
+      <CreatePost />
+      {posts 
+        ? posts.map(item => {
+          console.log(item);
           return (
             <Post key={item.id} post={item}/>
           );
-        })}
-      </div>}
-    {!posts && <p>no posts</p>}
+        }) 
+        : <p>no posts</p>}
+    </div>
   </>
   );
 }

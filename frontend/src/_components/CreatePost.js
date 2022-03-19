@@ -20,7 +20,7 @@ const CreatePost = () => {
     let formData = new FormData();
     formData.append("message", messageValue);
 
-    postsService.create(user.id, formData)
+    postsService.createPost(user.id, formData)
     .then((res) => {
       console.log(res?.data);
     })

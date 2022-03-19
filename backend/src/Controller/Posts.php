@@ -46,18 +46,46 @@ final class Posts extends AbstractController {
      * Create method
      * @POST
      * 
+     * @param string||NULL $user_id
      * @return void
      */
-    function create() : void {
+    function create(?string $user_id = NULL) : void {
         /** @var array $errors */
         $errors = [];
 
         if($this->isMethod(self::METHOD_POST)) {
-            if ($this->PostsModel->createPost($errors)) {
+            if ($this->PostsModel->createPost($errors, $user_id)) {
                 $this->responseCode(200);
                 $this->printJSON(['success' => TRUE]);
             } 
             else {    
+                $this->responseCode(409);
+                $this->printJSON(['errors' => $errors]);
+            }
+        }
+        else {
+            $this->responseCode(400);
+            $this->printJSON(['errors' => $errors]);
+        }
+    }
+    
+    /**
+     * Create method
+     * @POST
+     * 
+     * @param string||NULL $post_id
+     * @return void
+     */
+    function delete(?string $post_id = NULL) : void {
+        /** @var array $errors */
+        $errors = [];
+
+        if($this->isMethod(self::METHOD_DELETE)) {
+            if ($this->PostsModel->deletePost($errors, $post_id)) {
+                $this->responseCode(200);
+                $this->printJSON(['success' => TRUE]);
+            } 
+            else {
                 $this->responseCode(409);
                 $this->printJSON(['errors' => $errors]);
             }

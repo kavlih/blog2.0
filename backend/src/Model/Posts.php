@@ -15,17 +15,38 @@ final class Posts extends AbstractModel {
      * Create post
      * 
      * @param  array $errors
+     * @param  int $user_id
      * @return bool
      */
-     function createPost(array &$errors) : bool {
-          /** @var string $user_id */
-          $user_id = filter_input( INPUT_POST, 'user_id' );
+     function createPost(array &$errors, int $user_id) : bool {
           /** @var string $message */
           $message = filter_input( INPUT_POST, 'message' );
 
           return $this->validate_message($errors, $message)
                ? $this->DbHandler->createPostHandler($errors, $user_id, $message)
                : FALSE;
+     }
+     
+     /**
+     * Delete post
+     * 
+     * @param  array $errors
+     * @param  int $post_id
+     * @return bool
+     */
+     function deletePost(array &$errors, int $post_id) : bool {
+          /** @var array $result */
+          $result = [];
+
+          // && $result["user_id"] === $user_id) 
+          if ($this->DbHandler->getPostHandler($errors, $result, $post_id)) {
+               $this->DbHandler->deletePostHandler($errors, $post_id);
+          }
+          else {
+               $errors[] = "You dont't have permission to do that";            
+          }
+
+          return empty($errors);
      }
 
      /**
@@ -89,7 +110,7 @@ final class Posts extends AbstractModel {
                $errors[] = 'Message is too long';
           }
 
-          return !isset($errors);
+          return empty($errors);
      }
 
 }

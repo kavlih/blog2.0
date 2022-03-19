@@ -95,6 +95,33 @@ final class DbHandler extends \PDO {
     }
 
     /**
+     * Get post method
+     * 
+     * @param array $errors
+     * @param array $result
+     * @param int $post_id
+     * @return bool
+     */
+    function getPostHandler(array &$errors, array &$result, int $post_id) : bool {
+        /** @var string||NULL $query */
+        $query = 'SELECT p.id, p.message, p.timestamp, p.user_id, u.username, i.identicon, u.role
+            FROM posts AS p
+            INNER JOIN users AS u ON p.user_id = u.user_id
+            INNER JOIN identicon AS i ON u.user_id = i.user_id
+            WHERE p.id = :post_id;';
+
+        /** @var \PDOStatement $pdo */
+        $stmt = \PDO::prepare($query);
+        $stmt->bindValue(':post_id', $post_id);
+        $stmt->execute();
+
+        /** @var array||FALSE $result */
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC) ;
+        
+        return !empty($stmt->rowCount());
+    }
+
+    /**
      * Get likes method
      *
      * Used in post component
@@ -181,6 +208,25 @@ final class DbHandler extends \PDO {
         /** @var \PDOStatement $stmt */
         $stmt = \PDO::prepare($query);
         $stmt->bindValue(':username', $username);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+    
+    /** 
+     * Delete post method
+     * 
+     * @param array $errors
+     * @param int $user_id
+     * @param int $post_id
+     * @return bool
+    */
+    function deletePostHandler(array &$errors, int $post_id) : bool {
+        /** @var string $query */
+        $query = 'DELETE FROM posts WHERE id = :post_id;';
+        /** @var \PDOStatement $stmt */
+        $stmt = \PDO::prepare($query);
+        $stmt->bindValue(':post_id', $post_id);
         $stmt->execute();
 
         return !empty($stmt->rowCount());
