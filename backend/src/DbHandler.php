@@ -43,12 +43,11 @@ final class DbHandler extends \PDO {
     /**
      * Create post method
      * 
-     * @param array $errors
      * @param int $user_id
      * @param string $message
      * @return bool
      */
-    function createPostHandler(array &$errors, int $user_id, string $message) : bool {
+    function createPostHandler(int $user_id, string $message) : bool {
         /** @var string||NULL $query */
         $query = 'INSERT INTO posts(user_id, message, timestamp) VALUES (:user_id, :message, :timestamp);';
 
@@ -68,12 +67,11 @@ final class DbHandler extends \PDO {
      * Used in feed
      * Get all posts from users that the logged in user follows
      * 
-     * @param array $errors
      * @param array $result
      * @param int $user_id
      * @return bool
      */
-    function getPostsHandler(array &$errors, array &$result, int $user_id) : bool {
+    function getPostsHandler(array &$result, int $user_id) : bool {
         /** @var string||NULL $query */
         $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
             FROM followers AS f
@@ -97,12 +95,11 @@ final class DbHandler extends \PDO {
     /**
      * Get post method
      * 
-     * @param array $errors
      * @param array $result
      * @param int $post_id
      * @return bool
      */
-    function getPostHandler(array &$errors, array &$result, int $post_id) : bool {
+    function getPostHandler(array &$result, int $post_id) : bool {
         /** @var string||NULL $query */
         $query = 'SELECT p.id, p.message, p.timestamp, p.user_id, u.username, i.identicon, u.role
             FROM posts AS p
@@ -127,12 +124,11 @@ final class DbHandler extends \PDO {
      * Used in post component
      * Gets user ids of accounts which liked the posts
      * 
-     * @param array $errors
      * @param array $result
      * @param int $post_id
      * @return bool
      */
-    function getLikesHandler(array &$errors, array &$result, int $post_id) : bool {
+    function getLikesHandler(array &$result, int $post_id) : bool {
         /** @var string||NULL $query */
         $query = 'SELECT l.user_id FROM likes AS l  WHERE post_id = :post_id;';
 
@@ -150,12 +146,11 @@ final class DbHandler extends \PDO {
     /**
      * Get like method
      * 
-     * @param array $errors
      * @param int $user_id
      * @param int $post_id
      * @return bool
      */
-    function getLike(array &$errors, int $user_id, int $post_id) : bool {
+    function getLike(int $user_id, int $post_id) : bool {
         /** @var string||NULL $query */
         $query = 'SELECT id FROM likes WHERE post_id = :post_id AND user_id = :user_id;';
 
@@ -171,14 +166,13 @@ final class DbHandler extends \PDO {
     /**
      * toggle like method
      * 
-     * @param array $errors
      * @param int $user_id
      * @param int $post_id
      * @return bool
      */
-    function toggleLikeHandler(array &$errors, int $user_id, int $post_id) : bool {
+    function toggleLikeHandler(int $user_id, int $post_id) : bool {
         /** @var bool $getLike */
-        $getLike = $this->getLike($errors, $user_id, $post_id);
+        $getLike = $this->getLike($user_id, $post_id);
 
         $getLike 
             ? $query = 'DELETE FROM likes WHERE post_id = :post_id AND user_id = :user_id;'
@@ -216,12 +210,10 @@ final class DbHandler extends \PDO {
     /** 
      * Delete post method
      * 
-     * @param array $errors
-     * @param int $user_id
      * @param int $post_id
      * @return bool
     */
-    function deletePostHandler(array &$errors, int $post_id) : bool {
+    function deletePostHandler(int $post_id) : bool {
         /** @var string $query */
         $query = 'DELETE FROM posts WHERE id = :post_id;';
         /** @var \PDOStatement $stmt */
@@ -264,30 +256,22 @@ final class DbHandler extends \PDO {
      * Used at registration
      * Insert user data into the database
      * 
-     * @param string $input_username
-     * @param string $input_email
-     * @param string $hashed_password
-     * @param string $hashed_salt
+     * @param string $username
+     * @param string $email
+     * @param string $password
+     * @param string $salt
      * @return bool
     */
-    function insertUser(array &$errors, string $input_username, string $input_email, string $hashed_password, string $hashed_salt) : bool {
+    function insertUser(string $username, string $email, string $password, string $salt) : bool {
         /** @var string $query */
         $query = 'INSERT INTO users(username, email, password, salt) VALUES (:username, :email, :password, :salt);';
         /** @var \PDOStatement $stmt */
         $stmt = \PDO::prepare($query);
-        $stmt->bindValue(':username', $input_username);
-        $stmt->bindValue(':email', $input_email);
-        $stmt->bindValue(':password', $hashed_password);
-        $stmt->bindValue(':salt', $hashed_salt);
-
-        try {
-            $stmt->execute();
-        } 
-        // ? catch doesn't return the error
-        // ? Difference between \PDOException and \Exception?
-        catch (\Exception $e) {
-            $errors['insert_db'] = $e->getMessage();
-        }
+        $stmt->bindValue(':username', $username);
+        $stmt->bindValue(':email', $email);
+        $stmt->bindValue(':password', $password);
+        $stmt->bindValue(':salt', $salt);
+        $stmt->execute();
 
         return !empty($stmt->rowCount());
     }

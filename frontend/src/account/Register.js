@@ -71,7 +71,6 @@ const Register = () => {
   // Navigates to login on succes, else throws errors
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // setIsSubmit(true);
 
     const fields = new FormData();
     fields.append("username", formValues.username)
@@ -84,15 +83,16 @@ const Register = () => {
     })
     .catch((error) => {
       let errors = error.response.data.errors;
+      console.log(errors);
 
-      // ?? states wont get updated
+      // ?? states wont get updated / logs are empty
+      // ?? only 1 input error gets shown
       for (const [key, value] of Object.entries(errors)) {        
         if (value) {
           setStateVal({...stateVal, [key]: false})
           setFormErrors({...formErrors, [key]: value});
         }
       }
-      
       console.log(stateVal);
       console.log(formErrors);
     });

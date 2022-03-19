@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
 
 import { UserContext, Avatar } from '../_components';
 import { postsService } from '../_services';
@@ -36,7 +37,9 @@ const CreatePost = () => {
 
       <form method="POST" id="create-post-form" className="create-post col-12 flex-column">
         <div className="create-post-inner col-sm d-flex flex-wrap w-100">
-          <Avatar identicon={user.identicon} />
+          <Link to="/profile" className="m-avatar">
+            <Avatar identicon={user.identicon} />
+          </Link>          
           <textarea 
             name="message" 
             className="form-control box" 

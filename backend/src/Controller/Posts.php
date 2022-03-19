@@ -24,21 +24,21 @@ final class Posts extends AbstractController {
      * @return void
      */
     function feed(?string $user_id = NULL) : void {
-        /** @var array $errors */
-        $errors = [];
         /** @var array $result */
         $result = [];
 
-        if($this->isMethod(self::METHOD_GET) 
-            && !is_null($user_id)
-            && $this->PostsModel->getPosts($errors, $result, $user_id)) 
-        {
-            $this->responseCode(200);
-            $this->printJSON(['success' => TRUE, 'result' => $result]);
+        if($this->isMethod(self::METHOD_GET) && !is_null($user_id)) {
+            if ($this->PostsModel->getPosts($result, $user_id)) {
+                $this->responseCode(200);
+                $this->printJSON(['success' => TRUE, 'result' => $result]);
+            }
+            else {
+                $this->responseCode(204);
+                $this->printJSON(['success' => TRUE]);
+            }
         }
         else {
             $this->responseCode(400);
-            $this->printJSON(['errors' => $errors]);
         }
     }
 
@@ -65,7 +65,6 @@ final class Posts extends AbstractController {
         }
         else {
             $this->responseCode(400);
-            $this->printJSON(['errors' => $errors]);
         }
     }
     
@@ -80,7 +79,7 @@ final class Posts extends AbstractController {
         /** @var array $errors */
         $errors = [];
 
-        if($this->isMethod(self::METHOD_DELETE)) {
+        if($this->isMethod(self::METHOD_POST)) {
             if ($this->PostsModel->deletePost($errors, $post_id)) {
                 $this->responseCode(200);
                 $this->printJSON(['success' => TRUE]);
@@ -92,7 +91,6 @@ final class Posts extends AbstractController {
         }
         else {
             $this->responseCode(400);
-            $this->printJSON(['errors' => $errors]);
         }
     }
 
@@ -104,21 +102,21 @@ final class Posts extends AbstractController {
      * @return void
      */
     function likes(?string $post_id = NULL) : void {
-        /** @var array $errors */
-        $errors = [];
         /** @var array $result */
         $result = [];
 
-        if($this->isMethod(self::METHOD_GET) 
-            && !is_null($post_id)
-            && $this->PostsModel->getLikes($errors, $result, $post_id)) 
-        {
-            $this->responseCode(200);
-            $this->printJSON(['success' => TRUE, 'result' => $result]);
+        if($this->isMethod(self::METHOD_GET) && !is_null($post_id)) {
+            if ($this->PostsModel->getLikes($result, $post_id)) {
+                $this->responseCode(200);
+                $this->printJSON(['success' => TRUE, 'result' => $result]);
+            }
+            else {
+                $this->responseCode(204);
+                $this->printJSON(['success' => TRUE]);
+            }
         } 
         else {
             $this->responseCode(400);
-            $this->printJSON(['errors' => $errors]);
         }
     }
     

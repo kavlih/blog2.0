@@ -6,7 +6,6 @@ import { Account } from '../account/Index';
 import { Feed } from '../feed/Index';
 import { Profile } from '../profile/Index';
 import { Users } from '../users/Index';
-import { Settings } from '../settings/Index';
 
 const Router = (props) => {
   return (
@@ -14,7 +13,6 @@ const Router = (props) => {
       <Route path="" element={<PrivateRoute />}>
         <Route path="/feed" element={<Feed />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} />
       </Route>
       <Route path="/users" element={<Users />} />
       <Route path="/account/*" element={<Account />} />

@@ -21,7 +21,7 @@ const Feed = () => {
       setPosts(res.data.result)
     })
     .catch((error) => {
-      console.log(error.response.data.errors);
+      // console.log(error.response.data.errors);
     });
   }, []);
 
@@ -29,7 +29,9 @@ const Feed = () => {
   <>
     <div className="m-main-section m-auto col">
       <div className='d-flex'>
-        <Avatar identicon={user.identicon} />
+        <div className='m-avatar'>
+          <Avatar identicon={user.identicon} />
+        </div>
         <p className='text-white'>{user.username}</p>
         {/* {user.role < 3 && <p>{user.role}</p>} */}
         <button onClick={handleLogout}>logout</button>
@@ -38,7 +40,6 @@ const Feed = () => {
       <CreatePost />
       {posts 
         ? posts.map(item => {
-          console.log(item);
           return (
             <Post key={item.id} post={item}/>
           );

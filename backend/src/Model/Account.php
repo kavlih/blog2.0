@@ -99,7 +99,7 @@ final class Account extends AbstractModel {
 
         // Insert data into database
         /** @var bool $insert_user */
-        $insert_user = $this->DbHandler->insertUser($errors, $input_username, $input_email, $hashed_password, $hashed_salt);
+        $insert_user = $this->DbHandler->insertUser($input_username, $input_email, $hashed_password, $hashed_salt);
         /** @var bool $insert_additionals */
         $insert_additionals = $this->DbHandler->insertUserAdditionals($input_username);
         
@@ -258,7 +258,7 @@ final class Account extends AbstractModel {
                 $errors['password'][] = 'Password should contain minimum one uppercase letter.';
             }
             if(!preg_match('/\d/', $password)) {
-                $errors['password' ][] = 'Password should contain minimum one number.';
+                $errors['password'][] = 'Password should contain minimum one number.';
             }
             if(!preg_match( '/\W/', $password)) {
                 $errors['password'][] = 'Password should contain minimum one special character.';

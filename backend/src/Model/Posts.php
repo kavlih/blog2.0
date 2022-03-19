@@ -23,7 +23,7 @@ final class Posts extends AbstractModel {
           $message = filter_input( INPUT_POST, 'message' );
 
           return $this->validate_message($errors, $message)
-               ? $this->DbHandler->createPostHandler($errors, $user_id, $message)
+               ? $this->DbHandler->createPostHandler($user_id, $message)
                : FALSE;
      }
      
@@ -35,30 +35,23 @@ final class Posts extends AbstractModel {
      * @return bool
      */
      function deletePost(array &$errors, int $post_id) : bool {
-          /** @var array $result */
-          $result = [];
+          /** @var bool $result */
+          $deletePost = $this->DbHandler->deletePostHandler($$post_id);
 
-          // && $result["user_id"] === $user_id) 
-          if ($this->DbHandler->getPostHandler($errors, $result, $post_id)) {
-               $this->DbHandler->deletePostHandler($errors, $post_id);
-          }
-          else {
-               $errors[] = "You dont't have permission to do that";            
-          }
+          if(!$deletePost) $errors[] = "Post could not be deleted"; 
 
-          return empty($errors);
+          return $deletePost;
      }
 
      /**
      * Get likes
      * 
-     * @param  array $errors
      * @param  array $result
      * @param  int $post_id
      * @return bool
      */
-     function getlikes(array &$errors, array &$result, int $post_id) : bool {
-          return $this->DbHandler->getLikesHandler($errors, $result, $post_id);
+     function getlikes(array &$result, int $post_id) : bool {
+          return $this->DbHandler->getLikesHandler($result, $post_id);
      }
      
      /**
@@ -73,18 +66,22 @@ final class Posts extends AbstractModel {
           /** @var string $user_id */
           $user_id = filter_input( INPUT_POST, 'user_id' );
 
-          return $this->DbHandler->toggleLikeHandler($errors, $user_id, $post_id);
+          /** @var bool $toggleLike */
+          $toggleLike = $this->DbHandler->toggleLikeHandler($user_id, $post_id);
+
+          if(!$toggleLike) $errors[] = "Could not toggle like"; 
+
+          return $toggleLike;
      }
 
      /**
      * Get posts
      * 
-     * @param  array $errors
      * @param  array $result
      * @return bool
      */
-     function getPosts(array &$errors, array &$result, string $user_id) : bool {
-          return $this->DbHandler->getPostsHandler($errors, $result, $user_id);
+     function getPosts(array &$result, string $user_id) : bool {
+          return $this->DbHandler->getPostsHandler($result, $user_id);
      }
 
     /**
