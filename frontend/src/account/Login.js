@@ -58,6 +58,7 @@ const Login = () => {
     accountService.login(fields)
     .then((res) => {
       localStorage.setItem("user", JSON.stringify(res.data.user));
+      console.log(res.data.user);
       navigate('/feed');
     })
     .catch((error) => {

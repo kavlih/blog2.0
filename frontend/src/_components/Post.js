@@ -19,7 +19,7 @@ const Post = ({post}) => {
 
   // Gets likes of post
   useEffect(() => {
-    postsService.getLikes(post.id)
+    postsService.getPostLikes(post.id)
       .then((res) => {
         let likeArr = res.data.result;
         

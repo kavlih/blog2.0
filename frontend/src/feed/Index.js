@@ -23,7 +23,7 @@ const Feed = () => {
     .catch((error) => {
       // console.log(error.response.data.errors);
     });
-  }, []);
+  }, [posts]);
 
   return (
   <>
@@ -39,12 +39,9 @@ const Feed = () => {
       </div>
       <CreatePost />
       {posts 
-        ? posts.map(item => {
-          return (
-            <Post key={item.id} post={item}/>
-          );
-        }) 
-        : <p>no posts</p>}
+        ? posts.map(item => { return ( <Post key={item.id} post={item}/> )}) 
+        : <p>no posts</p>
+      }
     </div>
   </>
   );

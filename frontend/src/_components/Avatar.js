@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { identiconService } from '../_services';
+import { identiconHelper } from '../_helpers';
 
 const Avatar = ({identicon}) => {
   return (
-    <img className="default-img w-100 h-100" src={identiconService.get(identicon)} alt="identicon"/>
+    <img className="default-img w-100 h-100" src={identiconHelper.get(identicon)} alt="identicon"/>
   );
 }
 

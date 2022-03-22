@@ -62,7 +62,7 @@ final class DbHandler extends \PDO {
     }
 
     /**
-     * Get posts method
+     * Get feed posts method
      *
      * Used in feed
      * Get all posts from users that the logged in user follows
@@ -71,14 +71,69 @@ final class DbHandler extends \PDO {
      * @param int $user_id
      * @return bool
      */
-    function getPostsHandler(array &$result, int $user_id) : bool {
+    function getFeedPostsHandler(array &$result, int $user_id) : bool {
         /** @var string||NULL $query */
         $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
             FROM followers AS f
             INNER JOIN posts AS p ON f.receiver_id = p.user_id 
             INNER JOIN users AS u ON p.user_id = u.user_id
             INNER JOIN identicon AS i ON u.user_id = i.user_id
-            WHERE follower_id = :user_id
+            WHERE f.follower_id = :user_id
+            ORDER BY p.id DESC;';
+
+        /** @var \PDOStatement $pdo */
+        $stmt = \PDO::prepare($query);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        /** @var array||FALSE $result */
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC) ;
+        
+        return !empty($stmt->rowCount());
+    }
+
+    /**
+     * Get user posts method
+     * 
+     * @param array $result
+     * @param int $user_id
+     * @return bool
+     */
+    function getUserPostsHandler(array &$result, int $user_id) : bool {
+        /** @var string||NULL $query */
+        $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
+            FROM posts AS p
+            INNER JOIN users AS u ON p.user_id = u.user_id
+            INNER JOIN identicon AS i ON u.user_id = i.user_id
+            WHERE p.user_id = :user_id
+            ORDER BY p.id DESC;';
+
+        /** @var \PDOStatement $pdo */
+        $stmt = \PDO::prepare($query);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        /** @var array||FALSE $result */
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC) ;
+        
+        return !empty($stmt->rowCount());
+    }
+
+    /**
+     * Get user likes method
+     * 
+     * @param array $result
+     * @param int $user_id
+     * @return bool
+     */
+    function getUserLikesHandler(array &$result, int $user_id) : bool {
+        /** @var string||NULL $query */
+        $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
+            FROM likes AS l
+            INNER JOIN posts AS p ON p.id = l.post_id
+            INNER JOIN users AS u ON u.user_id = p.user_id
+            INNER JOIN identicon AS i ON i.user_id = u.user_id
+            WHERE l.user_id = :user_id
             ORDER BY p.id DESC;';
 
         /** @var \PDOStatement $pdo */

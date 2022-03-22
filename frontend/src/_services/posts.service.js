@@ -12,7 +12,15 @@ const getPosts = (user_id) => {
   return axiosHelper.get(`/posts/feed/${user_id}`)
 }
 
-const getLikes = (post_id) => {
+const getUserPosts = (user_id) => {
+  return axiosHelper.get(`/posts/user/${user_id}`)
+}
+
+const getUserLikes = (user_id) => {
+  return axiosHelper.get(`/posts/liked/${user_id}`)
+}
+
+const getPostLikes = (post_id) => {
   return axiosHelper.get(`/posts/likes/${post_id}`)
 }
 
@@ -24,6 +32,8 @@ export const postsService = {
   createPost,
   deletePost,
   getPosts,
-  getLikes,
-  toggleLike
+  getPostLikes,
+  getUserLikes,
+  toggleLike,
+  getUserPosts
 };

@@ -75,13 +75,33 @@ final class Posts extends AbstractModel {
      }
 
      /**
-     * Get posts
+     * Get feed posts
      * 
      * @param  array $result
      * @return bool
      */
-     function getPosts(array &$result, string $user_id) : bool {
-          return $this->DbHandler->getPostsHandler($result, $user_id);
+     function getFeedPosts(array &$result, string $user_id) : bool {
+          return $this->DbHandler->getFeedPostsHandler($result, $user_id);
+     }
+     
+     /**
+     * Get user posts
+     * 
+     * @param  array $result
+     * @return bool
+     */
+     function getUserPosts(array &$result, string $user_id) : bool {
+          return $this->DbHandler->getUserPostsHandler($result, $user_id);
+     }
+
+     /**
+     * Get liked posts
+     * 
+     * @param  array $result
+     * @return bool
+     */
+     function getUserLikes(array &$result, string $user_id) : bool {
+          return $this->DbHandler->getUserLikesHandler($result, $user_id);
      }
 
     /**

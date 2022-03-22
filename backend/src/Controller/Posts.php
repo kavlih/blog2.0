@@ -20,6 +20,8 @@ final class Posts extends AbstractController {
      * Feed method
      * @GET
      * 
+     * For getting feed posts of signed in user
+     * 
      * @param string||NULL $user_id
      * @return void
      */
@@ -28,7 +30,63 @@ final class Posts extends AbstractController {
         $result = [];
 
         if($this->isMethod(self::METHOD_GET) && !is_null($user_id)) {
-            if ($this->PostsModel->getPosts($result, $user_id)) {
+            if ($this->PostsModel->getFeedPosts($result, $user_id)) {
+                $this->responseCode(200);
+                $this->printJSON(['success' => TRUE, 'result' => $result]);
+            }
+            else {
+                $this->responseCode(204);
+                $this->printJSON(['success' => TRUE]);
+            }
+        }
+        else {
+            $this->responseCode(400);
+        }
+    }
+    
+    /**
+     * User method
+     * @GET
+     * 
+     * For getting posts of a specific user
+     * 
+     * @param string||NULL $user_id
+     * @return void
+     */
+    function user(?string $user_id = NULL) : void {
+        /** @var array $result */
+        $result = [];
+
+        if($this->isMethod(self::METHOD_GET) && !is_null($user_id)) {
+            if ($this->PostsModel->getUserPosts($result, $user_id)) {
+                $this->responseCode(200);
+                $this->printJSON(['success' => TRUE, 'result' => $result]);
+            }
+            else {
+                $this->responseCode(204);
+                $this->printJSON(['success' => TRUE]);
+            }
+        }
+        else {
+            $this->responseCode(400);
+        }
+    }
+
+    /**
+     * Liked method
+     * @GET
+     * 
+     * For getting liked posts of a specific user
+     * 
+     * @param string||NULL $user_id
+     * @return void
+     */
+    function liked(?string $user_id = NULL) : void {
+        /** @var array $result */
+        $result = [];
+
+        if($this->isMethod(self::METHOD_GET) && !is_null($user_id)) {
+            if ($this->PostsModel->getUserLikes($result, $user_id)) {
                 $this->responseCode(200);
                 $this->printJSON(['success' => TRUE, 'result' => $result]);
             }
@@ -45,6 +103,8 @@ final class Posts extends AbstractController {
     /**
      * Create method
      * @POST
+     * 
+     * For creating a post
      * 
      * @param string||NULL $user_id
      * @return void
@@ -72,6 +132,8 @@ final class Posts extends AbstractController {
      * Create method
      * @POST
      * 
+     * For deleting a post
+     * 
      * @param string||NULL $post_id
      * @return void
      */
@@ -98,6 +160,8 @@ final class Posts extends AbstractController {
      * Likes method
      * @GET
      * 
+     * For getting likes of a post
+     * 
      * @param string||NULL $post_id
      * @return void
      */
@@ -123,6 +187,8 @@ final class Posts extends AbstractController {
     /**
      * Like method
      * @POST
+     * 
+     * For liking a post
      * 
      * @param string||NULL $post_id
      * @return void

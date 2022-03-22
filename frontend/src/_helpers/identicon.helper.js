@@ -4,4 +4,4 @@ const get = (identicon) => {
   return `${URL}${identicon}.svg`;
 }
 
-export const identiconService = { get }
+export const identiconHelper = { get }
