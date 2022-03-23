@@ -12,6 +12,100 @@ use application\Model as AbstractModel;
 final class Account extends AbstractModel {
     
     /**
+     * Update username method
+     * 
+     * @param array $errors
+     * @return bool
+     */
+    function updateUsername(array &$errors) : bool {
+        /** @var ?string $username */
+        $username = filter_input(INPUT_POST, 'username');
+        /** @var int $user_id */
+        $user_id = filter_input(INPUT_POST, 'user_id');
+
+        /** @var bool $validate_username */
+        $validate_username = $this->validateUsername($errors, $username);
+
+        if(!$validate_username) {
+            /** @var array $result */
+            $user_data = $this->DbHandler->getUser($user_id);
+
+            if($user_data['username'] === $username) $errors['email'][] = 'This is already your username'; 
+            return FALSE;
+        }
+        else {
+            return $this->DbHandler->updateUsernameHandler($username, $user_id);
+        }
+    }
+
+    /**
+     * Update email method
+     * 
+     * @param array $errors
+     * @return bool
+     */
+    function updateEmail(array &$errors) : bool {
+        /** @var ?string $email */
+        $email = filter_input(INPUT_POST, 'email');
+        /** @var int $user_id */
+        $user_id = filter_input(INPUT_POST, 'user_id');
+
+        /** @var bool $validate_email */
+        $validate_email = $this->validateEmail($errors, $email);
+
+        if(!$validate_email) {
+            /** @var array $result */
+            $user_data = $this->DbHandler->getUser($user_id);
+
+            if($user_data['email'] === $email) $errors['email'][] = 'This is already your email';
+            return FALSE;
+        }
+        else {
+            return $this->DbHandler->updateEmailHandler($email, $user_id);
+        }
+    }
+
+    /**
+     * Update password method
+     * 
+     * @param array $errors
+     * @return bool
+     */
+    function updatePassword(array &$errors) : bool {
+        /** @var ?string $password_new */
+        $password_new = filter_input(INPUT_POST, 'password_new');
+        /** @var ?string $password_old */
+        $password_old = filter_input(INPUT_POST, 'password_old');
+        /** @var int $user_id */
+        $user_id = filter_input(INPUT_POST, 'user_id');
+
+        // Get user data from database
+        /** @var array $result */
+        $user_data = $this->DbHandler->getUser($user_id);
+        
+        // Validate input data and set $errors if a input is invalid
+        /** @var bool $validate_db_password */
+        $validate_db_password = $this->validateDbPassword($errors, $user_data, $password_old);
+        /** @var bool $validate_passwords */
+        $validate_passwords = $this->validatePassword($errors, $password_new);
+
+        // Return FALSE if validations were not successful
+        if(!$validate_db_password || !$validate_passwords) {
+            if($password_new === $password_old) $errors['password'][] = 'This is already your password';
+            return FALSE;
+        }
+        else {
+            // Hash salt & password
+            /** @var string $hashed_salt */
+            $hashed_salt = $this->createHashedSalt();;
+            /** @var string $hashed_password */
+            $hashed_password = $this->createHashedPassword($password_new, $hashed_salt);
+
+            return $this->DbHandler->updatePasswordHandler($hashed_salt, $hashed_password, $user_id);
+        }
+    }
+
+    /**
      * Login method
      *
      * Processes POST data from the login form
@@ -19,9 +113,10 @@ final class Account extends AbstractModel {
      * Returns TRUE if data machtes or FALSE if not
      * 
      * @param array $errors
-     * @return array||NULL
+     * @param array $result
+     * @return bool
      */
-    function login(array &$errors) : ?array {
+    function login(array &$errors, array &$result) : bool {
         /** @var ?string $input_username */
         $input_user = strtolower(filter_input(INPUT_POST, 'user'));
         /** @var ?string $input_password */
@@ -32,8 +127,7 @@ final class Account extends AbstractModel {
         $validations['password'] = !empty($input_password);
 
         // Exit method and return FALSE if a input was empty
-        foreach ($validations as $validation)
-        {
+        foreach ($validations as $validation) {
             if(!$validation) {
                 if(!$validations['user']) {
                     $errors['username'][] = 'Please type in a username or email address';
@@ -47,19 +141,15 @@ final class Account extends AbstractModel {
 
         // Get user data from database
         /** @var array $result */
-        $user_data = $this->DbHandler->getUser($input_user);
+        $result = $this->DbHandler->getUser($input_user);
         
         // If a matching user was found, compare passwords
-        if(!is_null($user_data)) {
-            /** @var bool $compare_passwords */
-            $compare_passwords = $this->comparePasswords($user_data, $input_password);
-        }
+        if(!is_null($result)) $compare_passwords = $this->comparePasswords($result, $input_password);
+
         // If no matching user was found or passwords don't match
-        else if(is_null($user_data) || !$compare_passwords) {
-            $errors['compare'] = 'This combination doesn\'t exist';
-            return NULL;
-        }
-        return $user_data;
+        if(is_null($result) || !$compare_passwords) $errors['compare'] = 'This combination doesn\'t exist';
+
+        return empty($errors); 
     }
 
     /**
@@ -86,8 +176,7 @@ final class Account extends AbstractModel {
         $validations['password'] = $this->validatePassword($errors, $input_password);
 
         // Exit method and return FALSE if a input was invalid
-        foreach ($validations as $validation)
-        {
+        foreach ($validations as $validation) {
             if(!$validation) return FALSE;
         }
 
@@ -103,7 +192,6 @@ final class Account extends AbstractModel {
         /** @var bool $insert_additionals */
         $insert_additionals = $this->DbHandler->insertUserAdditionals($input_username);
         
-        // Initialize error controller, if sql execution failed
         if(!$insert_user || !$insert_additionals) {
             // Delete already inserted data if only additional inserts failed
             if(!$insert_additionals) {
@@ -216,7 +304,7 @@ final class Account extends AbstractModel {
             if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $errors['email'][] = 'Email is not valid';
             }
-            if($this->DbHandler->getUser($email)) {
+            else if($this->DbHandler->getUser($email)) {
                 $errors['email'][] = 'Email is already registered';
             }
         }
@@ -265,5 +353,31 @@ final class Account extends AbstractModel {
             }
         }
         return (!isset($errors['password'])); 
+    }
+
+    /**
+     * Validate old password
+     *
+     * Checks if password is not empty
+     * Checks if password is correct
+     * 
+     * Returns TRUE if validation was successful and FALSE if $error was set
+     *
+     * @param   array       $errors
+     * @param   array|NULL  $user_data
+     * @param   string|NULL $password
+     * @return  bool
+     */
+    private function validateDbPassword(array &$errors, ?array $user_data, ?string $password) : bool {
+        if(is_null($password) || empty($password))
+        {
+            $errors['password_old'][] = 'Please type in your password';
+        }
+        elseif(!$this->comparePasswords($user_data, $password))
+        {
+            $errors['password_old'][] = 'Password is wrong';
+        }
+
+        return !isset($errors['password_old']);
     }
 }

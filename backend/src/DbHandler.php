@@ -283,7 +283,7 @@ final class DbHandler extends \PDO {
      * Get user method
      * 
      * Get user data from the database
-     * $user_data can contain a username OR an email address
+     * $user_data can contain a username, an email address or an user id
      * 
      * @param string $user_data
      * @return array||NULL
@@ -292,7 +292,7 @@ final class DbHandler extends \PDO {
         /** @var string $query */
         $query = 'SELECT u.*, i.identicon FROM users AS u
             LEFT JOIN identicon AS i ON i.user_id = u.user_id 
-            WHERE u.username = :user_data OR u.email = :user_data;';
+            WHERE u.username = :user_data OR u.email = :user_data OR u.user_id = :user_data;';
 
         /** @var \PDOStatement $stmt */
         $stmt = \PDO::prepare($query);
@@ -351,6 +351,68 @@ final class DbHandler extends \PDO {
         /** @var \PDOStatement $stmt */
         $stmt = \PDO::prepare($query);
         $stmt->bindValue(':user_id', $user_data['user_id']);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+ 
+    /** 
+     * Update password method
+     * 
+     * @param string $hashed_salt
+     * @param string $hashed_password
+     * @param int $user_id
+     * @return bool
+    */
+    function updatePasswordHandler(string $hashed_salt, string $hashed_password, int $user_id) : bool {
+        /** @var string $query */
+        $query = 'UPDATE users SET password = :password, salt = :salt WHERE user_id = :user_id;';
+
+        /** @var \PDOStatement $pdo */
+        $stmt = \PDO::prepare($query);
+        $stmt->bindValue(':salt', $hashed_salt);
+        $stmt->bindValue(':password', $hashed_password);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
+    /** 
+     * Update email method
+     * 
+     * @param string $email
+     * @param int $user_id
+     * @return bool
+    */
+    function updateEmailHandler(string $email, int $user_id) : bool {
+        /** @var string $query */
+        $query = 'UPDATE users SET email = :email WHERE user_id = :user_id;';
+
+        /** @var \PDOStatement $pdo */
+        $stmt = \PDO::prepare($query);
+        $stmt->bindValue(':email', $email);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
+    /** 
+     * Update username method
+     * 
+     * @param string $username
+     * @param int $user_id
+     * @return bool
+    */
+    function updateUsernameHandler(string $username, int $user_id) : bool {
+        /** @var string $query */
+        $query = 'UPDATE users SET username = :username WHERE user_id = :user_id;';
+
+        /** @var \PDOStatement $pdo */
+        $stmt = \PDO::prepare($query);
+        $stmt->bindValue(':username', $username);
+        $stmt->bindValue(':user_id', $user_id);
         $stmt->execute();
 
         return !empty($stmt->rowCount());

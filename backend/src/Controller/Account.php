@@ -17,6 +17,81 @@ final class Account extends AbstractController {
     }
 
     /**
+     * Update username method
+     * @POST
+     * 
+     * @return void
+     */
+    function updateUsername() : void {
+        /** @var array $errors */
+        $errors = [];
+
+        if($this->isMethod(self::METHOD_POST)) {
+            if ($this->AccountModel->updateUsername($errors)) {
+                $this->responseCode(200);
+                $this->printJSON(['success' => TRUE]);
+            } 
+            else {
+                $this->responseCode(409);
+                $this->printJSON(['errors' => $errors]);
+            }
+        }
+        else {
+            $this->responseCode(400);
+        }
+    }
+    
+    /**
+     * Update email method
+     * @POST
+     * 
+     * @return void
+     */
+    function updateEmail() : void {
+        /** @var array $errors */
+        $errors = [];
+
+        if($this->isMethod(self::METHOD_POST)) {
+            if ($this->AccountModel->updateEmail($errors)) {
+                $this->responseCode(200);
+                $this->printJSON(['success' => TRUE]);
+            } 
+            else {
+                $this->responseCode(409);
+                $this->printJSON(['errors' => $errors]);
+            }
+        }
+        else {
+            $this->responseCode(400);
+        }
+    }
+
+    /**
+     * Update password method
+     * @POST
+     * 
+     * @return void
+     */
+    function updatePassword() : void {
+        /** @var array $errors */
+        $errors = [];
+
+        if($this->isMethod(self::METHOD_POST)) {
+            if ($this->AccountModel->updatePassword($errors)) {
+                $this->responseCode(200);
+                $this->printJSON(['success' => TRUE]);
+            } 
+            else {
+                $this->responseCode(409);
+                $this->printJSON(['errors' => $errors]);
+            }
+        }
+        else {
+            $this->responseCode(400);
+        }
+    }
+
+    /**
      * Login method
      * @POST
      * 
@@ -25,20 +100,20 @@ final class Account extends AbstractController {
     function login() : void {
         /** @var array $errors */
         $errors = [];
-        /** @var array||NULL $login */
-        $login = $this->AccountModel->login($errors);
+        /** @var array $result */
+        $result = [];
 
         if($this->isMethod(self::METHOD_POST)) {
-            if (!is_null($login)) {
+            if ($this->AccountModel->login($errors, $result)) {
                 $this->responseCode(200);
                 $this->printJSON([
                     'success'   => TRUE,
                     'user'      => [
-                        'id'        => $login['user_id'],
-                        'role'      => $login['role'],
-                        'username'  => $login['username'],
-                        'email'     => $login['email'],
-                        'identicon' => $login['identicon'],
+                        'id'        => $result['user_id'],
+                        'role'      => $result['role'],
+                        'username'  => $result['username'],
+                        'email'     => $result['email'],
+                        'identicon' => $result['identicon'],
                     ]
                 ]);
             }
@@ -76,4 +151,5 @@ final class Account extends AbstractController {
             $this->responseCode(400);
         }
     }
+
 }

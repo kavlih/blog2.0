@@ -41,6 +41,7 @@ final class Posts extends AbstractController {
         }
         else {
             $this->responseCode(400);
+            $this->printJSON(['success' => FALSE]);
         }
     }
     
@@ -69,6 +70,7 @@ final class Posts extends AbstractController {
         }
         else {
             $this->responseCode(400);
+            $this->printJSON(['success' => FALSE]);
         }
     }
 
@@ -97,6 +99,7 @@ final class Posts extends AbstractController {
         }
         else {
             $this->responseCode(400);
+            $this->printJSON(['success' => FALSE]);
         }
     }
 
@@ -120,11 +123,12 @@ final class Posts extends AbstractController {
             } 
             else {    
                 $this->responseCode(409);
-                $this->printJSON(['errors' => $errors]);
+                $this->printJSON(['success' => FALSE, 'errors' => $errors]);
             }
         }
         else {
             $this->responseCode(400);
+            $this->printJSON(['success' => FALSE]);
         }
     }
     
@@ -148,11 +152,12 @@ final class Posts extends AbstractController {
             } 
             else {
                 $this->responseCode(409);
-                $this->printJSON(['errors' => $errors]);
+                $this->printJSON(['success' => FALSE, 'errors' => $errors]);
             }
         }
         else {
             $this->responseCode(400);
+            $this->printJSON(['success' => FALSE]);
         }
     }
 
@@ -181,6 +186,7 @@ final class Posts extends AbstractController {
         } 
         else {
             $this->responseCode(400);
+            $this->printJSON(['success' => FALSE]);
         }
     }
     
@@ -206,7 +212,7 @@ final class Posts extends AbstractController {
         } 
         else {
             $this->responseCode(400);
-            $this->printJSON(['errors' => $errors]);
+            $this->printJSON(['success' => FALSE, 'errors' => $errors]);
         }
     }
     
