@@ -40,19 +40,170 @@ final class DbHandler extends \PDO {
         parent::__construct($dsn, $dbuser, $dbpass, $options);
     }
 
+    // Account ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
+    /** 
+     * Create user
+     * 
+     * @param string $username
+     * @param string $email
+     * @param string $password
+     * @param string $salt
+     * @return bool
+    */
+    function accountCreate(string $username, string $email, string $password, string $salt) : bool {
+        /** @var string $query */
+        $query = 'INSERT INTO users(username, email, password, salt) VALUES (:username, :email, :password, :salt);';
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
+        $stmt->bindValue(':username', $username);
+        $stmt->bindValue(':email', $email);
+        $stmt->bindValue(':password', $password);
+        $stmt->bindValue(':salt', $salt);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
+    /** 
+     * Create user additionals
+     * 
+     * @param string $username
+     * @return bool
+    */
+    function accountCreateAdditionals(string $username) : bool {
+        /** @var array||NULL $result */
+        $result = $this->accountGet($username);
+
+        /** @var string $query */
+        $query = 'INSERT INTO identicon(user_id, identicon) VALUES (:user_id, :user_id);
+            INSERT INTO followers(follower_id, receiver_id) VALUES (:user_id, :user_id);';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
+        $stmt->bindValue(':user_id', $result['user_id']);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
+    /** 
+     * Delete user part
+     * 
+     * @param string $username
+     * @return bool
+    */
+    function accountDeletePart(string $username) : bool {
+        /** @var string $query */
+        $query = 'DELETE FROM users WHERE username = :username;';
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
+        $stmt->bindValue(':username', $username);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
+    /** 
+     * Get user
+     * 
+     * @param $user_data
+     * @return array||NULL
+    */
+    function accountGet($user_data) : ?array {
+        /** @var string $query */
+        $query = 'SELECT u.*, i.identicon FROM users AS u
+            LEFT JOIN identicon AS i ON i.user_id = u.user_id 
+            WHERE u.username = :user_data OR u.email = :user_data OR u.user_id = :user_data;';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
+        $stmt->bindValue(':user_data', $user_data);
+        $stmt->execute();
+
+        /** @var array||FALSE $result */
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        return !$result ? NULL : $result;
+    }
+
+    /** 
+     * Update email
+     * 
+     * @param string $email
+     * @param int $user_id
+     * @return bool
+    */
+    function accountUpdateEmail(string $email, int $user_id) : bool {
+        /** @var string $query */
+        $query = 'UPDATE users SET email = :email WHERE user_id = :user_id;';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
+        $stmt->bindValue(':email', $email);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
+    /** 
+     * Update password
+     * 
+     * @param string $hashed_salt
+     * @param string $hashed_password
+     * @param int $user_id
+     * @return bool
+    */
+    function accountUpdatePassword(string $hashed_salt, string $hashed_password, int $user_id) : bool {
+        /** @var string $query */
+        $query = 'UPDATE users SET password = :password, salt = :salt WHERE user_id = :user_id;';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
+        $stmt->bindValue(':salt', $hashed_salt);
+        $stmt->bindValue(':password', $hashed_password);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
+    /** 
+     * Update username
+     * 
+     * @param string $username
+     * @param int $user_id
+     * @return bool
+    */
+    function accountUpdateUsername(string $username, int $user_id) : bool {
+        /** @var string $query */
+        $query = 'UPDATE users SET username = :username WHERE user_id = :user_id;';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
+        $stmt->bindValue(':username', $username);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
+    // Post ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
     /**
-     * Create post method
+     * Create post
      * 
      * @param int $user_id
      * @param string $message
      * @return bool
      */
-    function createPostHandler(int $user_id, string $message) : bool {
-        /** @var string||NULL $query */
+    function postCreate(int $user_id, string $message) : bool {
+        /** @var string $query */
         $query = 'INSERT INTO posts(user_id, message, timestamp) VALUES (:user_id, :message, :timestamp);';
 
         /** @var \PDOStatement $stmt */
-        $stmt = \PDO::prepare($query);
+        $stmt = $this->prepare($query);
         $stmt->bindValue(':user_id', $user_id);
         $stmt->bindValue(':message', $message);
         $stmt->bindValue(':timestamp', $_SERVER['REQUEST_TIME']);
@@ -61,100 +212,31 @@ final class DbHandler extends \PDO {
         return !empty($stmt->rowCount());
     }
 
-    /**
-     * Get feed posts method
-     *
-     * Used in feed
-     * Get all posts from users that the logged in user follows
+    /** 
+     * Delete post
      * 
-     * @param array $result
-     * @param int $user_id
-     * @return bool
-     */
-    function getFeedPostsHandler(array &$result, int $user_id) : bool {
-        /** @var string||NULL $query */
-        $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
-            FROM followers AS f
-            INNER JOIN posts AS p ON f.receiver_id = p.user_id 
-            INNER JOIN users AS u ON p.user_id = u.user_id
-            INNER JOIN identicon AS i ON u.user_id = i.user_id
-            WHERE f.follower_id = :user_id
-            ORDER BY p.id DESC;';
-
-        /** @var \PDOStatement $pdo */
-        $stmt = \PDO::prepare($query);
-        $stmt->bindValue(':user_id', $user_id);
-        $stmt->execute();
-
-        /** @var array||FALSE $result */
-        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC) ;
-        
-        return !empty($stmt->rowCount());
-    }
-
-    /**
-     * Get user posts method
-     * 
-     * @param array $result
-     * @param int $user_id
-     * @return bool
-     */
-    function getUserPostsHandler(array &$result, int $user_id) : bool {
-        /** @var string||NULL $query */
-        $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
-            FROM posts AS p
-            INNER JOIN users AS u ON p.user_id = u.user_id
-            INNER JOIN identicon AS i ON u.user_id = i.user_id
-            WHERE p.user_id = :user_id
-            ORDER BY p.id DESC;';
-
-        /** @var \PDOStatement $pdo */
-        $stmt = \PDO::prepare($query);
-        $stmt->bindValue(':user_id', $user_id);
-        $stmt->execute();
-
-        /** @var array||FALSE $result */
-        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC) ;
-        
-        return !empty($stmt->rowCount());
-    }
-
-    /**
-     * Get user likes method
-     * 
-     * @param array $result
-     * @param int $user_id
-     * @return bool
-     */
-    function getUserLikesHandler(array &$result, int $user_id) : bool {
-        /** @var string||NULL $query */
-        $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
-            FROM likes AS l
-            INNER JOIN posts AS p ON p.id = l.post_id
-            INNER JOIN users AS u ON u.user_id = p.user_id
-            INNER JOIN identicon AS i ON i.user_id = u.user_id
-            WHERE l.user_id = :user_id
-            ORDER BY p.id DESC;';
-
-        /** @var \PDOStatement $pdo */
-        $stmt = \PDO::prepare($query);
-        $stmt->bindValue(':user_id', $user_id);
-        $stmt->execute();
-
-        /** @var array||FALSE $result */
-        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC) ;
-        
-        return !empty($stmt->rowCount());
-    }
-
-    /**
-     * Get post method
-     * 
-     * @param array $result
      * @param int $post_id
      * @return bool
+    */
+    function postDelete(int $post_id) : bool {
+        /** @var string $query */
+        $query = 'DELETE FROM posts WHERE id = :post_id;';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
+        $stmt->bindValue(':post_id', $post_id);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
+    /**
+     * Get post
+     * 
+     * @param int $post_id
+     * @return array||NULL
      */
-    function getPostHandler(array &$result, int $post_id) : bool {
+    function postGet(int $post_id) : ?array {
         /** @var string||NULL $query */
         $query = 'SELECT p.id, p.message, p.timestamp, p.user_id, u.username, i.identicon, u.role
             FROM posts AS p
@@ -168,73 +250,149 @@ final class DbHandler extends \PDO {
         $stmt->execute();
 
         /** @var array||FALSE $result */
-        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC) ;
-        
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        return !$result ? NULL : $result;
+    }
+
+    /**
+     * Get feed posts
+     * 
+     * @param array $result
+     * @param int $user_id
+     * @return bool
+     */
+    function postGetAllFeed(array &$result, int $user_id) : bool {
+        /** @var string $query */
+        $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
+            FROM followers AS f
+            INNER JOIN posts AS p ON f.receiver_id = p.user_id 
+            INNER JOIN users AS u ON p.user_id = u.user_id
+            INNER JOIN identicon AS i ON u.user_id = i.user_id
+            WHERE f.follower_id = :user_id
+            ORDER BY p.id DESC;';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        /** @var array||FALSE $result */
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
         return !empty($stmt->rowCount());
     }
 
     /**
-     * Get likes method
-     *
-     * Used in post component
-     * Gets user ids of accounts which liked the posts
+     * Get user posts
+     * 
+     * @param array $result
+     * @param int $user_id
+     * @return bool
+     */
+    function postGetAllUser(array &$result, int $user_id) : bool {
+        /** @var string $query */
+        $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
+            FROM posts AS p
+            INNER JOIN users AS u ON p.user_id = u.user_id
+            INNER JOIN identicon AS i ON u.user_id = i.user_id
+            WHERE p.user_id = :user_id
+            ORDER BY p.id DESC;';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        /** @var array||FALSE $result */
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return !empty($stmt->rowCount());
+    }
+
+    /**
+     * Get liked posts
+     * 
+     * @param array $result
+     * @param int $user_id
+     * @return bool
+     */
+    function postGetAllLiked(array &$result, int $user_id) : bool {
+        /** @var string $query */
+        $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
+            FROM likes AS l
+            INNER JOIN posts AS p ON p.id = l.post_id
+            INNER JOIN users AS u ON u.user_id = p.user_id
+            INNER JOIN identicon AS i ON i.user_id = u.user_id
+            WHERE l.user_id = :user_id
+            ORDER BY p.id DESC;';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        /** @var array||FALSE $result */
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return !empty($stmt->rowCount());
+    }
+
+    /**
+     * Get all likes
      * 
      * @param array $result
      * @param int $post_id
      * @return bool
      */
-    function getLikesHandler(array &$result, int $post_id) : bool {
-        /** @var string||NULL $query */
+    function postGetLikes(array &$result, int $post_id) : bool {
+        /** @var string $query */
         $query = 'SELECT l.user_id FROM likes AS l  WHERE post_id = :post_id;';
 
-        /** @var \PDOStatement $pdo */
-        $stmt = \PDO::prepare($query);
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
         $stmt->bindValue(':post_id', $post_id);
         $stmt->execute();
 
         /** @var array||FALSE $result */
-        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC) ;
-        
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
         return !empty($stmt->rowCount());
     }
-    
+
     /**
-     * Get like method
+     * Get like
      * 
      * @param int $user_id
      * @param int $post_id
      * @return bool
      */
-    function getLike(int $user_id, int $post_id) : bool {
-        /** @var string||NULL $query */
+    function postLikeGet(int $user_id, int $post_id) : bool {
+        /** @var string $query */
         $query = 'SELECT id FROM likes WHERE post_id = :post_id AND user_id = :user_id;';
 
-        /** @var \PDOStatement $pdo */
-        $stmt = \PDO::prepare($query);
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
         $stmt->bindValue(':post_id', $post_id);
         $stmt->bindValue(':user_id', $user_id);
         $stmt->execute();
 
         return !empty($stmt->rowCount());
     }
-    
+
     /**
-     * toggle like method
+     * Add like
      * 
      * @param int $user_id
      * @param int $post_id
      * @return bool
      */
-    function toggleLikeHandler(int $user_id, int $post_id) : bool {
-        /** @var bool $getLike */
-        $getLike = $this->getLike($user_id, $post_id);
+    function postLikeAdd(int $user_id, int $post_id) : bool {
+        /** @var string $query */
+        $query = 'INSERT INTO likes (post_id, user_id) VALUES (:post_id, :user_id);';
 
-        $getLike 
-            ? $query = 'DELETE FROM likes WHERE post_id = :post_id AND user_id = :user_id;'
-            : $query = 'INSERT INTO likes (post_id, user_id) VALUES (:post_id, :user_id);';
-
-        /** @var \PDOStatement $pdo */
-        $stmt = \PDO::prepare($query);
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
         $stmt->bindValue(':post_id', $post_id);
         $stmt->bindValue(':user_id', $user_id);
         $stmt->execute();
@@ -242,179 +400,24 @@ final class DbHandler extends \PDO {
         return !empty($stmt->rowCount());
     }
 
-    /** 
-     * Delete user part method
+    /**
+     * Remove like
      * 
-     * Used at registration
-     * Deletes part of the users data in the database. Used when additional data insert failed
-     * 
-     * @param string $username
-     * @return bool
-    */
-    function deleteUserPart(string $username) : bool {
-        /** @var string $query */
-        $query = 'DELETE FROM users WHERE username = :username;';
-        /** @var \PDOStatement $stmt */
-        $stmt = \PDO::prepare($query);
-        $stmt->bindValue(':username', $username);
-        $stmt->execute();
-
-        return !empty($stmt->rowCount());
-    }
-    
-    /** 
-     * Delete post method
-     * 
+     * @param int $user_id
      * @param int $post_id
      * @return bool
-    */
-    function deletePostHandler(int $post_id) : bool {
+     */
+    function postLikeRemove(int $user_id, int $post_id) : bool {
         /** @var string $query */
-        $query = 'DELETE FROM posts WHERE id = :post_id;';
+        $query = 'DELETE FROM likes WHERE post_id = :post_id AND user_id = :user_id;';
+
         /** @var \PDOStatement $stmt */
-        $stmt = \PDO::prepare($query);
+        $stmt = $this->prepare($query);
         $stmt->bindValue(':post_id', $post_id);
-        $stmt->execute();
-
-        return !empty($stmt->rowCount());
-    }
-
-    /** 
-     * Get user method
-     * 
-     * Get user data from the database
-     * $user_data can contain a username, an email address or an user id
-     * 
-     * @param string $user_data
-     * @return array||NULL
-    */
-    function getUser(string $user_data) : ?array {
-        /** @var string $query */
-        $query = 'SELECT u.*, i.identicon FROM users AS u
-            LEFT JOIN identicon AS i ON i.user_id = u.user_id 
-            WHERE u.username = :user_data OR u.email = :user_data OR u.user_id = :user_data;';
-
-        /** @var \PDOStatement $stmt */
-        $stmt = \PDO::prepare($query);
-        $stmt->bindValue(':user_data', $user_data);
-        $stmt->execute();
-
-        /** @var array||FALSE $result */
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC) ;
-        
-        return !$result ? NULL : $result;
-    }
-
-    /** 
-     * Insert user method
-     * 
-     * Used at registration
-     * Insert user data into the database
-     * 
-     * @param string $username
-     * @param string $email
-     * @param string $password
-     * @param string $salt
-     * @return bool
-    */
-    function insertUser(string $username, string $email, string $password, string $salt) : bool {
-        /** @var string $query */
-        $query = 'INSERT INTO users(username, email, password, salt) VALUES (:username, :email, :password, :salt);';
-        /** @var \PDOStatement $stmt */
-        $stmt = \PDO::prepare($query);
-        $stmt->bindValue(':username', $username);
-        $stmt->bindValue(':email', $email);
-        $stmt->bindValue(':password', $password);
-        $stmt->bindValue(':salt', $salt);
-        $stmt->execute();
-
-        return !empty($stmt->rowCount());
-    }
-    
-    /** 
-     * Insert user method
-     * 
-     * Used at registration
-     * Insert additional user data into the database, where users id is needed
-     * 
-     * @param string $username
-     * @return bool
-    */
-    function insertUserAdditionals(string $username) : bool {
-        /** @var string||NULL $user_data */
-        $user_data = $this->getUser($username);
-
-        /** @var string $query */
-        $query = 'INSERT INTO identicon(user_id, identicon) VALUES (:user_id, :user_id);
-            INSERT INTO followers(follower_id, receiver_id) VALUES (:user_id, :user_id);';
-
-        /** @var \PDOStatement $stmt */
-        $stmt = \PDO::prepare($query);
-        $stmt->bindValue(':user_id', $user_data['user_id']);
-        $stmt->execute();
-
-        return !empty($stmt->rowCount());
-    }
- 
-    /** 
-     * Update password method
-     * 
-     * @param string $hashed_salt
-     * @param string $hashed_password
-     * @param int $user_id
-     * @return bool
-    */
-    function updatePasswordHandler(string $hashed_salt, string $hashed_password, int $user_id) : bool {
-        /** @var string $query */
-        $query = 'UPDATE users SET password = :password, salt = :salt WHERE user_id = :user_id;';
-
-        /** @var \PDOStatement $pdo */
-        $stmt = \PDO::prepare($query);
-        $stmt->bindValue(':salt', $hashed_salt);
-        $stmt->bindValue(':password', $hashed_password);
         $stmt->bindValue(':user_id', $user_id);
         $stmt->execute();
 
         return !empty($stmt->rowCount());
     }
 
-    /** 
-     * Update email method
-     * 
-     * @param string $email
-     * @param int $user_id
-     * @return bool
-    */
-    function updateEmailHandler(string $email, int $user_id) : bool {
-        /** @var string $query */
-        $query = 'UPDATE users SET email = :email WHERE user_id = :user_id;';
-
-        /** @var \PDOStatement $pdo */
-        $stmt = \PDO::prepare($query);
-        $stmt->bindValue(':email', $email);
-        $stmt->bindValue(':user_id', $user_id);
-        $stmt->execute();
-
-        return !empty($stmt->rowCount());
-    }
-
-    /** 
-     * Update username method
-     * 
-     * @param string $username
-     * @param int $user_id
-     * @return bool
-    */
-    function updateUsernameHandler(string $username, int $user_id) : bool {
-        /** @var string $query */
-        $query = 'UPDATE users SET username = :username WHERE user_id = :user_id;';
-
-        /** @var \PDOStatement $pdo */
-        $stmt = \PDO::prepare($query);
-        $stmt->bindValue(':username', $username);
-        $stmt->bindValue(':user_id', $user_id);
-        $stmt->execute();
-
-        return !empty($stmt->rowCount());
-    }
 }
