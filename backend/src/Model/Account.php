@@ -11,6 +11,23 @@ use application\Model as AbstractModel;
  */
 final class Account extends AbstractModel {
 
+    function delete(array &$errors, int $user_id) {
+        $input_password = filter_input(INPUT_POST, 'password');
+
+        if(empty($input_password)) {
+            $errors['password'] = 'Please type in your password';
+            return FALSE;
+        }
+
+        /** @var array $user_data */
+        $user_data = $this->DbHandler->accountGet($user_id);
+        $validate_db_password = $this->validatePasswordDb($errors, $user_data, $input_password);
+        
+        if(is_null($user_data) || !$validate_db_password) return FALSE;
+        
+        return $this->DbHandler->accountDelete($user_id);
+    }
+
     /**
      * Login
      *
@@ -36,24 +53,24 @@ final class Account extends AbstractModel {
         foreach ($validations as $validation) {
             if(!$validation) {
                 if(!$validations['user']) {
-                    $errors['username'][] = 'Please type in a username or email address';
+                    $errors['username'][] = 'Please type in your username or email address';
                 }
                 if(!$$validations['password']) {
-                    $errors['password'][] = 'Please type in a password';
+                    $errors['password'][] = 'Please type in your password';
                 }
                 return FALSE;
             }
         }
 
         // Get user data from database
-        /** @var array $user_data */
-        $user_data = $this->DbHandler->accountGet($input_user);
+        /** @var array $result */
+        $result = $this->DbHandler->accountGet($input_user);
         
         // If a matching user was found, compare passwords
-        if(!is_null($user_data)) $compare_passwords = $this->comparePasswords($user_data, $input_password);
+        if(!is_null($result)) $compare_passwords = $this->comparePasswords($result, $input_password);
 
         // If no matching user was found or passwords don't match
-        if(is_null($user_data) || !$compare_passwords) $errors['compare'] = 'This combination doesn\'t exist';
+        if(is_null($result) || !$compare_passwords) $errors['compare'] = 'This combination doesn\'t exist';
 
         return empty($errors); 
     }
@@ -102,6 +119,16 @@ final class Account extends AbstractModel {
     }
 
     /**
+     * Reset identicon
+     * 
+     * @param int $user_id
+     * @return bool
+     */
+    function resetIdenticon(int $user_id) : bool {
+        return $this->DbHandler->accountUpdateIdenticon($user_id, $user_id);
+    }
+
+    /**
      * Update email
      * 
      * @param array $errors
@@ -117,6 +144,22 @@ final class Account extends AbstractModel {
         $validate = $this->validateEmail($errors, $email);
 
         return $validate && $this->DbHandler->accountUpdateEmail($email, $user_id);
+    }
+
+    /**
+     * Update identicon
+     * 
+     * @param int $user_id
+     * @return bool
+     */
+    function updateIdenticon(int $user_id) : bool {
+        do {
+            // getrandmax() => 2 147 483 647
+            /** @var string $identicon_new */
+            $identicon_new = 'i' . rand(0, getrandmax());
+        } while ($this->DbHandler->accountGetIdenticon($identicon_new));
+
+        return $this->DbHandler->accountUpdateIdenticon($identicon_new, $user_id);
     }
 
     /**

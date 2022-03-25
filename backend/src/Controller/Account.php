@@ -17,6 +17,32 @@ final class Account extends AbstractController {
     }
 
     /**
+     * Delete
+     * @POST
+     * 
+     * @param int $user_id
+     * @return void
+     */
+    function delete(int $user_id) : void {
+        /** @var array $errors */
+        $errors = [];
+
+        if($this->isMethod(self::METHOD_POST)) {
+            if ($this->AccountModel->delete($errors, $user_id)) {
+                $this->responseCode(200);
+                $this->printJSON(['success' => TRUE]);
+            } 
+            else {
+                $this->responseCode(409);
+                $this->printJSON(['errors' => $errors]);
+            }
+        }
+        else {
+            $this->responseCode(400);
+        }
+    }
+
+    /**
      * Login
      * @POST
      * 
@@ -78,6 +104,26 @@ final class Account extends AbstractController {
     }
     
     /**
+     * Reset identicon
+     * @PUT
+     * 
+     * @param int||NULL $user_id
+     * @return void
+     */
+    function resetIdenticon(?int $user_id) : void {
+        if($this->isMethod(self::METHOD_PUT)
+            && !is_null($user_id)
+            && $this->AccountModel->resetIdenticon($user_id)) 
+        {
+            $this->responseCode(200);
+            $this->printJSON(['success' => TRUE]);
+        }
+        else {
+            $this->responseCode(400);
+        }
+    }
+    
+    /**
      * Update email
      * @POST
      * 
@@ -96,6 +142,26 @@ final class Account extends AbstractController {
                 $this->responseCode(409);
                 $this->printJSON(['errors' => $errors]);
             }
+        }
+        else {
+            $this->responseCode(400);
+        }
+    }
+    
+    /**
+     * Update identicon
+     * @PUT
+     * 
+     * @param int||NULL $user_id
+     * @return void
+     */
+    function updateIdenticon(?int $user_id) : void {
+        if($this->isMethod(self::METHOD_PUT)
+            && !is_null($user_id)
+            && $this->AccountModel->updateIdenticon($user_id)) 
+        {
+            $this->responseCode(200);
+            $this->printJSON(['success' => TRUE]);
         }
         else {
             $this->responseCode(400);

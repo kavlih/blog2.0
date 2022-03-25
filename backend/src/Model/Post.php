@@ -69,10 +69,10 @@ final class Post extends AbstractModel {
       * 
       * @param  array $errors
       * @param  array $result
-      * @param  string $user_id
+      * @param  int $user_id
       * @return bool
       */
-     function getAllFeed(array &$errors, array &$result, string $user_id) : bool {
+     function getAllFeed(array &$errors, array &$result, int $user_id) : bool {
           return $this->DbHandler->postGetAllFeed($result, $user_id);
      }
 
@@ -81,9 +81,10 @@ final class Post extends AbstractModel {
       * 
       * @param  array $errors
       * @param  array $result
+      * @param  int $user_id
       * @return bool
       */
-      function getAllLiked(array &$errors, array &$result, string $user_id) : bool {
+      function getAllLiked(array &$errors, array &$result, int $user_id) : bool {
           return $this->DbHandler->postGetAllLiked($result, $user_id);
      }
      
@@ -92,9 +93,10 @@ final class Post extends AbstractModel {
       * 
       * @param  array $errors
       * @param  array $result
+      * @param  int $user_id
       * @return bool
       */
-     function getAllUser(array &$errors, array &$result, string $user_id) : bool {
+     function getAllUser(array &$errors, array &$result, int $user_id) : bool {
           return $this->DbHandler->postGetAllUser($result, $user_id);
      }
 

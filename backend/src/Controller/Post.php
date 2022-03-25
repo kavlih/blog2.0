@@ -20,10 +20,10 @@ final class Post extends AbstractController {
      * Create
      * @POST
      * 
-     * @param string||NULL $user_id
+     * @param int||NULL $user_id
      * @return void
      */
-    function create(?string $user_id) : void {
+    function create(?int $user_id) : void {
         /** @var array $errors */
         $errors = [];
 
@@ -49,10 +49,10 @@ final class Post extends AbstractController {
      * Delete
      * @POST
      * 
-     * @param string||NULL $post_id
+     * @param int||NULL $post_id
      * @return void
      */
-    function delete(?string $post_id) : void {
+    function delete(?int $post_id) : void {
         /** @var array $errors */
         $errors = [];
 
@@ -73,10 +73,10 @@ final class Post extends AbstractController {
      * Feed
      * @GET
      * 
-     * @param string||NULL $user_id
+     * @param int||NULL $user_id
      * @return void
      */
-    function getAllFeed(?string $user_id) : void {
+    function getAllFeed(?int $user_id) : void {
         /** @var array $errors */
         $errors = [];
         /** @var array $result */
@@ -104,10 +104,10 @@ final class Post extends AbstractController {
      * Liked
      * @GET
      * 
-     * @param string||NULL $user_id
+     * @param int||NULL $user_id
      * @return void
      */
-    function getAllLiked(?string $user_id) : void {
+    function getAllLiked(?int $user_id) : void {
         /** @var array $errors */
         $errors = [];
         /** @var array $result */
@@ -135,10 +135,10 @@ final class Post extends AbstractController {
      * User
      * @GET
      * 
-     * @param string||NULL $user_id
+     * @param int||NULL $user_id
      * @return void
      */
-    function getAllUser(?string $user_id) : void {
+    function getAllUser(?int $user_id) : void {
         /** @var array $errors */
         $errors = [];
         /** @var array $result */
@@ -166,10 +166,10 @@ final class Post extends AbstractController {
      * Likes
      * @GET
      * 
-     * @param string||NULL $post_id
+     * @param int||NULL $post_id
      * @return void
      */
-    function getLikes(?string $post_id) : void {
+    function getLikes(?int $post_id) : void {
         /** @var array $errors */
         $errors = [];
         /** @var array $result */
@@ -197,10 +197,10 @@ final class Post extends AbstractController {
      * Like
      * @POST
      * 
-     * @param string||NULL $post_id
+     * @param int||NULL $post_id
      * @return void
      */
-    function like(?string $post_id) : void {
+    function like(?int $post_id) : void {
         /** @var array $errors */
         $errors = [];
 

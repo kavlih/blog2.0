@@ -88,17 +88,22 @@ final class DbHandler extends \PDO {
     }
 
     /** 
-     * Delete user part
+     * Delete user
      * 
-     * @param string $username
+     * @param int $user_id
      * @return bool
     */
-    function accountDeletePart(string $username) : bool {
+    function accountDelete(int $user_id) : bool {
         /** @var string $query */
-        $query = 'DELETE FROM users WHERE username = :username;';
+        $query = 'DELETE FROM users WHERE user_id = :user_id;
+                  DELETE FROM posts WHERE user_id = :user_id;
+                  DELETE FROM identicon WHERE user_id = :user_id;
+                  DELETE FROM followers WHERE follower_id = :user_id OR receiver_id = :user_id;
+                  DELETE l FROM likes AS l INNER JOIN posts AS p ON p.id = l.post_id WHERE l.user_id = :user_id OR p.user_id = :user_id;';
+
         /** @var \PDOStatement $stmt */
         $stmt = $this->prepare($query);
-        $stmt->bindValue(':username', $username);
+        $stmt->bindValue(':user_id', $user_id);
         $stmt->execute();
 
         return !empty($stmt->rowCount());
@@ -128,6 +133,24 @@ final class DbHandler extends \PDO {
     }
 
     /** 
+     * Get identicon
+     * 
+     * @param string $identicon
+     * @return bool
+    */
+    function accountGetIdenticon(string $identicon) : bool {
+        /** @var string $query */
+        $query = 'SELECT * FROM identicon WHERE identicon = :identicon';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
+        $stmt->bindValue(':identicon', $identicon);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
+    /** 
      * Update email
      * 
      * @param string $email
@@ -141,6 +164,26 @@ final class DbHandler extends \PDO {
         /** @var \PDOStatement $stmt */
         $stmt = $this->prepare($query);
         $stmt->bindValue(':email', $email);
+        $stmt->bindValue(':user_id', $user_id);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
+    /** 
+     * Update identicon
+     * 
+     * @param string $identicon
+     * @param int $user_id
+     * @return bool
+    */
+    function accountUpdateIdenticon(string $identicon, int $user_id) : bool {
+        /** @var string $query */
+        $query = 'UPDATE identicon SET identicon = :identicon WHERE user_id = :user_id;';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->prepare($query);
+        $stmt->bindValue(':identicon', $identicon);
         $stmt->bindValue(':user_id', $user_id);
         $stmt->execute();
 
