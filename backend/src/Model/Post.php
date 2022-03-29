@@ -73,7 +73,15 @@ final class Post extends AbstractModel {
       * @return bool
       */
      function getAllFeed(array &$errors, array &$result, int $user_id) : bool {
-          return $this->DbHandler->postGetAllFeed($result, $user_id);
+          $getPosts = $this->DbHandler->postGetAllFeed($result, $user_id);
+
+          if($getPosts) {
+               foreach($result as &$post) {
+                    $post["likes"] = $this->addLikes($post);
+               }
+          }
+          
+          return $getPosts;
      }
 
      /**
@@ -85,7 +93,15 @@ final class Post extends AbstractModel {
       * @return bool
       */
       function getAllLiked(array &$errors, array &$result, int $user_id) : bool {
-          return $this->DbHandler->postGetAllLiked($result, $user_id);
+          $getPosts = $this->DbHandler->postGetAllLiked($result, $user_id);
+
+          if($getPosts) {
+               foreach($result as &$post) {
+                    $post["likes"] = $this->addLikes($post);
+               }
+          }
+          
+          return $getPosts;
      }
      
      /**
@@ -97,19 +113,15 @@ final class Post extends AbstractModel {
       * @return bool
       */
      function getAllUser(array &$errors, array &$result, int $user_id) : bool {
-          return $this->DbHandler->postGetAllUser($result, $user_id);
-     }
+          $getPosts = $this->DbHandler->postGetAllUser($result, $user_id);
 
-     /**
-      * Get post likes
-      * 
-      * @param  array $errors
-      * @param  array $result
-      * @param  int $post_id
-      * @return bool
-      */
-     function getLikes(array &$errors, array &$result, int $post_id) : bool {
-          return $this->DbHandler->postGetLikes($result, $post_id);
+          if($getPosts) {
+               foreach($result as &$post) {
+                    $post["likes"] = $this->addLikes($post);
+               }
+          }
+          
+          return $getPosts;
      }
 
      /**
@@ -124,11 +136,33 @@ final class Post extends AbstractModel {
           $user_id = filter_input(INPUT_POST, 'user_id');
 
           return $this->DbHandler->postLikeGet($user_id, $post_id)
-               ? $this->DbHandler->postLikeAdd($user_id, $post_id)
-               : $this->DbHandler->postLikeRemove($user_id, $post_id);
+               ? $this->DbHandler->postLikeRemove($user_id, $post_id)
+               : $this->DbHandler->postLikeAdd($user_id, $post_id);
      }
 
-    /**
+     /**
+      * Get post likes
+      * 
+      * @param  array $post
+      * @return array
+      */
+     private function addLikes(array $post) : array {
+          $result = [];
+
+          if($this->DbHandler->postGetLikes($result, $post["id"])) {
+               $flat = [];
+
+               foreach ($result as $v) {
+                    foreach ($v as $v2) {
+                         $flat[] = $v2;
+                    }
+               }
+               $result = $flat;
+          }
+          return $result;
+     }
+
+     /**
       * Validate message
       * Called in 'create_post' method
       * 

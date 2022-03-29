@@ -1,10 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
-import { UserContext, Avatar } from '../_components';
-import { postsService } from '../_services';
+import { UserContext, Avatar } from '.';
+import { postService } from '../_services';
 
-const CreatePost = () => {
+const PostForm = () => {
   const { user } = useContext(UserContext)
 
   const [ messageValue, setMessageValue ] = useState("")
@@ -14,19 +14,20 @@ const CreatePost = () => {
     const {value} = e.target;
     setMessageValue(value);
   }
-
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     let formData = new FormData();
     formData.append("message", messageValue);
 
-    postsService.createPost(user.id, formData)
+    postService.createPost(user.id, formData)
     .then((res) => {
       console.log(res?.data);
+      setFormErrors();
     })
     .catch((error) => {
-      setFormErrors(error.response.data.errors)
+      setFormErrors(error.response.data.errors);
     });
   }
 
@@ -61,4 +62,4 @@ const CreatePost = () => {
   );
 }
 
-export { CreatePost };
+export { PostForm };

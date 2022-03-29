@@ -1,6 +1,8 @@
+// ?? When coming from feed -> Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function. Profile@http://localhost:3000/static/js/main.chunk.js:2366:63
+  
 import React, { useState, useEffect, useContext } from 'react';
 
-import { postsService } from '../_services';
+import { postService } from '../_services';
 import { UserContext, Post } from "../_components";
 
 const Profile = () => {
@@ -10,19 +12,17 @@ const Profile = () => {
   const [likes, setLikes] = useState(null)
 
   useEffect(() => {
-    postsService.getUserPosts(user.id)
+    postService.getUserPosts(user.id)
     .then((res) => {
       setPosts(res.data.result)
     })
     .catch((error) => {
       // console.log(error.response.data.errors);
     });
-  }, [posts]);
+  }, []);
 
-  // ?? On chaning page, because of [likes]:
-  // ?? Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function. Profile@http://localhost:3000/static/js/main.chunk.js:2366:63
   useEffect(() => {
-    postsService.getUserLikes(user.id)
+    postService.getUserLikes(user.id)
     .then((res) => {
       setLikes(res.data.result)
     })

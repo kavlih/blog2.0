@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom'
 
 import { UserContext, Avatar } from '../_components';
-import { postsService } from '../_services';
+import { postService } from '../_services';
 
 // FontAwesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,62 +13,50 @@ const Post = ({post}) => {
 
   const { user } = useContext(UserContext)
 
-  const [likeStatus, setLikeStatus] = useState(false)
-  const [likeCounter, setLikeCounter] = useState(0)
-  const [timeSetter, setTimeSetter] = useState("")
+  const [isliked, setIsLiked] = useState(false)
+  const [likes, setLikes] = useState(post.likes.length)
+  const [date, setDate] = useState("")
 
-  // Gets likes of post
   useEffect(() => {
-    postsService.getPostLikes(post.id)
-      .then((res) => {
-        let likeArr = res.data.result;
-        
-        if (likeArr) {
-          setLikeCounter(Object.keys(likeArr).length)
-          setLikeStatus(likeExists(likeArr, user.id));
-        }
-      })
-      .catch((errors) => {
-        setLikeCounter(0)
-      });
-  }, [])
+    setIsLiked(post.likes.includes(user.id));
+  }, [user.id, post.likes]);
 
-  // Prepares timestamp for client
+  // Prepares timestamp for post
   useEffect(() => {
     const currentTime = Math.floor(Date.now() / 1000);
-    let setTime = currentTime - post.timestamp;
+    let time = currentTime - post.timestamp;
 
     switch(true) {
       // 0s - 1m
-      case setTime < 60:
-        setTimeSetter("now");
+      case time < 60:
+        setDate("now");
         break;
       // 1m - 2m
-      case setTime < 120:
-        setTimeSetter("1 minute ago");
+      case time < 120:
+        setDate("1 minute ago");
         break;
       // 2m - 1h
-      case setTime < 3600:
-        setTime = Math.floor(setTime / 60);
-        setTimeSetter(`${setTime} minutes ago`);
+      case time < 3600:
+        time = Math.floor(time / 60);
+        setDate(`${time} minutes ago`);
         break;
       // 1h - 2h
-      case setTime < 7200:
-        setTimeSetter("1 hour ago");
+      case time < 7200:
+        setDate("1 hour ago");
         break;                
       // 2h - 24h
-      case setTime < 86400:
-        setTime = Math.floor(setTime / 3600);
-        setTimeSetter(`${setTime} hours ago`);
+      case time < 86400:
+        time = Math.floor(time / 3600);
+        setDate(`${time} hours ago`);
         break;
       // 1d - 2d
-      case setTime < 172800:
-        setTimeSetter("1 day ago");
+      case time < 172800:
+        setDate("1 day ago");
         break;
       // 2d - 3d
-      case setTime < 259200:
-        setTime = Math.floor(setTime / 86400);
-        setTimeSetter(`${setTime} days ago`);
+      case time < 259200:
+        time = Math.floor(time / 86400);
+        setDate(`${time} days ago`);
         break;
       // > 3d
       default:
@@ -84,13 +72,13 @@ const Post = ({post}) => {
         let yy = date.getFullYear()
         yy = yy.toString().substring(2)        
           
-        setTimeSetter(`${dd}.${mm}.${yy}`);
+        setDate(`${dd}.${mm}.${yy}`);
         break;
     }
-  }, []);
+  }, [post]);
 
   const handleDelete = () => {
-    postsService.deletePost(post.id)
+    postService.deletePost(post.id)
     .then((res) => {
     })
     .catch((error) => {
@@ -101,21 +89,15 @@ const Post = ({post}) => {
     const fields = new FormData();
     fields.append("user_id", user.id)
     
-    postsService.toggleLike(post.id, fields)
+    postService.toggleLike(post.id, fields)
     .then((res) => {
-      setLikeCounter(likeStatus ? likeCounter - 1 : likeCounter + 1);
-      setLikeStatus(!likeStatus);
+      setLikes(isliked ? likes - 1 : likes + 1);
+      setIsLiked(!isliked);
     })
     .catch((error) => {
       // console.log(error.response.data.errors);
     });
   };
-
-  const likeExists = (array, user_id) => {
-    return array.some((e) => {
-      return Object.values(e).includes(user_id);
-    }); 
-  }
 
   return (
   <>
@@ -127,7 +109,7 @@ const Post = ({post}) => {
         <section className="m-post-header d-flex justify-content-between">
           <div className="m-header-left d-flex">
             <Link to={post.user_id === user.id ? "/profile" : `/users/${post.username}`} className="m-post-username me-2">{post.username}</Link>
-            <p className="m-post-date">{timeSetter}</p>
+            <p className="m-post-date">{date}</p>
           </div>
           <div className="m-header-right">
           {post.user_id === user.id &&
@@ -135,8 +117,8 @@ const Post = ({post}) => {
             <FontAwesomeIcon icon={faTrashCan} /> 
           </button>}
           <button onClick={handleLike}>
-            {likeCounter > 0 ? likeCounter : ""}
-            <FontAwesomeIcon icon={likeStatus ? fasHeart : farHeart} /> 
+            {likes > 0 ? likes : ""}
+            <FontAwesomeIcon icon={isliked ? fasHeart : farHeart} /> 
           </button>
           </div>       
         </section>
