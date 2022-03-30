@@ -1,5 +1,3 @@
-// ?? When coming from feed -> Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function. Profile@http://localhost:3000/static/js/main.chunk.js:2366:63
-  
 import React, { useState, useEffect, useContext } from 'react';
 
 import { postService } from '../_services';
@@ -12,23 +10,31 @@ const Profile = () => {
   const [likes, setLikes] = useState(null)
 
   useEffect(() => {
+    let isMounted = true;
     postService.getUserPosts(user.id)
     .then((res) => {
-      setPosts(res.data.result)
+      if(isMounted) setPosts(res.data.result)
     })
     .catch((error) => {
       // console.log(error.response.data.errors);
-    });
+    })
+    return () => {
+      isMounted = false;
+      };
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
     postService.getUserLikes(user.id)
     .then((res) => {
-      setLikes(res.data.result)
+      if(isMounted) setLikes(res.data.result)
     })
     .catch((error) => {
       // console.log(error.response.data.errors);
-    });
+    })
+    return () => {
+      isMounted = false;
+      };
   }, [likes]);
 
   return (

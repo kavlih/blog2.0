@@ -1,5 +1,3 @@
-// ?? When coming from profile -> Warning: Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function. Profile@http://localhost:3000/static/js/main.chunk.js:2366:63
-
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom'
 
@@ -18,13 +16,17 @@ const Feed = () => {
   };
 
   useEffect(() => {
+    let isMounted = true;
     postService.getPosts(user.id)
     .then((res) => {
-      setPosts(res.data.result)
+      if(isMounted) setPosts(res.data.result);
     })
     .catch((error) => {
       // console.log(error.response.data.errors);
-    });
+    })
+    return () => {
+      isMounted = false;
+      };
     // ?? how to achieve that without infinite loop (syncs post values automaticaly)
   // }, [posts]);
   }, []);
