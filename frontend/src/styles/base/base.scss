@@ -2,13 +2,16 @@ input:not([type="checkbox"]), .card {
   border-radius: $defaultBorderRadius;
 }
 
-#root {
+body {
   background-color: $primaryDark;
-  height: 100vh;
-  min-height: 100vh;
-
-  #wrapper {
+  
+  #root {
     height: 100%;
     width: 100%;
+
+    .main-container {
+      margin: auto;
+      max-width: 800px;
+    }
   }
 }

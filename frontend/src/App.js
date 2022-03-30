@@ -8,9 +8,7 @@ const App = () => {
 
   return (
     <UserContext.Provider value={{ user, setUser }}>    
-        <div id="wrapper">
-          <Router />
-        </div>
+      <Router />
     </UserContext.Provider>
   );
 };
