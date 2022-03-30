@@ -1,0 +1,14 @@
+input:not([type="checkbox"]), .card {
+  border-radius: $defaultBorderRadius;
+}
+
+#root {
+  background-color: $primaryDark;
+  height: 100vh;
+  min-height: 100vh;
+
+  #wrapper {
+    height: 100%;
+    width: 100%;
+  }
+}
