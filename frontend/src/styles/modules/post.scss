@@ -1,45 +1,187 @@
-.m-post-container {
-  .m-avatar {
-    margin-right: 1rem;
-  }
-  
-  .m-post-inner {
-    background-color: transparent;
-    border-radius: 0.5rem;
-    border: 1px solid $greyDark;
-    padding: 15px 20px 20px 20px;
-
-    section {
-      &:not(:last-Child) {
-        margin-bottom: 0.5rem; 
-      }
-
-      p {
-        margin-bottom: 0;
-      }
-    }
-
-    .m-post-username {
-      text-decoration: none;
-
-      font-family: 'Roboto Mono';
-      font-weight: 400;
-      font-size: 11pt;
-      color: $white;
-    }
+.post-form-container {
+  .post-form-inner {
+    display: flex;
     
-    .m-post-date {
+    textarea::placeholder {
       font-family: 'Roboto Mono';
       font-weight: 400;
       font-size: 11pt;
       color: $greyLight;
+      opacity: 1;
     }
 
-    .m-post-message {
-      font-family: 'Roboto';
-      font-weight: 400;
-      font-size: 12pt;
+    textarea:focus::placeholder {
+      color: transparent;
+    }
+  }
+}
+
+.posts-container > .post-container:not(:last-child){
+  margin-bottom: 2rem; 
+}
+
+.post-container, .post-form-inner {
+  .avatar-container {
+    margin-right: 15px; 
+  }
+}
+
+.content-container {
+  background-color: transparent;
+  border-radius: 0.5rem;
+  border: $borderDefault;
+  padding: 15px 20px 20px 20px;
+}
+
+.post-message {
+  font-family: 'Roboto';
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  color: $white;
+}
+
+.post-container {
+  display: flex;
+
+  .content-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0;
+
+    .post-header {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      
+      .header-start {
+        display: flex;
+
+        >*:not(:last-child) {
+          margin-right: 10px; 
+        }
+
+        .post-username {
+          display: flex;
+          
+          .icon-username {
+            border-radius: 100%;
+            margin-top: 2px;
+            margin-right: 5px;
+            height: 12px;
+            width: 12px;
+            border: 1px solid $greyLight;
+          }
+
+          a {
+            text-decoration: none;
+      
+            font-family: 'Roboto';
+            font-weight: 500;
+            font-size: 14px;
+            color: $white;
+          }
+        }
+    
+        .post-date {
+          font-family: 'Roboto Mono';
+          font-weight: 400;
+          font-size: 14px;
+          color: $greyLight;
+        }
+      }
+
+      .header-end {
+        display: flex;
+        position: absolute;
+        right: -12px;
+        top: -8px;
+      }
+    }
+  }
+}
+
+.btn-group {
+  min-width: 30px;
+
+  &:hover {
+    .btn:not(.btn-more.active) > .icon {
+      background-color: $primary;
+    }
+  }
+}
+
+.btn {
+  display: flex;
+  color: $greyLight;
+  height: 100%;
+  width: 100%;
+
+  &.btn-more {
+    &:hover {
       color: $white;
+    }
+    .icon {
+      position: absolute;
+      z-index: 1;
+    }
+  }
+
+  &.btn-like {
+    &:hover, &.active {
+      color: $red;
+    }
+  }
+
+  > .counter {
+    margin: auto;
+    font-family: 'Roboto Mono';
+    font-weight: 400;
+    font-size: 12px;
+    padding-bottom: 1px;
+  }
+
+  > .icon {
+    height: 30px;
+    width: 30px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    svg {
+      height: 16px;
+      width: 16px;
+    }
+  }
+}
+
+.dropdown {
+  position: absolute;
+  background-color: $primary;
+  border-radius: $borderRadiusSmall;
+  top: 0;
+  right: 5px;
+  padding-top: 25px;
+  
+  > ul > li {
+    padding: 10px 20px 10px 15px;
+
+    &:hover {
+      background-color: $primaryLight;
+    }
+
+    > button {
+      color: $white;
+
+      > svg {
+        margin-right: 10px; 
+      }
+
+      > p {
+        white-space: nowrap;
+      }
     }
   }
 }

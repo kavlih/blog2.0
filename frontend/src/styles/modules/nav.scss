@@ -1,0 +1,20 @@
+.nav-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 2rem;
+
+  .nav-link {
+    padding-right: 20px;
+    padding-left: 20px;
+    text-decoration: none;
+
+    font-family: $font-nav;
+    font-weight: $font-weight-nav;
+    font-size: $font-size-nav;
+    color: $greyLight;
+  }
+  
+  .nav-link:hover, .nav-link:focus {
+    color: $white;
+  }
+}

@@ -43,7 +43,7 @@ const Login = () => {
   // Toggles isPasswordVisible
   const handleMouseDown = (e) => {
     e.preventDefault();
-    setIsPasswordVisible(isPasswordVisible ? false : true);
+    setIsPasswordVisible(!isPasswordVisible);
   }
   
   // Submits form and calls accountHelper.login()
@@ -55,16 +55,13 @@ const Login = () => {
     fields.append("user", formValues.user)
     fields.append("password", formValues.password)
     
-    // ?? feed already tries to access user before it got saved in local storage
-    accountHelper.login(fields)
-    .then((res) => {
+    try {
+      const res = await accountHelper.login(fields);
       localStorage.setItem("user", JSON.stringify(res.data.user));
-      console.log(res.data.user);
       navigate('/feed');
-    })
-    .catch((error) => {
+    } catch (err) {
       setSubmitErrors("Login or password is invalid")
-    });
+    }
   };
 
   const formValidate = (name, value) => {

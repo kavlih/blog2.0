@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+// ?? DropDownCard doen't close when triggering other action
+
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Link } from 'react-router-dom'
 
 import { UserContext } from '../../context/UserContext';
@@ -7,7 +9,7 @@ import { postHelper } from '../../helpers';
 
 // FontAwesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart as fasHeart } from "@fortawesome/free-solid-svg-icons";
+import { faHeart as fasHeart, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as farHeart, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 
 const Post = ({post}) => {
@@ -100,33 +102,87 @@ const Post = ({post}) => {
     });
   };
 
+  const toggleDropdown = () => {
+    setOpen(open => !open);
+  }
+
+  const [open, setOpen] = useState(false);
+  const drop = useRef(null);
+
+  useEffect(() => {
+    document.addEventListener("click", handleClick);
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  });
+
+  function handleClick(e) {
+    if (!e.target.closest(`.${drop.current.className}`) && open) {
+      setOpen(false);
+    }
+  }
+
   return (
   <>
-    <li className="m-post-container d-flex mb-4"> 
-      <Link to={post.user_id === user.id ? "/profile" : `/users/${post.username}`} className="m-avatar">
+    <li className="post-container"> 
+      <Link to={post.user_id === user.id ? "/profile" : `/users/${post.username}`} className="avatar-container">
         <Identicon identicon={post.identicon} />
       </Link>
-      <div className="m-post-inner col d-flex flex-column">
-        <section className="m-post-header d-flex justify-content-between">
-          <div className="m-header-left d-flex">
-            <Link to={post.user_id === user.id ? "/profile" : `/users/${post.username}`} className="m-post-username me-2">{post.username}</Link>
-            <p className="m-post-date">{date}</p>
-          </div>
-          <div className="m-header-right">
-          {post.user_id === user.id &&
-          <button onClick={handleDelete}>
-            <FontAwesomeIcon icon={faTrashCan} /> 
-          </button>}
-          <button onClick={handleLike}>
-            {likes > 0 ? likes : ""}
-            <FontAwesomeIcon icon={isliked ? fasHeart : farHeart} /> 
-          </button>
-          </div>       
-        </section>
+      <div className="content-container">
+        <div className="post-header">
+            {/* Header start */}
+            <div className="header-start">
 
-        <section className="m-post-message">
-          <p>{post.message}</p>
-        </section>
+              <div className="post-username">
+                <div className="icon-username"></div>
+                <Link to={post.user_id === user.id ? "/profile" : `/users/${post.username}`}>{post.username}</Link>
+              </div>
+              <p className="post-date">{date}</p>
+
+            </div>
+            {/* Header end */}
+            <div className="header-end">
+
+              {/* Button Group */}
+              <div className="btn-group">
+                <button onClick={handleLike} className={`btn btn-like ${isliked ? "active" : ""}`}>
+                  {likes > 0 && <div className="counter">
+                    <p>{likes}</p>
+                  </div>}
+                  <div className="icon">
+                    <FontAwesomeIcon icon={isliked ? fasHeart : farHeart} /> 
+                  </div>
+                </button>
+              </div>
+
+              {/* Button Group */}
+              <div className="btn-group" ref={drop} >
+                <button onClick={toggleDropdown} className={`btn btn-more ${open ? "active" : ""}`}>
+                  <div className="icon">
+                    <FontAwesomeIcon icon={faEllipsisV} />
+                  </div>
+                </button>
+                {/* DropdownCard */}
+                {open && <div className="dropdown">
+                  <ul>
+                    <li onClick={() => setOpen(false)}>
+                      <button onClick={handleDelete} className="btn">
+                        <FontAwesomeIcon icon={faTrashCan} />
+                        <p>Delete Post</p>
+                      </button>
+                    </li>
+                  </ul>
+                </div>}
+              </div>
+
+            </div>
+        </div>
+
+        <div className="post-body">
+          <div className="post-message">
+            <p>{post.message}</p>
+          </div>
+        </div>
       </div>
     </li>
   </>

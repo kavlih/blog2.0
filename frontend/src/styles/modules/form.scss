@@ -106,19 +106,19 @@
             display: block;
           }
 
-          @include media-breakpoint-up(md) {
-            .m-tooltip-container {
-              left: 101%;
-              top: 50%;
-              transform: translate(0, -50%);
+          // @include media-breakpoint-up(md) {
+          //   .m-tooltip-container {
+          //     left: 101%;
+          //     top: 50%;
+          //     transform: translate(0, -50%);
 
-              .tooltip > .tooltip-arrow {
-                top: 50%;
-                transform: translate(0, -50%) scaleX(-1);
-                left: 0;
-              }
-            }
-          }
+          //     .tooltip > .tooltip-arrow {
+          //       top: 50%;
+          //       transform: translate(0, -50%) scaleX(-1);
+          //       left: 0;
+          //     }
+          //   }
+          // }
         }
 
         .m-form-footer {

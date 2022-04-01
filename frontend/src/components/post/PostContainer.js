@@ -5,11 +5,13 @@ import Post from "./Post";
 const PostContainer = ({ posts }) => {
   return (
   <>
-  {posts 
-    ? posts.map((post) => ( 
-      <Post key={post.id} post={post} />
-      ))
-    : <p>no posts</p>}
+  <div className="posts-container">
+    {posts 
+      ? posts.map((post) => ( 
+        <Post key={post.id} post={post} />
+        ))
+      : <p>no posts</p>}
+  </div>
   </>
   );
 }

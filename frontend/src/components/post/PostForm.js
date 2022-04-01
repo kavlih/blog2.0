@@ -34,31 +34,23 @@ const PostForm = () => {
 
   return (
   <>
-    <div id="create-post-container" className="d-flex w-100 justify-content-center flex-column">
-      <button id="show-form" className="btn btn-lg btn-green align-self-center"><i className="fas fa-plus"></i></button>
-
-      <form method="POST" id="create-post-form" className="create-post col-12 flex-column">
-        <div className="create-post-inner col-sm d-flex flex-wrap w-100">
-          <Link to="/profile" className="m-avatar">
-            <Identicon identicon={user.identicon} />
-          </Link>          
-          <textarea 
-            name="message" 
-            className="form-control box" 
-            placeholder="What's on your mind" 
-            value={messageValue}
-            onChange={handleChange}
-            required
-          />          
-          <div className="errors col-12">
-          </div>
-        </div>
-
-        <p className='text-danger'>{formErrors}</p>
-
-        <button onClick={handleSubmit}>create post</button>
-      </form>
-    </div>
+    <form method="POST" className="post-form-container">
+      <div className="post-form-inner">
+        <Link to="/profile" className="avatar-container">
+          <Identicon identicon={user.identicon} />
+        </Link>
+        <textarea 
+          className="content-container post-message" 
+          name="message" 
+          placeholder="what's on your mind?" 
+          value={messageValue}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <p className="form-errors">{formErrors}</p>
+      <button onClick={handleSubmit}>create post</button>
+    </form>
   </>
   );
 }

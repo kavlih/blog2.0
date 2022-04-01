@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom'
+// import { useNavigate, Link } from 'react-router-dom'
 
 import { accountHelper, postHelper } from '../../helpers';
 import { UserContext } from "../../context/UserContext";
-import { Identicon } from "../../components/Identicon";
+// import { Identicon } from "../../components/Identicon";
 import Nav from '../../components/Nav';
 import PostForm from "../../components/post/PostForm";
 import PostContainer from "../../components/post/PostContainer";
@@ -25,31 +25,27 @@ const Feed = () => {
     return () => isMounted = false;
   }, [user.id]);
 
-  const navigate = useNavigate();  
+  // const navigate = useNavigate();  
 
-  const handleLogout = () => {
-    accountHelper.logout()
-    navigate("/account/login")
-  };
+  // const handleLogout = () => {
+  //   accountHelper.logout()
+  //   navigate("/account/login")
+  // };
 
   return (
   <>
-    <div className='d-none'>
-      <div className='m-avatar'>
+    {/* <div>
+      <div className='avatar-container'>
         <Identicon identicon={user.identicon} />
       </div>
-      <p className='text-white'>{user.username}</p>
-      {/* {user.role < 3 && <p>{user.role}</p>} */}
+      <p>{user.username}</p>
       <button onClick={handleLogout}>logout</button>
       <Link to="/settings">Settings</Link>
-    </div>
+    </div> */}
     <Nav />
     <div className="main-container">
       <PostForm />
-      <section>
-        <h1 className="text-center mb-4">feed</h1>
-        <PostContainer posts={posts} />
-      </section>
+      <PostContainer posts={posts} />
     </div>
   </>
   );

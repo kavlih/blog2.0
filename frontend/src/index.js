@@ -3,8 +3,9 @@ import { BrowserRouter } from 'react-router-dom';
 import { render } from 'react-dom';
 import App from './App';
 
+import 'normalize.css';
 import './styles/main.scss';
-import 'bootstrap/dist/js/bootstrap.min.js';
+// import 'bootstrap/dist/js/bootstrap.min.js';
 
 render(
   <BrowserRouter>
