@@ -4,6 +4,7 @@ namespace application;
 
 abstract class Controller {
 
+    const METHOD_OPTIONS = 'OPTIONS';
     const METHOD_DELETE = 'DELETE';
     const METHOD_GET = 'GET';
     const METHOD_POST = 'POST';
