@@ -1,18 +1,36 @@
 .post-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 50px;
+
   .post-form-inner {
     display: flex;
-    
-    textarea::placeholder {
-      font-family: 'Roboto Mono';
-      font-weight: 400;
-      font-size: 11pt;
-      color: $greyLight;
-      opacity: 1;
-    }
+    width: 100%;
 
-    textarea:focus::placeholder {
-      color: transparent;
+    textarea {
+      outline: none;
+      overflow: auto;
+      resize: none;
+      width: 100%;
+      min-height: 31px;
+      
+      &::placeholder {
+        font-family: 'Roboto Mono';
+        font-weight: 400;
+        font-size: 11pt;
+        color: $greyLight;
+        opacity: 1;
+      }
+  
+      &:focus::placeholder {
+        color: transparent;
+      }
     }
+  }
+
+  .btn-submit {
+    margin-top: 20px;
   }
 }
 
@@ -30,7 +48,7 @@
   background-color: transparent;
   border-radius: 0.5rem;
   border: $borderDefault;
-  padding: 15px 20px 20px 20px;
+  padding: 15px 20px;
 }
 
 .post-message {
@@ -64,10 +82,10 @@
 
         .post-username {
           display: flex;
+          align-items: center;
           
           .icon-username {
             border-radius: 100%;
-            margin-top: 2px;
             margin-right: 5px;
             height: 12px;
             width: 12px;
@@ -102,7 +120,7 @@
   }
 }
 
-.btn-group {
+.btn-post-group {
   min-width: 30px;
 
   &:hover {
@@ -112,21 +130,21 @@
   }
 }
 
-.btn {
+.btn-post {
   display: flex;
   color: $greyLight;
   height: 100%;
   width: 100%;
 
-  &.btn-more {
-    &:hover {
-      color: $white;
-    }
-    .icon {
-      position: absolute;
-      z-index: 1;
-    }
-  }
+  // &.btn-more {
+  //   &:hover {
+  //     color: $white;
+  //   }
+  //   .icon {
+  //     position: absolute;
+  //     z-index: 1;
+  //   }
+  // }
 
   &.btn-like {
     &:hover, &.active {
@@ -157,31 +175,31 @@
   }
 }
 
-.dropdown {
-  position: absolute;
-  background-color: $primary;
-  border-radius: $borderRadiusSmall;
-  top: 0;
-  right: 5px;
-  padding-top: 25px;
+// .dropdown {
+//   position: absolute;
+//   background-color: $primary;
+//   border-radius: $borderRadiusSmall;
+//   top: 0;
+//   right: 5px;
+//   padding-top: 25px;
   
-  > ul > li {
-    padding: 10px 20px 10px 15px;
+//   > ul > li {
+//     padding: 10px 20px 10px 15px;
 
-    &:hover {
-      background-color: $primaryLight;
-    }
+//     &:hover {
+//       background-color: $primaryLight;
+//     }
 
-    > button {
-      color: $white;
+//     > button {
+//       color: $white;
 
-      > svg {
-        margin-right: 10px; 
-      }
+//       > svg {
+//         margin-right: 10px; 
+//       }
 
-      > p {
-        white-space: nowrap;
-      }
-    }
-  }
-}
+//       > p {
+//         white-space: nowrap;
+//       }
+//     }
+//   }
+// }

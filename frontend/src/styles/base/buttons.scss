@@ -1,31 +1,23 @@
-// button:hover {
-//   transform: scale(1.05);
-// }
+.btn-submit {
+  background-color: $green;
 
-// .m-btn {
-//   width: 2.5rem;
-//   height: 2.5rem; 
-//   border-radius: 50%;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   padding: 0;
-//   transition: all ease 0.1s;
+  width: 2.5rem;
+  height: 2.5rem; 
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-//   &[disabled] {
-//     opacity: 0.4;
-//   }
+  &[disabled] {
+    opacity: 0.4;
+  }
 
-//   svg {
-//     color: $primaryDark;
-//     height: 55%;
-//     transform: translatey(3%);
-//   }
-// }
-
-// .m-btn-green {
-//   background-color: $green;
-// }
+  svg {
+    color: $primaryDark;
+    height: 55%;
+    transform: translatey(3%);
+  }
+}
 
 button {
   background-color: transparent;

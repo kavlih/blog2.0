@@ -14,13 +14,18 @@ const post = (url, body) => {
   })
 }
 
+const put = (url) => {
+  return axios.put(CONFIG + url)
+}
+
 const _delete = (url) => {
   return axios.delete(CONFIG + url)
 }
 
+
 export const axiosService = {
   get,
   post,
-  // put,
+  put,
   delete: _delete
 }

@@ -1,30 +1,33 @@
-// ?? DropDownCard doen't close when triggering other action
-
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Link } from 'react-router-dom'
+// FontAwesome
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart as fasHeart } from "@fortawesome/free-solid-svg-icons";
+import { faHeart as farHeart, faTrashCan } from "@fortawesome/free-regular-svg-icons";
+// MUI
+import IconButton from '@mui/material/IconButton';
+import MenuItem from '@mui/material/MenuItem';
+import MenuList from '@mui/material/MenuList';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Grow from '@mui/material/Grow';
+import Paper from '@mui/material/Paper';
+import Popper from '@mui/material/Popper';
+// MUI Icons
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import { UserContext } from '../../context/UserContext';
 import { Identicon } from '../Identicon';
 import { postHelper } from '../../helpers';
 
-// FontAwesome
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart as fasHeart, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
-import { faHeart as farHeart, faTrashCan } from "@fortawesome/free-regular-svg-icons";
-
 const Post = ({post}) => {
-
-  const { user } = useContext(UserContext)
-
-  const [isliked, setIsLiked] = useState(false)
-  const [likes, setLikes] = useState(post.likes.length)
-  const [date, setDate] = useState("")
+  const { user } = useContext(UserContext);
+  const [isliked, setIsLiked] = useState(false);
+  const [date, setDate] = useState("");
 
   useEffect(() => {
     setIsLiked(post.likes.includes(user.id));
   }, [user.id, post.likes]);
 
-  // Prepares timestamp for post
   useEffect(() => {
     const currentTime = Math.floor(Date.now() / 1000);
     let time = currentTime - post.timestamp;
@@ -80,14 +83,9 @@ const Post = ({post}) => {
     }
   }, [post]);
 
-  const handleDelete = () => {
-    postHelper.deletePost(post.id)
-    .then((res) => {
-    })
-    .catch((error) => {
-    });
-  }
-  
+  // Like
+  const [likes, setLikes] = useState(post.likes.length);
+
   const handleLike = () => {
     const fields = new FormData();
     fields.append("user_id", user.id)
@@ -102,25 +100,47 @@ const Post = ({post}) => {
     });
   };
 
-  const toggleDropdown = () => {
-    setOpen(open => !open);
-  }
-
+  // Settings
   const [open, setOpen] = useState(false);
-  const drop = useRef(null);
+  const anchorRef = useRef(null);
 
-  useEffect(() => {
-    document.addEventListener("click", handleClick);
-    return () => {
-      document.removeEventListener("click", handleClick);
-    };
-  });
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
 
-  function handleClick(e) {
-    if (!e.target.closest(`.${drop.current.className}`) && open) {
+  const handleClose = (event) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+    setOpen(false);
+  };
+
+  function handleListKeyDown(event) {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      setOpen(false);
+    } else if (event.key === 'Escape') {
       setOpen(false);
     }
   }
+
+  const prevOpen = useRef(open);
+  
+  useEffect(() => {
+    if (prevOpen.current === true && open === false) {
+      anchorRef.current.focus();
+    }
+    prevOpen.current = open;
+  }, [open]);
+
+  // Settings Delete
+  const handleDelete = () => {
+    postHelper.deletePost(post.id)
+    .then((res) => {
+    })
+    .catch((error) => {
+    });
+  };
 
   return (
   <>
@@ -143,9 +163,9 @@ const Post = ({post}) => {
             {/* Header end */}
             <div className="header-end">
 
-              {/* Button Group */}
-              <div className="btn-group">
-                <button onClick={handleLike} className={`btn btn-like ${isliked ? "active" : ""}`}>
+              {/* Like */}
+              <div className="btn-post-group">
+                <button onClick={handleLike} className={`btn-post btn-like ${isliked ? "active" : ""}`}>
                   {likes > 0 && <div className="counter">
                     <p>{likes}</p>
                   </div>}
@@ -154,27 +174,52 @@ const Post = ({post}) => {
                   </div>
                 </button>
               </div>
-
-              {/* Button Group */}
-              <div className="btn-group" ref={drop} >
-                <button onClick={toggleDropdown} className={`btn btn-more ${open ? "active" : ""}`}>
-                  <div className="icon">
-                    <FontAwesomeIcon icon={faEllipsisV} />
-                  </div>
-                </button>
-                {/* DropdownCard */}
-                {open && <div className="dropdown">
-                  <ul>
-                    <li onClick={() => setOpen(false)}>
-                      <button onClick={handleDelete} className="btn">
-                        <FontAwesomeIcon icon={faTrashCan} />
-                        <p>Delete Post</p>
-                      </button>
-                    </li>
-                  </ul>
-                </div>}
+              {/* Settings */}
+              <div className="post-settings">
+                <IconButton
+                  ref={anchorRef}
+                  id="composition-button"
+                  aria-controls={open ? 'composition-menu' : undefined}
+                  aria-expanded={open ? 'true' : undefined}
+                  aria-haspopup="true"
+                  onClick={handleToggle}
+                >
+                  <MoreVertIcon />
+                </IconButton>
+                <Popper
+                  open={open}
+                  anchorEl={anchorRef.current}
+                  role={undefined}
+                  placement="bottom-start"
+                  transition
+                  disablePortal
+                >
+                  {({ TransitionProps, placement }) => (
+                    <Grow
+                      {...TransitionProps}
+                      style={{
+                        transformOrigin:
+                          placement === 'bottom-start' ? 'left top' : 'left bottom',
+                      }}
+                    >
+                      <Paper>
+                        <ClickAwayListener onClickAway={handleClose}>
+                          <MenuList
+                            autoFocusItem={open}
+                            id="composition-menu"
+                            aria-labelledby="composition-button"
+                            onKeyDown={handleListKeyDown}
+                          >
+                            <MenuItem onClick={handleDelete}>
+                              <FontAwesomeIcon icon={faTrashCan} />Delete Post
+                            </MenuItem>
+                          </MenuList>
+                        </ClickAwayListener>
+                      </Paper>
+                    </Grow>
+                  )}
+                </Popper>
               </div>
-
             </div>
         </div>
 

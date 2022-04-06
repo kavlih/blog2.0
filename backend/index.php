@@ -3,8 +3,8 @@
 namespace application;
 
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+header("Access-Control-Allow-Methods: DELETE, POST, GET, PUT, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 
 /** @var string $configFile */
 $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.php';
@@ -12,8 +12,7 @@ $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.php';
 $autoloadFile = __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
 // Checks if config file exists
-if(!file_exists($configFile))
-{
+if(!file_exists($configFile)) {
     trigger_error(
         "template file ({$configFile}) doesn't exist", 
         E_USER_ERROR
@@ -21,8 +20,7 @@ if(!file_exists($configFile))
 }
 
 // Checks if autoload file exists
-if(!file_exists($autoloadFile))
-{
+if(!file_exists($autoloadFile)) {
     trigger_error(
         "autoload file ({$autoloadFile}) doesn't exist", 
         E_USER_ERROR

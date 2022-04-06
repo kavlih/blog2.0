@@ -1,5 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import TextareaAutosize from 'react-textarea-autosize';
+// FontAwesome
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 import { UserContext } from '../../context/UserContext';
 import { Identicon } from '../Identicon';
@@ -39,17 +43,18 @@ const PostForm = () => {
         <Link to="/profile" className="avatar-container">
           <Identicon identicon={user.identicon} />
         </Link>
-        <textarea 
+        <TextareaAutosize 
           className="content-container post-message" 
           name="message" 
-          placeholder="what's on your mind?" 
+          placeholder="what's on your mind?"
           value={messageValue}
           onChange={handleChange}
-          required
-        />
+          required/>
       </div>
       <p className="form-errors">{formErrors}</p>
-      <button onClick={handleSubmit}>create post</button>
+      <button className="btn-submit" onClick={handleSubmit}>
+        <FontAwesomeIcon icon={faArrowRight} />  
+      </button>
     </form>
   </>
   );
