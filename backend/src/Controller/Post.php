@@ -56,7 +56,10 @@ final class Post extends AbstractController {
         /** @var array $errors */
         $errors = [];
 
-        if(($this->isMethod(self::METHOD_DELETE) || $this->isMethod(self::METHOD_OPTIONS))
+        if($this->isMethod(self::METHOD_OPTIONS)) {
+            $this->responseCode(200);
+        }
+        elseif($this->isMethod(self::METHOD_DELETE)
             && $this->PostModel->checkPost($errors, $post_id)
             && $this->PostModel->delete($errors, $post_id))
         {

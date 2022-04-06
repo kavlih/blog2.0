@@ -111,7 +111,10 @@ final class Account extends AbstractController {
      * @return void
      */
     function resetIdenticon(?int $user_id) : void {
-        if($this->isMethod(self::METHOD_PUT)
+        if($this->isMethod(self::METHOD_OPTIONS)) {
+            $this->responseCode(200);
+        }
+        elseif($this->isMethod(self::METHOD_PUT)
             && !is_null($user_id)
             && $this->AccountModel->resetIdenticon($user_id)) 
         {
@@ -156,7 +159,10 @@ final class Account extends AbstractController {
      * @return void
      */
     function updateIdenticon(?int $user_id) : void {
-        if($this->isMethod(self::METHOD_PUT)
+        if($this->isMethod(self::METHOD_OPTIONS)) {
+            $this->responseCode(200);
+        }
+        elseif($this->isMethod(self::METHOD_PUT)
             && !is_null($user_id)
             && $this->AccountModel->updateIdenticon($user_id)) 
         {
