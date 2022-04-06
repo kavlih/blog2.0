@@ -9,7 +9,7 @@ import { UserContext } from '../../context/UserContext';
 import { Identicon } from '../Identicon';
 import { postHelper } from '../../helpers';
 
-const PostForm = () => {
+const PostForm = ({ setIsSubmit }) => {
   const { user } = useContext(UserContext)
 
   const [ messageValue, setMessageValue ] = useState("")
@@ -29,7 +29,7 @@ const PostForm = () => {
     postHelper.createPost(user.id, formData)
     .then((res) => {
       console.log(res?.data);
-      setFormErrors();
+      setIsSubmit(true);
     })
     .catch((error) => {
       setFormErrors(error.response.data.errors);

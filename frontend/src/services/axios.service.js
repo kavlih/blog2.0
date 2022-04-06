@@ -22,7 +22,6 @@ const _delete = (url) => {
   return axios.delete(CONFIG + url)
 }
 
-
 export const axiosService = {
   get,
   post,

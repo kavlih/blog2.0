@@ -12,6 +12,12 @@ const Feed = () => {
   const { user } = useContext(UserContext)
   const [ posts, setPosts ] = useState(null)
 
+  const [isSubmit, setIsSubmit] = useState(false);
+
+  useEffect(() => {
+    isSubmit && setIsSubmit(false);
+  }, [isSubmit])
+  
   useEffect(() => {
     let isMounted = true;
 
@@ -23,7 +29,7 @@ const Feed = () => {
       .catch(console.error);;
 
     return () => isMounted = false;
-  }, [user.id]);
+  }, [user.id, isSubmit]);
 
   // const navigate = useNavigate();  
 
@@ -44,8 +50,8 @@ const Feed = () => {
     </div> */}
     <Nav />
     <div className="main-container">
-      <PostForm />
-      <PostContainer posts={posts} />
+      <PostForm setIsSubmit={setIsSubmit}/>
+      <PostContainer posts={posts} setIsSubmit={setIsSubmit}/>
     </div>
   </>
   );

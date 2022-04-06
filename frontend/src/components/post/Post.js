@@ -19,7 +19,7 @@ import { UserContext } from '../../context/UserContext';
 import { Identicon } from '../Identicon';
 import { postHelper } from '../../helpers';
 
-const Post = ({post}) => {
+const Post = ({ post, setIsSubmit }) => {
   const { user } = useContext(UserContext);
   const [isliked, setIsLiked] = useState(false);
   const [date, setDate] = useState("");
@@ -137,6 +137,7 @@ const Post = ({post}) => {
   const handleDelete = () => {
     postHelper.deletePost(post.id)
     .then((res) => {
+      setIsSubmit(true);
     })
     .catch((error) => {
     });
