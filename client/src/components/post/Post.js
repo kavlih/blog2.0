@@ -108,18 +108,18 @@ const Post = ({ post, setIsSubmit }) => {
     setOpen((prevOpen) => !prevOpen);
   };
 
-  const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+  const handleClose = (e) => {
+    if (anchorRef.current && anchorRef.current.contains(e.target)) {
       return;
     }
     setOpen(false);
   };
 
-  function handleListKeyDown(event) {
-    if (event.key === 'Tab') {
-      event.preventDefault();
+  function handleListKeyDown(e) {
+    if (e.key === 'Tab') {
+      e.preventDefault();
       setOpen(false);
-    } else if (event.key === 'Escape') {
+    } else if (e.key === 'Escape') {
       setOpen(false);
     }
   }

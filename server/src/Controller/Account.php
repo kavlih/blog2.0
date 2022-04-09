@@ -17,33 +17,32 @@ final class Account extends AbstractController {
     }
 
     /**
-     * Delete
      * @POST
      * 
-     * @param int $user_id
+     * @param int||NULL $userId
      * @return void
      */
-    function delete(int $user_id) : void {
+    function delete(?int $userId) : void {
         /** @var array $errors */
         $errors = [];
+        /** @var array||NULL $userData */
+        $userData = $this->AccountModel->getUserById($errors, $userId);
 
-        if($this->isMethod(self::METHOD_POST)) {
-            if ($this->AccountModel->delete($errors, $user_id)) {
-                $this->responseCode(200);
-                $this->printJSON(['success' => TRUE]);
-            } 
-            else {
-                $this->responseCode(409);
-                $this->printJSON(['errors' => $errors]);
-            }
+        if(!$this->isMethod(self::METHOD_POST) || !$userData) {
+            $this->responseCode(400);
+            $this->printJSON(['success' => FALSE, 'errors' => $errors]);
+        }
+        elseif(!$this->AccountModel->delete($errors, $userData)) {
+            $this->responseCode(409);
+            $this->printJSON(['success' => FALSE, 'errors' => $errors]);
         }
         else {
-            $this->responseCode(400);
-        }
+            $this->responseCode(200);
+            $this->printJSON(['success' => TRUE]);
+        }  
     }
 
     /**
-     * Login
      * @POST
      * 
      * @return void
@@ -54,174 +53,179 @@ final class Account extends AbstractController {
         /** @var array $result */
         $result = [];
 
-        if($this->isMethod(self::METHOD_POST)) {
-            if ($this->AccountModel->login($errors, $result) && !empty($result)) {
-                $this->responseCode(200);
-                $this->printJSON([
-                    'success'   => TRUE,
-                    'user'      => [
-                        'id'        => $result['user_id'],
-                        'role'      => $result['role'],
-                        'username'  => $result['username'],
-                        'email'     => $result['email'],
-                        'identicon' => $result['identicon'],
-                    ]
-                ]);
-            }
-            else {
-                $this->responseCode(409);
-                $this->printJSON(['errors' => $errors]);
-            }
+        if(!$this->isMethod(self::METHOD_POST)) {
+            $this->responseCode(400);
+            $this->printJSON(['success' => FALSE]);
+        }
+        elseif(!$this->AccountModel->login($errors, $result)) {
+            $this->responseCode(409);
+            $this->printJSON(['success' => FALSE, 'errors' => $errors]);
         }
         else {
-            $this->responseCode(400);
+            $this->responseCode(200);
+            $this->printJSON([
+                'success'   => TRUE,
+                'user'      => [
+                    'id'        => $result['user_id'],
+                    'role'      => $result['role'],
+                    'username'  => $result['username'],
+                    'email'     => $result['email'],
+                    'identicon' => $result['identicon'],
+                ]
+            ]);
         }
     }
 
     /**
-     * Register
      * @POST
      * 
      * @return void
      */
-    function register() : void {
+    function signUp() : void {
         /** @var array $errors */
         $errors = [];
 
-        if($this->isMethod(self::METHOD_POST)) {
-            if ($this->AccountModel->register($errors)) {
-                $this->responseCode(200);
-                $this->printJSON(['success' => TRUE]);
-            } 
-            else {
-                $this->responseCode(409);
-                $this->printJSON(['errors' => $errors]);
-            }
+        if(!$this->isMethod(self::METHOD_POST)) {
+            $this->responseCode(400);
+            $this->printJSON(['success' => FALSE]);
+        }
+        elseif(!$this->AccountModel->signUp($errors)) {
+            $this->responseCode(409);
+            $this->printJSON(['success' => FALSE, 'errors' => $errors]);
         }
         else {
-            $this->responseCode(400);
-        }
-    }
-    
-    /**
-     * Reset identicon
-     * @PUT
-     * 
-     * @param int||NULL $user_id
-     * @return void
-     */
-    function resetIdenticon(?int $user_id) : void {
-        if($this->isMethod(self::METHOD_OPTIONS)) {
-            $this->responseCode(200);
-        }
-        elseif($this->isMethod(self::METHOD_PUT)
-            && !is_null($user_id)
-            && $this->AccountModel->resetIdenticon($user_id)) 
-        {
             $this->responseCode(200);
             $this->printJSON(['success' => TRUE]);
         }
-        else {
-            $this->responseCode(400);
-        }
     }
     
     /**
-     * Update email
-     * @POST
+     * @PUT
      * 
+     * @param int||NULL $userId
      * @return void
      */
-    function updateEmail() : void {
+    function resetIdenticon(?int $userId) : void {
         /** @var array $errors */
         $errors = [];
 
-        if($this->isMethod(self::METHOD_POST)) {
-            if ($this->AccountModel->updateEmail($errors)) {
-                $this->responseCode(200);
-                $this->printJSON(['success' => TRUE]);
-            } 
-            else {
-                $this->responseCode(409);
-                $this->printJSON(['errors' => $errors]);
-            }
-        }
-        else {
-            $this->responseCode(400);
-        }
-    }
-    
-    /**
-     * Update identicon
-     * @PUT
-     * 
-     * @param int||NULL $user_id
-     * @return void
-     */
-    function updateIdenticon(?int $user_id) : void {
         if($this->isMethod(self::METHOD_OPTIONS)) {
             $this->responseCode(200);
         }
-        elseif($this->isMethod(self::METHOD_PUT)
-            && !is_null($user_id)
-            && $this->AccountModel->updateIdenticon($user_id)) 
+        elseif(!$this->isMethod(self::METHOD_PUT) 
+            || !$this->AccountModel->getUserById($errors, $userId)
+            || !$this->PostModel->resetIdenticon($userId))
         {
+            $this->responseCode(400);
+            $this->printJSON(['success' => FALSE, 'errors' => $errors]);
+        }
+        else {
             $this->responseCode(200);
             $this->printJSON(['success' => TRUE]);
         }
-        else {
+    }
+    
+    /**
+     * @POST
+     * 
+     * @param int||NULL $userId
+     * @return void
+     */
+    function updateEmail(?int $userId) : void {
+        /** @var array $errors */
+        $errors = [];
+
+        if(!$this->isMethod(self::METHOD_POST)
+            || !$this->AccountModel->getUserById($errors, $userId))
+        {
             $this->responseCode(400);
+            $this->printJSON(['success' => FALSE, 'errors' => $errors]);
+        }
+        elseif(!$this->AccountModel->updateEmail($errors, $userId)) {
+            $this->responseCode(409);
+            $this->printJSON(['success' => FALSE, 'errors' => $errors]);
+        }
+        else {
+            $this->responseCode(200);
+            $this->printJSON(['success' => TRUE]);
+        }
+    }
+    
+    /**
+     * @PUT
+     * 
+     * @param int||NULL $userId
+     * @return void
+     */
+    function updateIdenticon(?int $userId) : void {
+        /** @var array $errors */
+        $errors = [];
+
+        if($this->isMethod(self::METHOD_OPTIONS)) {
+            $this->responseCode(200);
+        }
+        if(!$this->isMethod(self::METHOD_PUT)
+            || !$this->AccountModel->getUserById($errors, $userId)
+            || !$this->AccountModel->updateIdenticon($userId))
+        {
+            $this->responseCode(400);
+            $this->printJSON(['success' => FALSE, 'errors' => $errors]);
+        }
+        else {
+            $this->responseCode(200);
+            $this->printJSON(['success' => TRUE]);
         }
     }
 
     /**
-     * Update password
      * @POST
      * 
+     * @param int||NULL $userId
      * @return void
      */
-    function updatePassword() : void {
+    function updatePassword(?int $userId) : void {
         /** @var array $errors */
         $errors = [];
 
-        if($this->isMethod(self::METHOD_POST)) {
-            if ($this->AccountModel->updatePassword($errors)) {
-                $this->responseCode(200);
-                $this->printJSON(['success' => TRUE]);
-            } 
-            else {
-                $this->responseCode(409);
-                $this->printJSON(['errors' => $errors]);
-            }
+        if(!$this->isMethod(self::METHOD_POST)
+            || !$this->AccountModel->getUserById($errors, $userId))
+        {
+            $this->responseCode(400);
+            $this->printJSON(['success' => FALSE, 'errors' => $errors]);
+        }
+        elseif(!$this->AccountModel->updatePassword($errors, $userId)) {
+            $this->responseCode(409);
+            $this->printJSON(['success' => FALSE, 'errors' => $errors]);
         }
         else {
-            $this->responseCode(400);
+            $this->responseCode(200);
+            $this->printJSON(['success' => TRUE]);
         }
     }
 
     /**
-     * Update username
      * @POST
      * 
+     * @param int||NULL $userId
      * @return void
      */
-    function updateUsername() : void {
+    function updateUsername(?int $userId) : void {
         /** @var array $errors */
         $errors = [];
 
-        if($this->isMethod(self::METHOD_POST)) {
-            if ($this->AccountModel->updateUsername($errors)) {
-                $this->responseCode(200);
-                $this->printJSON(['success' => TRUE]);
-            } 
-            else {
-                $this->responseCode(409);
-                $this->printJSON(['errors' => $errors]);
-            }
+        if(!$this->isMethod(self::METHOD_POST)
+            || !$this->AccountModel->getUserById($errors, $userId))
+        {
+            $this->responseCode(400);
+            $this->printJSON(['success' => FALSE, 'errors' => $errors]);
+        }
+        elseif(!$this->AccountModel->updateUsername($errors, $userId)) {
+            $this->responseCode(409);
+            $this->printJSON(['success' => FALSE, 'errors' => $errors]);
         }
         else {
-            $this->responseCode(400);
+            $this->responseCode(200);
+            $this->printJSON(['success' => TRUE]);
         }
     }
-
 }

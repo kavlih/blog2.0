@@ -1,10 +1,11 @@
 import React from 'react';
+import Nav from '../../components/Nav'
 
 const Users = () => {
   return (
-    <div>
-      <h1>Users</h1>
-    </div>
+    <>
+      <Nav />
+    </>
   );
 }
 

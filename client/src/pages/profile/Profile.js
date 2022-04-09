@@ -6,7 +6,7 @@ import Nav from '../../components/Nav';
 import PostForm from "../../components/post/PostForm";
 import PostContainer from "../../components/post/PostContainer";
 
-const Profile = () => {
+const Profile = ({ username }) => {
   const { user } = useContext(UserContext)
 
   const [posts, setPosts] = useState(null)
@@ -16,27 +16,27 @@ const Profile = () => {
     let isMounted = true;
 
     const fetchPosts = async () => {
-      const res = await postHelper.getUserPosts(user.id);
+      const res = await postHelper.getUserPosts(username);
       if (isMounted) setPosts(res.data.result);
     };
     fetchPosts()
       .catch(console.error);;
 
     return () => isMounted = false;
-  }, [user.id]);
+  }, [username]);
 
   useEffect(() => {
     let isMounted = true;
 
     const fetchPosts = async () => {
-      const res = await postHelper.getUserLikes(user.id);
+      const res = await postHelper.getUserLikes(username);
       if (isMounted) setLikes(res.data.result);
     };
     fetchPosts()
       .catch(console.error);;
 
     return () => isMounted = false;
-  }, [user.id]);
+  }, [username]);
 
   return (
   <>

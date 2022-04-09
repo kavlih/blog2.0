@@ -12,12 +12,12 @@ const getPosts = (user_id) => {
   return axiosService.get(`/post/getAllFeed/${user_id}`)
 }
 
-const getUserLikes = (user_id) => {
-  return axiosService.get(`/post/getAllLiked/${user_id}`)
+const getUserLikes = (username) => {
+  return axiosService.get(`/post/getAllLiked/${username}`)
 }
 
-const getUserPosts = (user_id) => {
-  return axiosService.get(`/post/getAllUser/${user_id}`)
+const getUserPosts = (username) => {
+  return axiosService.get(`/post/getAllUser/${username}`)
 }
 
 const getPostLikes = (post_id) => {

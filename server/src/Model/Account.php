@@ -3,6 +3,7 @@
 namespace application\Model;
 
 use application\Model as AbstractModel;
+use application\Model\Traits\User as UserTrait;
 
 /**
  * Account model class
@@ -11,248 +12,290 @@ use application\Model as AbstractModel;
  */
 final class Account extends AbstractModel {
 
-    function delete(array &$errors, int $user_id) {
-        $input_password = filter_input(INPUT_POST, 'password');
+    use UserTrait;
 
-        if(empty($input_password)) {
-            $errors['password'] = 'Please type in your password';
+    /**
+     * Delete user
+     * 
+     * @param array $errors
+     * @param array $userData
+     * @return bool
+     */
+    function delete(array &$errors, array $userData) {
+        /** @var string||NULL $inputPwd */
+        $inputPwd = filter_input(INPUT_POST, 'password');
+
+        if(!$this->validatePwdDb($errors, $userData, $inputPwd)) {
             return FALSE;
         }
+        
+        /** @var string $query */
+        $query = 'DELETE FROM users WHERE user_id = :user_id;
+                  DELETE FROM posts WHERE user_id = :user_id;
+                  DELETE FROM identicon WHERE user_id = :user_id;
+                  DELETE FROM followers WHERE follower_id = :user_id OR receiver_id = :user_id;
+                  DELETE l FROM likes AS l INNER JOIN posts AS p ON p.id = l.post_id WHERE l.user_id = :user_id OR p.user_id = :user_id;';
 
-        /** @var array $user_data */
-        $user_data = $this->DbHandler->accountGet($user_id);
-        $validate_db_password = $this->validatePasswordDb($errors, $user_data, $input_password);
-        
-        if(is_null($user_data) || !$validate_db_password) return FALSE;
-        
-        return $this->DbHandler->accountDelete($user_id);
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->DbHandler->prepare($query);
+        $stmt->bindValue(':user_id', $userData['user_id']);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
     }
 
     /**
      * Login
-     *
-     * Processes POST data from the login form
-     * Compares input data with the database
-     * Returns TRUE if data machtes or FALSE if not
      * 
      * @param array $errors
      * @param array $result
      * @return bool
      */
     function login(array &$errors, array &$result) : bool {
-        /** @var ?string $input_username */
-        $input_user = strtolower(filter_input(INPUT_POST, 'user'));
-        /** @var ?string $input_password */
-        $input_password = filter_input(INPUT_POST, 'password');
+        /** @var string||NULL $inputUser */
+        $inputUser = strtolower(filter_input(INPUT_POST, 'user'));
+        /** @var string||NULL $inputPwd */
+        $inputPwd = filter_input(INPUT_POST, 'password');
 
-        // Validate user inputs
-        $validations['user'] = !empty($input_user);
-        $validations['password'] = !empty($input_password);
-
-        // Exit method and return FALSE if a input was empty
-        foreach ($validations as $validation) {
-            if(!$validation) {
-                if(!$validations['user']) {
-                    $errors['username'][] = 'Please type in your username or email address';
-                }
-                if(!$$validations['password']) {
-                    $errors['password'][] = 'Please type in your password';
-                }
-                return FALSE;
+        // If inputs are empty
+        if(!$inputUser || !$inputPwd) {
+            if(!$inputUser) {
+                $errors[] = 'Please type in your username or email address';
             }
+            if(!$inputPwd) {
+                $errors[] = 'Please type in your password';
+            }
+            return FALSE;
         }
 
-        // Get user data from database
-        /** @var array $result */
-        $result = $this->DbHandler->accountGet($input_user);
-        
-        // If a matching user was found, compare passwords
-        if(!is_null($result)) $compare_passwords = $this->comparePasswords($result, $input_password);
+        /** @var array||NULL $getUsername */
+        $getUsername = $this->getUserbyUsername($errors, $inputUser);
+        /** @var array||NULL $getEmail */
+        $getEmail = $this->getUserbyEmail($errors, $inputUser);
 
-        // If no matching user was found or passwords don't match
-        if(is_null($result) || !$compare_passwords) $errors['compare'] = 'This combination doesn\'t exist';
+        // If user was found, set $result
+        if($getUsername) {
+            /** @var array $userData */
+            $result = $getUsername;
+        }
+        elseif($getEmail) {
+            /** @var array $userData */
+            $result = $getEmail;
+        }
 
-        return empty($errors); 
+        // Empty $errors
+        $errors = [];
+
+        // If user was not found OR password is wrong
+        if(!($getUsername || $getEmail) 
+            || !$this->comparePasswords($result, $inputPwd)) 
+        {
+            $errors[] = 'This combination does not exist';
+        }
+
+        return empty($errors);
     }
 
     /**
-     * Register
-     *
-     * Processes POST data from the registration form
-     * Inserts data into database or returns FALSE if data was invalid
+     * Sign Up
      * 
      * @param array $errors
      * @return bool
      */
-    function register(array &$errors) : bool {
-        // Get user data
-        /** @var ?string $input_username */
-        $input_username = filter_input(INPUT_POST, 'username');
-        /** @var ?string $input_email */
-        $input_email = filter_input(INPUT_POST, 'email');
-        /** @var ?string $input_password */
-        $input_password = filter_input(INPUT_POST, 'password');
+    function signUp(array &$errors) : bool {
+        /** @var ?string $inputUsername */
+        $inputUsername = filter_input(INPUT_POST, 'username');
+        /** @var ?string $inputEmail */
+        $inputEmail = filter_input(INPUT_POST, 'email');
+        /** @var ?string $inputPwd */
+        $inputPwd = filter_input(INPUT_POST, 'password');
 
-        // Validate user inputs, methods storing TRUE on valid or FALSE on invalid input data
-        $validations['username'] = $this->validateUsername($errors, $input_username);
-        $validations['email'] = $this->validateEmail($errors, $input_email);
-        $validations['password'] = $this->validatePassword($errors, $input_password);
+        $validations['username'] = $this->validateUsername($errors, $inputUsername);
+        $validations['email'] = $this->validateEmail($errors, $inputEmail);
+        $validations['password'] = $this->validatePwd($errors, $inputPwd);
 
-        // Exit method and return FALSE if a input was invalid
         foreach ($validations as $validation) {
-            if(!$validation) return FALSE;
+            if(!$validation) {
+                return FALSE;
+            }
         }
 
         // Hash password
-        /** @var string $hashed_salt */
-        $hashed_salt = $this->createHashedSalt();
-        /** @var string $hashed_password */
-        $hashed_password = $this->createHashedPassword($input_password, $hashed_salt);
+        /** @var string $hashedSalt */
+        $hashedSalt = $this->createHashedSalt();
+        /** @var string $hashedPwd */
+        $hashedPwd = $this->createHashedPwd($inputPwd, $hashedSalt);
 
         // Insert data into database
-        /** @var bool $insert_user */
-        $insert_user = $this->DbHandler->accountCreate($input_username, $input_email, $hashed_password, $hashed_salt);
-        /** @var bool $insert_additionals */
-        if($insert_user) {}$insert_additionals = $this->DbHandler->accountCreateAdditionals($input_username);
+        /** @var bool $insertUser */
+        $insertUser = $this->inserUser($inputUsername, $inputEmail, $hashedPwd, $hashedSalt);
+        if($insertUser) {
+            /** @var array||NULL $userData */
+            $userData = $this->getUserbyEmail($errors, $inputEmail);
+            /** @var bool $insertAdditionals */
+            $insertAdditionals = $this->insertAdditionals($userData['user_id']);
+        } 
         
-        return $insert_user && $insert_additionals;
+        return $insertUser && $insertAdditionals;
     }
 
     /**
      * Reset identicon
      * 
-     * @param int $user_id
+     * @param int $userId
      * @return bool
      */
-    function resetIdenticon(int $user_id) : bool {
-        return $this->DbHandler->accountUpdateIdenticon($user_id, $user_id);
+    function resetIdenticon(int $userId) : bool {
+        return $this->insertIdenticon($userId, $userId);
     }
 
     /**
      * Update email
      * 
      * @param array $errors
+     * @param int $userId
      * @return bool
      */
-    function updateEmail(array &$errors) : bool {
+    function updateEmail(array &$errors, int $userId) : bool {
         /** @var ?string $email */
         $email = filter_input(INPUT_POST, 'email');
-        /** @var int $user_id */
-        $user_id = filter_input(INPUT_POST, 'user_id');
 
-        /** @var bool $validate */
-        $validate = $this->validateEmail($errors, $email);
+        if(!$this->validateEmail($errors, $email)) {
+            return FALSE;
+        }
 
-        return $validate && $this->DbHandler->accountUpdateEmail($email, $user_id);
+        /** @var string $query */
+        $query = 'UPDATE users SET email = :email WHERE user_id = :user_id;';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->DbHandler->prepare($query);
+        $stmt->bindValue(':email', $email);
+        $stmt->bindValue(':user_id', $userId);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
     }
 
     /**
      * Update identicon
      * 
-     * @param int $user_id
+     * @param int $userId
      * @return bool
      */
-    function updateIdenticon(int $user_id) : bool {
+    function updateIdenticon(int $userId) : bool {
+        // repeat if identicon is already taken
         do {
             // getrandmax() => 2 147 483 647
-            /** @var string $identicon_new */
-            $identicon_new = 'i' . rand(0, getrandmax());
-        } while ($this->DbHandler->accountGetIdenticon($identicon_new));
+            /** @var string $identiconNew */
+            $identiconNew = 'i' . rand(0, getrandmax());
+        } while ($this->getIdenticon($identiconNew));
 
-        return $this->DbHandler->accountUpdateIdenticon($identicon_new, $user_id);
+        return $this->insertIdenticon($userId, $identiconNew);
     }
 
     /**
      * Update password
      * 
+     * @param int $userId
      * @param array $errors
      * @return bool
      */
-    function updatePassword(array &$errors) : bool {
-        /** @var ?string $password_new */
-        $password_new = filter_input(INPUT_POST, 'password_new');
-        /** @var ?string $password_old */
-        $password_old = filter_input(INPUT_POST, 'password_old');
-        /** @var int $user_id */
-        $user_id = filter_input(INPUT_POST, 'user_id');
+    function updatePassword(array &$errors, int $userId) : bool {
+        /** @var ?string $passwordNew */
+        $passwordNew = filter_input(INPUT_POST, 'passwordNew');
+        /** @var ?string $passwordDb */
+        $passwordDb = filter_input(INPUT_POST, 'password');
 
         // Return FALSE if passwords are the same
-        if($password_new === $password_old) {
+        if($passwordNew === $passwordDb) {
             $errors['password'][] = 'This is already your password';
             return FALSE;
         }
 
-        // Get user data from database
-        /** @var array $result */
-        $user_data = $this->DbHandler->accountGet($user_id);
+        /** @var array $userData */
+        $userData = $this->getUserbyId($errors, $userId);
         
-        // Validate input data and set $errors if a input is invalid
-        /** @var bool $validate_db_password */
-        $validate_password_db = $this->validatePasswordDb($errors, $user_data, $password_old);
-        /** @var bool $validate_password */
-        $validate_password = $this->validatePassword($errors, $password_new);
+        /** @var bool $validatePwdDb */
+        $validatePwdDb = $this->validatePwdDb($errors, $userData, $passwordDb);
+        /** @var bool $validatePwd */
+        $validatePwd = $this->validatePwd($errors, $passwordNew);
 
         // Return FALSE if validations were not successful
-        if(!$validate_password_db || !$validate_password) {
+        if(!$validatePwdDb || !$validatePwd) {
             return FALSE;
         }
-        else {
-            // Hash salt & password
-            /** @var string $hashed_salt */
-            $hashed_salt = $this->createHashedSalt();;
-            /** @var string $hashed_password */
-            $hashed_password = $this->createHashedPassword($password_new, $hashed_salt);
 
-            return $this->DbHandler->accountUpdatePassword($hashed_salt, $hashed_password, $user_id);
-        }
+        // Hash salt & password
+        /** @var string $hashedSalt */
+        $hashedSalt = $this->createHashedSalt();;
+        /** @var string $hashedPwd */
+        $hashedPwd = $this->createHashedPwd($passwordNew, $hashedSalt);
+
+        /** @var string $query */
+        $query = 'UPDATE users SET password = :password, salt = :salt WHERE user_id = :user_id;';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->DbHandler->prepare($query);
+        $stmt->bindValue(':salt', $hashedSalt);
+        $stmt->bindValue(':password', $hashedPwd);
+        $stmt->bindValue(':user_id', $userId);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
     }
 
     /**
      * Update username
      * 
+     * @param int $userId
      * @param array $errors
      * @return bool
      */
-    function updateUsername(array &$errors) : bool {
+    function updateUsername(array &$errors, int $userId) : bool {
         /** @var ?string $username */
         $username = filter_input(INPUT_POST, 'username');
-        /** @var int $user_id */
-        $user_id = filter_input(INPUT_POST, 'user_id');
 
-        /** @var bool $validate */
-        $validate = $this->validateUsername($errors, $username);
+        if($this->validateUsername($errors, $username)) {
+            return FALSE;
+        }
         
-        return $validate && $this->DbHandler->accountUpdateUsername($username, $user_id);
+        /** @var string $query */
+        $query = 'UPDATE users SET username = :username WHERE user_id = :user_id;';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->DbHandler->prepare($query);
+        $stmt->bindValue(':username', $username);
+        $stmt->bindValue(':user_id', $userId);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
     }
 
     /**
      * Compare passwords
-     * 
-     * Compares the input password with the users password in the database
-     * Returns TRUE if the passwords are matching or FALSE if not
      *
-     * @param   array   $user_data
-     * @param   string  $input_password
+     * @param   array   $userData
+     * @param   string  $inputPwd
      * @return  boolean
      */
-    private function comparePasswords(array $user_data, string $input_password) : bool {
-        /** @var string $hashed_salt */
-        $hashed_salt = $user_data['salt'];
-        /** @var string $hashed_password */
-        $hashed_password = $user_data['password'];
+    private function comparePasswords(array $userData, string $inputPwd) : bool {
+        /** @var string $hashedSalt */
+        $hashedSalt = $userData['salt'];
+        /** @var string $hashedPwd */
+        $hashedPwd = $userData['password'];
 
-        return $hashed_password === $this->createHashedPassword($input_password, $hashed_salt);
+        return $hashedPwd === $this->createHashedPwd($inputPwd, $hashedSalt);
     }
 
     /**
      * Create hashed password
      *
-     * @param string|NULL $password
-     * @param string|NULL $salt
+     * @param string $pwd
+     * @param string $salt
      * @return string
      */    
-    private function createHashedPassword(?string $password, ?string $salt) : string {
-        return hash('sha512', "{$password}{$salt}");
+    private function createHashedPwd(string $pwd, string $salt) : string {
+        return hash('sha512', "{$pwd}{$salt}");
     }
 
     /**
@@ -267,6 +310,86 @@ final class Account extends AbstractModel {
         $time = time();
 
         return hash('sha512', "{$time}-{$rand}");
+    }
+
+    /** 
+     * Get identicon
+     * 
+     * @param string $identicon
+     * @return bool
+    */
+    private function getIdenticon(string $identicon) : bool {
+        /** @var string $query */
+        $query = 'SELECT * FROM identicon WHERE identicon = :identicon';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->DbHandler->prepare($query);
+        $stmt->bindValue(':identicon', $identicon);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
+    /** 
+     * Insert additionals into db
+     * 
+     * @param int $userId
+     * @return bool
+    */
+    private function insertAdditionals(int $userId) : bool {
+        /** @var string $query */
+        $query = 'INSERT INTO identicon(user_id, identicon) VALUES (:user_id, :user_id);
+            INSERT INTO followers(follower_id, receiver_id) VALUES (:user_id, :user_id);';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->DbHandler->prepare($query);
+        $stmt->bindValue(':user_id', $userId);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+
+    /**
+     * Insert identicon
+     * 
+     * @param int $userId
+     * @param int $identicon
+     * @return bool
+     */
+    private function insertIdenticon(int $userId, string $identicon) {
+        /** @var string $query */
+        $query = 'UPDATE identicon SET identicon = :identicon WHERE user_id = :user_id;';
+
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->DbHnadler->prepare($query);
+        $stmt->bindValue(':identicon', $identicon);
+        $stmt->bindValue(':user_id', $userId);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
+    }
+    
+    /** 
+     * Insert user into db
+     * 
+     * @param string $username
+     * @param string $email
+     * @param string $password
+     * @param string $salt
+     * @return bool
+    */
+    private function inserUser(string $username, string $email, string $password, string $salt) : bool {
+        /** @var string $query */
+        $query = 'INSERT INTO users(username, email, password, salt) VALUES (:username, :email, :password, :salt);';
+        /** @var \PDOStatement $stmt */
+        $stmt = $this->DbHandler->prepare($query);
+        $stmt->bindValue(':username', $username);
+        $stmt->bindValue(':email', $email);
+        $stmt->bindValue(':password', $password);
+        $stmt->bindValue(':salt', $salt);
+        $stmt->execute();
+
+        return !empty($stmt->rowCount());
     }
 
     /**
@@ -291,7 +414,7 @@ final class Account extends AbstractModel {
             if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $errors['email'][] = 'Email is not valid';
             }
-            else if($this->DbHandler->accountGet($email)) {
+            else if($this->getUserbyEmail($unset, $email)) {
                 $errors['email'][] = 'Email is already registered';
             }
         }
@@ -315,7 +438,7 @@ final class Account extends AbstractModel {
      * @param string|NULL $password
      * @return bool
      */
-    private function validatePassword(array &$errors, ?string $password) : bool {
+    private function validatePwd(array &$errors, ?string $password) : bool {
         if(is_null($password) || empty($password)) {
             $errors['password'][] = 'Please type in a password';
         }
@@ -355,15 +478,15 @@ final class Account extends AbstractModel {
      * @param   string|NULL $password
      * @return  bool
      */
-    private function validatePasswordDb(array &$errors, ?array $user_data, ?string $password) : bool {
+    private function validatePwdDb(array &$errors, ?array $user_data, ?string $password) : bool {
         if(is_null($password) || empty($password)) {
-            $errors['password_old'][] = 'Please type in your password';
+            $errors['passwordDb'][] = 'Please type in your password';
         }
         elseif(!$this->comparePasswords($user_data, $password)) {
-            $errors['password_old'][] = 'Password is wrong';
+            $errors['passwordDb'][] = 'Password is wrong';
         }
 
-        return !isset($errors['password_old']);
+        return !isset($errors['passwordDb']);
     }
 
     /**
@@ -395,7 +518,7 @@ final class Account extends AbstractModel {
             if(preg_match('/[^a-z0-9äüöß]/i', $username)) {
                 $errors['username'][] = 'Use only letters or numbers';
             }
-            if($this->DbHandler->accountGet($username)) {
+            if($this->getUserbyUsername($unset, $username)) {
                 $errors['username'][] = 'Username already exists';
             }
         }
