@@ -88,12 +88,13 @@ const Post = ({ post, setIsSubmit }) => {
 
   const handleLike = () => {
     const fields = new FormData();
-    fields.append("user_id", user.id)
+    fields.append("userId", user.id)
     
     postHelper.toggleLike(post.id, fields)
     .then((res) => {
       setLikes(isliked ? likes - 1 : likes + 1);
       setIsLiked(!isliked);
+      setIsSubmit(true);
     })
     .catch((error) => {
       // console.log(error.response.data.errors);
