@@ -1,12 +1,8 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import TextareaAutosize from 'react-textarea-autosize';
-// FontAwesome
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 import { UserContext } from '../../context/UserContext';
-import { Identicon } from '../Identicon';
 import { postHelper } from '../../helpers';
 
 const PostForm = ({ setIsSubmit }) => {
@@ -41,7 +37,7 @@ const PostForm = ({ setIsSubmit }) => {
     <form method="POST" className="post-form-container">
       <div className="post-form-inner">
         <Link to="/profile" className="avatar-container">
-          <Identicon identicon={user.identicon} />
+          {/* <Identicon identicon={user.identicon} /> */}
         </Link>
         <TextareaAutosize 
           className="content-container post-message" 
@@ -53,7 +49,7 @@ const PostForm = ({ setIsSubmit }) => {
       </div>
       <p className="form-errors">{formErrors}</p>
       <button className="btn-submit" onClick={handleSubmit}>
-        <FontAwesomeIcon icon={faArrowRight} />  
+        {/* <FontAwesomeIcon icon={faArrowRight} />   */}
       </button>
     </form>
   </>

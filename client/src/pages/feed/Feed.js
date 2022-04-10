@@ -1,29 +1,30 @@
 import React, { useState, useEffect, useContext } from 'react';
-// import { useNavigate, Link } from 'react-router-dom'
+// MUI Components
+import Container from '@mui/material/Container';
 
-import { accountHelper, postHelper } from '../../helpers';
 import { UserContext } from "../../context/UserContext";
-// import { Identicon } from "../../components/Identicon";
+import { postHelper } from '../../helpers';
 import Nav from '../../components/Nav';
 import PostForm from "../../components/post/PostForm";
-import PostContainer from "../../components/post/PostContainer";
+import PostList from "../../components/post/PostList";
 
 const Feed = () => {
   const { user } = useContext(UserContext)
-  const [ posts, setPosts ] = useState(null)
 
   const [isSubmit, setIsSubmit] = useState(false);
-
   useEffect(() => {
     isSubmit && setIsSubmit(false);
   }, [isSubmit])
   
+  const [ posts, setPosts ] = useState(null)
   useEffect(() => {
     let isMounted = true;
 
     const fetchPosts = async () => {
       const res = await postHelper.getPosts(user.id);
-      if (isMounted) setPosts(res.data.result);
+      if (isMounted) {
+        setPosts(res.data.result);
+      }
     };
     fetchPosts()
       .catch(console.error);;
@@ -31,28 +32,13 @@ const Feed = () => {
     return () => isMounted = false;
   }, [user.id, isSubmit]);
 
-  // const navigate = useNavigate();  
-
-  // const handleLogout = () => {
-  //   accountHelper.logout()
-  //   navigate("/account/login")
-  // };
-
   return (
   <>
-    {/* <div>
-      <div className='avatar-container'>
-        <Identicon identicon={user.identicon} />
-      </div>
-      <p>{user.username}</p>
-      <button onClick={handleLogout}>logout</button>
-      <Link to="/settings">Settings</Link>
-    </div> */}
     <Nav />
-    <div className="main-container">
-      <PostForm setIsSubmit={setIsSubmit}/>
-      <PostContainer posts={posts} setIsSubmit={setIsSubmit}/>
-    </div>
+    <Container>
+      <PostForm setIsSubmit={setIsSubmit} />
+      <PostList posts={posts} setIsSubmit={setIsSubmit} />
+    </Container>
   </>
   );
 }

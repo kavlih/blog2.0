@@ -1,21 +1,21 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+
+import Container from '@mui/material/Container';
+import Link from '@mui/material/Link';
+import Stack from '@mui/material/Stack';
+
+import NavMenu from './NavMenu';
 
 const Nav = (props) => {
   return (
-    <nav className="nav-container">
-      <div className="nav-start">
-        {/* Logo */}
-      </div>
-      <div className="nav-center">
-        <NavLink className="nav-link" to="/feed">Feed</NavLink>
-        <NavLink className="nav-link" to="/profile">Profile</NavLink>
-        <NavLink className="nav-link" to="/users">Users</NavLink>
-      </div>
-      <div className="nav-end">
-        {/* Settings */}  
-      </div>
-    </nav>
+    <Container>
+      <Stack direction="row" spacing={2} justifyContent="center">
+        <Link href="/feed">Feed</Link>
+        <Link href="/profile">Profile</Link>
+        <Link href="/users">Users</Link>
+      </Stack>
+      <NavMenu />
+    </Container>
   );
 };
 

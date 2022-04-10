@@ -17,7 +17,7 @@ const Router = () => {
     <Routes>
       <Route path="" element={<PrivateRoute />}>
         <Route path="/feed" element={<Feed />} />
-        <Route path="/profile" element={<Profile username={user.username} />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
       </Route>
       <Route path="/users/*" element={<Users />} />
