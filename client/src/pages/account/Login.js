@@ -5,11 +5,6 @@ import { useNavigate, Link } from 'react-router-dom'
 
 import { accountHelper } from '../../helpers';
 
-// FontAwesome
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
-
 const Login = () => {
   const navigate = useNavigate();
 
@@ -59,7 +54,8 @@ const Login = () => {
       const res = await accountHelper.login(fields);
       localStorage.setItem("user", JSON.stringify(res.data.user));
       navigate('/feed');
-    } catch (err) {
+    } 
+    catch (err) {
       setSubmitErrors("Login or password is invalid")
     }
   };
@@ -122,7 +118,7 @@ const Login = () => {
                 onChange={handleChange} 
               />
               <button className="btn position-absolute m-toggle-password" type="button" id="button-addon2" tabIndex="-1" onMouseDown={handleMouseDown}>
-                <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} />
+                {/* <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} /> */}
               </button>
             </div>
           </div>
@@ -131,7 +127,7 @@ const Login = () => {
         </div>
       </div>
       <button type="submit" className="btn m-btn m-btn-green" name="submit" disabled={isSubmitDisabled}>
-        <FontAwesomeIcon icon={faArrowRight} />          
+        {/* <FontAwesomeIcon icon={faArrowRight} />           */}
       </button>
     </form>
   </>

@@ -7,10 +7,6 @@ import { useNavigate, Link } from 'react-router-dom'
 import { accountHelper } from '../../helpers';
 import Tooltip from "../../components/Tooltip";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
-
 const PASSWORD_MINLENGTH = 8;
 const USERNAME_MINLENGTH = 3;
 const USERNAME_MAXLENGTH = 16;
@@ -242,7 +238,7 @@ const Register = () => {
                 tabIndex="-1"
                 onMouseDown={handleMouseDown}
               >
-                <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} />
+                {/* <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} /> */}
               </button>
               {Object.keys(stateVal.password) && 
               <Tooltip fieldName="password" message={
@@ -261,7 +257,7 @@ const Register = () => {
         </div>
       </div>
       <button type="submit" className="btn m-btn m-btn-green" name="submit" disabled={isSubmitDisabled}>
-        <FontAwesomeIcon icon={faArrowRight} />          
+        {/* <FontAwesomeIcon icon={faArrowRight} />           */}
       </button>
     </form>
   </>             
