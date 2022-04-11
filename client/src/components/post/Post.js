@@ -19,7 +19,9 @@ import PostActions from './PostActions';
 const useStyles = makeStyles({
   avatar: {
     background: "white",
-    padding: 10
+    padding: "10px",
+    width: "40px",
+    height: "40px"
   }
 })
 
@@ -93,7 +95,6 @@ const Post = ({ post, setIsSubmit }) => {
           src={identiconService(post.identicon)}
           alt={user.username}
           className={classes.avatar}
-          sx={{ width: 40, height: 40 }}
         />        
       </Link>
       {/* Post inner */}
@@ -104,16 +105,20 @@ const Post = ({ post, setIsSubmit }) => {
           <Stack 
             direction="row"
             justifyContent="space-between"
-          >
+            sx={{ marginTop: "-10px" }}
+            >
             {/* Header start */}
             <Stack direction="row" spacing={1} alignItems="center">
               {/* Username */}
-              <Button 
-                startIcon={<CircleOutlinedIcon />}
+              <Stack 
+                component={Link}
+                direction="row"
+                alignItems="center"
                 href={post.user_id === user.id ? "/profile" : `/users/${post.username}`}
               >
+                <CircleOutlinedIcon sx={{marginRight: "5px"}} fontSize="small" />
                 {post.username}
-              </Button>
+              </Stack>
               {/* Date */}
               <Typography 
                 variant="body" 
@@ -123,7 +128,7 @@ const Post = ({ post, setIsSubmit }) => {
               </Typography>
             </Stack>
             {/* Header end */}
-            <PostActions post={post} setIsSubmit={setIsSubmit} />
+            <PostActions post={post} setIsSubmit={setIsSubmit}/>
           </Stack>
           {/* Message */}
           <Typography variant="body2" color="text.secondary">

@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { makeStyles } from '@mui/styles';
 // MUI Icons
 import DeleteIcon from '@mui/icons-material/Delete';
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
@@ -18,8 +19,23 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { UserContext } from '../../context/UserContext';
 import { postHelper } from '../../helpers';
 
+const useStyles = makeStyles(theme => ({
+  btnDefault: {
+    color: theme.palette.grey.light,
+    '&:hover': {
+      color: theme.palette.grey.dark,
+    }
+  },
+  btnLiked: {
+    '&:hover': {
+      color: theme.palette.red.main,
+    }
+  },
+}));
+
 export default function PostActions ({ post, setIsSubmit }) {
   const { user } = useContext(UserContext);
+  const classes = useStyles();
 
   // Popper
   const [open, setOpen] = useState(false);
@@ -57,7 +73,7 @@ export default function PostActions ({ post, setIsSubmit }) {
   // Like action
   const [likes, setLikes] = useState(post.likes.length);
 
-  const [isliked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
   useEffect(() => {
     setIsLiked(post.likes.includes(user.id));
   }, [user.id, post.likes]);
@@ -68,8 +84,8 @@ export default function PostActions ({ post, setIsSubmit }) {
 
     try {
       await postHelper.toggleLike(post.id, fields);
-      setLikes(isliked ? likes - 1 : likes + 1);
-      setIsLiked(!isliked);
+      setLikes(isLiked ? likes - 1 : likes + 1);
+      setIsLiked(!isLiked);
       setIsSubmit(true);
     }
     catch(err) {
@@ -88,16 +104,19 @@ export default function PostActions ({ post, setIsSubmit }) {
   };
 
   return (
-    <Stack direction="row" spacing={0.5}>
+    <Stack direction="row" sx={{marginRight: "-5px"}} >
       {/* Like */}
       <IconButton 
         aria-label="like"
         onClick={handleLike}
+        size="small"
+        color={isLiked ? "red" : "default"}
+        className={classes.btnLiked}
       >
-        {likes > 0 && <Typography>
+        {likes > 0 && <Typography fontSize={12}>
           {likes}
         </Typography>}
-        {isliked ? <FavoriteRoundedIcon /> : <FavoriteBorderRoundedIcon />}
+        {isLiked ? <FavoriteRoundedIcon /> : <FavoriteBorderRoundedIcon />}
       </IconButton>
       {/* More */}
       <IconButton
@@ -107,6 +126,9 @@ export default function PostActions ({ post, setIsSubmit }) {
         aria-expanded={open ? 'true' : undefined}
         aria-haspopup="true"
         onClick={handleToggle}
+        size="small"
+        className={classes.btnDefault}
+        sx={{ width: "20px" }}
       >
         <MoreVertIcon />
       </IconButton>
