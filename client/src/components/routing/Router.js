@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import PrivateRoute from './PrivateRoute';
@@ -8,11 +8,7 @@ import Profile  from '../../pages/profile/Profile';
 import Settings from '../../pages/settings/Settings';
 import Users    from '../../pages/users/Users';
 
-import { UserContext } from "../../context/UserContext";
-
 const Router = () => {
-  const { user } = useContext(UserContext)
-
   return (
     <Routes>
       <Route path="" element={<PrivateRoute />}>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 // MUI Components
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
@@ -16,14 +15,27 @@ import { UserContext } from '../../context/UserContext';
 import { identiconService } from '../../services';
 import PostActions from './PostActions';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(( theme ) => ({
   avatar: {
     background: "white",
-    padding: "10px",
-    width: "40px",
-    height: "40px"
+    padding: "6px",
+    width: "28px",
+    height: "28px",
+    // marginRight
+    [theme.breakpoints.up("sm")]: {
+      padding: "10px",
+      width: "40px",
+      height: "40px"
+    },
+  },
+  card: {
+    width: "100%", 
+    backgroundColor: theme.palette.primary.dark,
+    border: `1px solid ${theme.palette.grey.dark}`,
+    boxShadow: "none",
+    borderRadius: "6px"
   }
-})
+}));
 
 const Post = ({ post, setIsSubmit }) => {
   const { user } = useContext(UserContext);
@@ -88,7 +100,7 @@ const Post = ({ post, setIsSubmit }) => {
   return (
   <>
     {/* Post */}
-    <Stack direction="row" spacing={2} width={"100%"}>
+    <Stack direction="row" spacing={{xs: 1, sm: 2}} width={"100%"}>
       {/* Avatar */}
       <Link to={post.user_id === user.id ? "/profile" : `/users/${post.username}`}>
         <Avatar 
@@ -98,17 +110,25 @@ const Post = ({ post, setIsSubmit }) => {
         />        
       </Link>
       {/* Post inner */}
-      <Card sx={{ width: "100%" }}>
+      <Card className={classes.card} >
         {/* Content */}
         <CardContent>
           {/* Header */}
           <Stack 
             direction="row"
             justifyContent="space-between"
-            sx={{ marginTop: "-10px" }}
+            className={classes.postHeader}
+            sx={{ 
+              marginTop: "-10px",
+              marginBottom: "10px" 
+            }}
             >
             {/* Header start */}
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack 
+              direction="row" 
+              alignItems="center" 
+              spacing={2} 
+            >
               {/* Username */}
               <Stack 
                 component={Link}
@@ -116,13 +136,26 @@ const Post = ({ post, setIsSubmit }) => {
                 alignItems="center"
                 href={post.user_id === user.id ? "/profile" : `/users/${post.username}`}
               >
-                <CircleOutlinedIcon sx={{marginRight: "5px"}} fontSize="small" />
-                {post.username}
+                <CircleOutlinedIcon 
+                  fontSize="4px" 
+                  sx={{
+                    marginRight: "5px",
+                    color: "text.secondary"
+                  }} 
+                />
+                <Typography 
+                  variant="bodyMonoBold" 
+                  fontSize="small"
+                  sx={{ color: "text.primary" }}
+                >
+                  {post.username}
+                </Typography>
               </Stack>
               {/* Date */}
               <Typography 
-                variant="body" 
-                component="p"
+                variant="bodyMono" 
+                fontSize="small"
+                sx={{ color: "text.secondary" }}
               >
                 {date}
               </Typography>
@@ -131,7 +164,10 @@ const Post = ({ post, setIsSubmit }) => {
             <PostActions post={post} setIsSubmit={setIsSubmit}/>
           </Stack>
           {/* Message */}
-          <Typography variant="body2" color="text.secondary">
+          <Typography 
+            variant="body1" 
+            color="text.primary"
+          >
             {post.message}
           </Typography>
         </CardContent>

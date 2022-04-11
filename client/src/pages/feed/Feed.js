@@ -35,7 +35,7 @@ const Feed = () => {
   return (
   <>
     <Nav />
-    <Container>
+    <Container maxWidth="md" sx={{ minWidth: "350px" }} >
       <PostForm setIsSubmit={setIsSubmit} />
       <PostList posts={posts} setIsSubmit={setIsSubmit} />
     </Container>

@@ -19,11 +19,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { UserContext } from '../../context/UserContext';
 import { postHelper } from '../../helpers';
 
-const useStyles = makeStyles(theme => ({
-  btnDefault: {
-    color: theme.palette.grey.light,
+const useStyles = makeStyles(( theme ) => ({
+  btnMore: {
+    width: "20px",
+    color: theme.palette.grey.main,
     '&:hover': {
-      color: theme.palette.grey.dark,
+      color: "white",
     }
   },
   btnLiked: {
@@ -110,10 +111,10 @@ export default function PostActions ({ post, setIsSubmit }) {
         aria-label="like"
         onClick={handleLike}
         size="small"
-        color={isLiked ? "red" : "default"}
         className={classes.btnLiked}
+        sx={isLiked ? {color: "red.main"} : {color: "grey.main"}}
       >
-        {likes > 0 && <Typography fontSize={12}>
+        {likes > 0 && <Typography variant="bodyMono" fontSize="small" >
           {likes}
         </Typography>}
         {isLiked ? <FavoriteRoundedIcon /> : <FavoriteBorderRoundedIcon />}
@@ -127,8 +128,7 @@ export default function PostActions ({ post, setIsSubmit }) {
         aria-haspopup="true"
         onClick={handleToggle}
         size="small"
-        className={classes.btnDefault}
-        sx={{ width: "20px" }}
+        className={classes.btnMore}
       >
         <MoreVertIcon />
       </IconButton>
