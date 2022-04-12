@@ -20,13 +20,6 @@ import { UserContext } from '../../context/UserContext';
 import { postHelper } from '../../helpers';
 
 const useStyles = makeStyles(( theme ) => ({
-  btnMore: {
-    width: "20px",
-    color: theme.palette.grey.main,
-    '&:hover': {
-      color: "white",
-    }
-  },
   btnLiked: {
     '&:hover': {
       color: theme.palette.red.main,
@@ -112,7 +105,7 @@ export default function PostActions ({ post, setIsSubmit }) {
         onClick={handleLike}
         size="small"
         className={classes.btnLiked}
-        sx={isLiked ? {color: "red.main"} : {color: "grey.main"}}
+        sx={isLiked ? {color: "red.main"} : {color: "default"}}
       >
         {likes > 0 && <Typography variant="bodyMono" fontSize="small" >
           {likes}
@@ -128,7 +121,7 @@ export default function PostActions ({ post, setIsSubmit }) {
         aria-haspopup="true"
         onClick={handleToggle}
         size="small"
-        className={classes.btnMore}
+        sx={{ width: "20px" }}
       >
         <MoreVertIcon />
       </IconButton>

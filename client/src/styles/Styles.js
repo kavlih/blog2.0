@@ -2,46 +2,45 @@ import { createTheme } from "@mui/material/styles";
 
 const Colors = {
   primaryLight: "#1F2433",
-  primary:      "#171B26",
-  primaryDark:  "#0B0D12",
-  grey:         "#646973",
-  // greyMid:         "#41454E",
-  greyDark:     "#32353c",
-  green:        "#58c255",
-  red:          "#da3849",
-  // blue:         "#80b0f5",
+  primary: "#171B26",
+  primaryDark: "#0B0D12",
+  secondary: "#646973",
+  secondaryDark: "#32353c",
+  green: "#58c255",
+  red: "#da3849",
+  blue: "#80B0f5",
   // Solid Colors
   white: "#f5f5f5",
   // black: "#000000"
 };
 
-const theme = createTheme({
+let theme = createTheme({
   palette: {
+    mode: 'dark',
     primary: {
       light: Colors.primaryLight,
       main: Colors.primary,
       dark: Colors.primaryDark
     },
-    grey: {
-      main: Colors.grey,
-      dark: Colors.greyDark
+    secondary: {
+      main: Colors.secondary,
+      dark: Colors.secondaryDark
     },
-    green: {
+    text: {
+      // primary: Colors.white,
+      secondary: Colors.secondary,
+      link: Colors.blue
+    },
+    success: {
       main: Colors.green
     },
     red: {
       main: Colors.red
-    },
-    text: {
-      primary: Colors.white,
-      secondary: Colors.grey
     }
-    // secondary: {
-    //   main: {
-    //     main: Colors.secondary
-    //   }
-    // }
-  },
+  }
+})
+
+theme = createTheme(theme, {
   typography: {
     // h1: undefined,
     h2: {
@@ -72,7 +71,35 @@ const theme = createTheme({
     // caption: undefined,
     // overline: undefined,
   },
+  shape: {
+    borderRadius: 6,
+  },
   components: {
+    MuiAvatar: {
+      styleOverrides: {
+        root: {
+          background: Colors.white,
+          padding: "6px",
+          width: "28px",
+          height: "28px",
+          [theme.breakpoints.up("sm")]: {
+            padding: "10px",
+            width: "40px",
+            height: "40px"
+          },
+        }
+      }
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          border: `1px solid ${theme.palette.secondary.dark}`,
+          boxShadow: "none",
+          backgroundColor: "transparent",
+          backgroundImage: "none"
+        }
+      }
+    },
     MuiTypography: {
       defaultProps: {
         variantMapping: {
@@ -98,6 +125,14 @@ const theme = createTheme({
     MuiIconButton: {
       defaultProps: {
         disableRipple: true
+      },
+      styleOverrides: {
+        root: {
+          color: theme.palette.secondary.main,
+          '&:hover': {
+            color: "white",
+          }
+        }
       }
     },
     MuiLink: {

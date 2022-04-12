@@ -7,12 +7,12 @@ import Stack from '@mui/material/Stack';
 import SvgIcon from '@mui/material/SvgIcon';
 
 import Post from './Post';
-import { ReactComponent as Snoopy } from '../../assets/graphics/Snoopy.svg';
+import { ReactComponent as SnoopySleep } from '../../assets/graphics/SnoopySleep.svg';
 
 const SnoopyGraphic = (props) => {
   return (
     <SvgIcon {...props}>
-      <Snoopy />
+      <SnoopySleep />
     </SvgIcon>
   );
 }

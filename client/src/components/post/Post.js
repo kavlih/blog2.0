@@ -7,7 +7,6 @@ import CardContent from '@mui/material/CardContent';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { makeStyles } from '@mui/styles';
 // MUI Icons
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 
@@ -15,31 +14,8 @@ import { UserContext } from '../../context/UserContext';
 import { identiconService } from '../../services';
 import PostActions from './PostActions';
 
-const useStyles = makeStyles(( theme ) => ({
-  avatar: {
-    background: "white",
-    padding: "6px",
-    width: "28px",
-    height: "28px",
-    // marginRight
-    [theme.breakpoints.up("sm")]: {
-      padding: "10px",
-      width: "40px",
-      height: "40px"
-    },
-  },
-  card: {
-    width: "100%", 
-    backgroundColor: theme.palette.primary.dark,
-    border: `1px solid ${theme.palette.grey.dark}`,
-    boxShadow: "none",
-    borderRadius: "6px"
-  }
-}));
-
 const Post = ({ post, setIsSubmit }) => {
   const { user } = useContext(UserContext);
-  const classes = useStyles();
   
   const [date, setDate] = useState("");
   useEffect(() => {
@@ -102,22 +78,23 @@ const Post = ({ post, setIsSubmit }) => {
     {/* Post */}
     <Stack direction="row" spacing={{xs: 1, sm: 2}} width={"100%"}>
       {/* Avatar */}
-      <Link to={post.user_id === user.id ? "/profile" : `/users/${post.username}`}>
+      <Link 
+        href={post.user_id === user.id ? "/profile" : `/users/${post.username}`}
+        sx={{ height: {xs: "40px", sm: "60px"} }}
+      >
         <Avatar 
           src={identiconService(post.identicon)}
           alt={user.username}
-          className={classes.avatar}
         />        
       </Link>
       {/* Post inner */}
-      <Card className={classes.card} >
+      <Card sx={{ width: "100%" }} >
         {/* Content */}
         <CardContent>
           {/* Header */}
           <Stack 
             direction="row"
             justifyContent="space-between"
-            className={classes.postHeader}
             sx={{ 
               marginTop: "-10px",
               marginBottom: "10px" 
@@ -164,10 +141,7 @@ const Post = ({ post, setIsSubmit }) => {
             <PostActions post={post} setIsSubmit={setIsSubmit}/>
           </Stack>
           {/* Message */}
-          <Typography 
-            variant="body1" 
-            color="text.primary"
-          >
+          <Typography variant="body1" >
             {post.message}
           </Typography>
         </CardContent>
