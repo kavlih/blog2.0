@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 // MUI Components
 import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -78,8 +79,17 @@ const PostForm = ({ setIsSubmit }) => {
 
   return (
   <>
-    <form method="POST" className="post-form-container">
-      <Stack direction="row" spacing={{xs: 1, sm: 2}} width={"100%"}>
+    <Box 
+      component="form" 
+      method="POST" 
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        mb: "50px"
+      }}
+    >
+      <Stack direction="row" spacing={{ xs: 1, sm: 2 }} width={"100%"}>
         {/* Avatar */}
         <Avatar 
           src={identiconService(user.identicon)}
@@ -94,9 +104,11 @@ const PostForm = ({ setIsSubmit }) => {
           className={classes.textarea}
         />
       </Stack>
+      {/* Form errors */}
       {formErrors && <Typography variant="body1" mt={2} sx={{ color: "red.main" }}>
         {formErrors}
       </Typography>}
+      {/* Submit button */}
       <IconButton 
         aria-label="create post"
         onClick={handleSubmit} 
@@ -105,7 +117,7 @@ const PostForm = ({ setIsSubmit }) => {
       >
         <ArrowForwardRoundedIcon fontSize="large" />
       </IconButton>
-    </form>
+    </Box>
   </>
   );
 }

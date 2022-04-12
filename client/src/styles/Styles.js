@@ -56,18 +56,17 @@ theme = createTheme(theme, {
     // h6: undefined,
     // subtitle1: undefined,
     // subtitle2: undefined,
-    // body1: undefined,
-    bodyMono: {
+    body1: {
+      fontFamily: "Roboto",
+      fontSize: "1rem",
+      fontWeight: 400
+    },
+    body2: {
       fontFamily: "Roboto Mono",
       fontSize: "1rem",
       fontWeight: 400
     },
     // button: undefined,
-    bodyMonoBold: {
-      fontFamily: "Roboto Mono",
-      fontSize: "1rem",
-      fontWeight: 500
-    },
     // caption: undefined,
     // overline: undefined,
   },
@@ -79,13 +78,13 @@ theme = createTheme(theme, {
       styleOverrides: {
         root: {
           background: Colors.white,
-          padding: "6px",
-          width: "28px",
-          height: "28px",
+          padding:"6px",
+          width:"28px",
+          height:"28px",
           [theme.breakpoints.up("sm")]: {
-            padding: "10px",
-            width: "40px",
-            height: "40px"
+            padding:"10px",
+            width:"40px",
+            height:"40px"
           },
         }
       }
@@ -137,8 +136,8 @@ theme = createTheme(theme, {
     },
     MuiLink: {
       defaultProps: {
-        underline: "none"
-      }
+        underline:"none"
+      },
     }
   }
 })

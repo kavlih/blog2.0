@@ -9,7 +9,6 @@ import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { makeStyles } from '@mui/styles';
 // MUI Icons
 import DeleteIcon from '@mui/icons-material/Delete';
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
@@ -19,18 +18,51 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { UserContext } from '../../context/UserContext';
 import { postHelper } from '../../helpers';
 
-const useStyles = makeStyles(( theme ) => ({
-  btnLiked: {
-    '&:hover': {
-      color: theme.palette.red.main,
-    }
-  },
-}));
-
-export default function PostActions ({ post, setIsSubmit }) {
+const LikeButton = ({ post, setIsSubmit }) => {
   const { user } = useContext(UserContext);
-  const classes = useStyles();
+  const [likes, setLikes] = useState(post.likes.length);
 
+  const [isLiked, setIsLiked] = useState(false);
+  useEffect(() => {
+    setIsLiked(post.likes.includes(user.id));
+  }, [user.id, post.likes]);
+
+  const handleLike = async () => {
+    const fields = new FormData();
+    fields.append("userId", user.id)
+
+    try {
+      await postHelper.toggleLike(post.id, fields);
+      setLikes(isLiked ? likes - 1 : likes + 1);
+      setIsLiked(!isLiked);
+      setIsSubmit(true);
+    }
+    catch(err) {
+      // console.log(err.response.data.errors);
+    }
+  };
+
+  return(
+    <IconButton 
+      aria-label="like"
+      onClick={handleLike}
+      size="small"
+      sx={{
+        color: isLiked ? "red.main" : "default",
+        "&:hover": {
+          color: "red.main",
+        }
+      }}
+    >
+      {likes > 0 && <Typography variant="body2" fontSize="small" sx={{ mt:"-1px", mr:"1px" }}>
+        {likes}
+      </Typography>}
+      {isLiked ? <FavoriteRoundedIcon fontSize="small" /> : <FavoriteBorderRoundedIcon fontSize="small" />}
+    </IconButton>
+  );
+}
+
+const MoreButton = ({ post, setIsSubmit }) => {
   // Popper
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
@@ -63,31 +95,8 @@ export default function PostActions ({ post, setIsSubmit }) {
 
     prevOpen.current = open;
   }, [open]);
-
-  // Like action
-  const [likes, setLikes] = useState(post.likes.length);
-
-  const [isLiked, setIsLiked] = useState(false);
-  useEffect(() => {
-    setIsLiked(post.likes.includes(user.id));
-  }, [user.id, post.likes]);
-
-  const handleLike = async () => {
-    const fields = new FormData();
-    fields.append("userId", user.id)
-
-    try {
-      await postHelper.toggleLike(post.id, fields);
-      setLikes(isLiked ? likes - 1 : likes + 1);
-      setIsLiked(!isLiked);
-      setIsSubmit(true);
-    }
-    catch(err) {
-      // console.log(err.response.data.errors);
-    }
-  };
-
-  // Delete action
+  
+  // Delete post
   const handleDelete = () => {
     postHelper.deletePost(post.id)
     .then((res) => {
@@ -97,22 +106,8 @@ export default function PostActions ({ post, setIsSubmit }) {
     });
   };
 
-  return (
-    <Stack direction="row" sx={{marginRight: "-5px"}} >
-      {/* Like */}
-      <IconButton 
-        aria-label="like"
-        onClick={handleLike}
-        size="small"
-        className={classes.btnLiked}
-        sx={isLiked ? {color: "red.main"} : {color: "default"}}
-      >
-        {likes > 0 && <Typography variant="bodyMono" fontSize="small" >
-          {likes}
-        </Typography>}
-        {isLiked ? <FavoriteRoundedIcon /> : <FavoriteBorderRoundedIcon />}
-      </IconButton>
-      {/* More */}
+  return(
+    <>
       <IconButton
         ref={anchorRef}
         aria-label="more"
@@ -125,7 +120,6 @@ export default function PostActions ({ post, setIsSubmit }) {
       >
         <MoreVertIcon />
       </IconButton>
-      {/* Popper */}
       <Popper
         open={open}
         anchorEl={anchorRef.current}
@@ -159,6 +153,15 @@ export default function PostActions ({ post, setIsSubmit }) {
           </Grow>
         )}
       </Popper>
+    </>
+  );
+}
+
+export default function PostActions ({ post, setIsSubmit }) {
+  return (
+    <Stack direction="row" sx={{ mr: "-5px" }} >
+      <LikeButton post={post} setIsSubmit={setIsSubmit} />
+      <MoreButton post={post} setIsSubmit={setIsSubmit} />      
     </Stack>
   );
 }
