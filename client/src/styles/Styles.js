@@ -42,16 +42,18 @@ let theme = createTheme({
 
 theme = createTheme(theme, {
   typography: {
-    // h1: undefined,
-    h2: {
-      fontFamily: "Roboto Mono",
-      fontWeight: 400
-    },
+    h1: undefined,
+    h2: undefined,
     h3: {
       fontFamily: "Roboto Mono",
-      fontWeight: 400
+      fontWeight: 400,
+      color: theme.palette.primary.main
     },
-    // h4: undefined,
+    h4: {
+      fontFamily: "Roboto Mono",
+      fontWeight: 300,
+      color: theme.palette.primary.main
+    },
     // h5: undefined,
     // h6: undefined,
     // subtitle1: undefined,

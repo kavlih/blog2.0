@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-// MUI Components
-import Container from '@mui/material/Container';
 
 import { UserContext } from "../../context/UserContext";
 import { postHelper } from '../../helpers';
-import Nav from '../../components/Nav';
 import PostForm from "../../components/post/PostForm";
 import PostList from "../../components/post/PostList";
 
@@ -34,11 +31,8 @@ const Feed = () => {
 
   return (
   <>
-    <Nav />
-    <Container maxWidth="md" sx={{ minWidth: "350px" }} >
-      <PostForm setIsSubmit={setIsSubmit} />
-      <PostList posts={posts} setIsSubmit={setIsSubmit} />
-    </Container>
+    <PostForm setIsSubmit={setIsSubmit} />
+    <PostList posts={posts} setIsSubmit={setIsSubmit} />
   </>
   );
 }

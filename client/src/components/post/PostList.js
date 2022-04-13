@@ -9,7 +9,7 @@ import SvgIcon from '@mui/material/SvgIcon';
 import Post from './Post';
 import { ReactComponent as SnoopySleep } from '../../assets/graphics/SnoopySleep.svg';
 
-const SnoopyGraphic = (props) => {
+const Graphic = (props) => {
   return (
     <SvgIcon {...props}>
       <SnoopySleep />
@@ -17,7 +17,7 @@ const SnoopyGraphic = (props) => {
   );
 }
 
-const NoContent = () => {
+const EmptyList = () => {
   return (
     <Stack
       alignItems= "center"
@@ -27,18 +27,14 @@ const NoContent = () => {
         margin: "auto"
       }}
     >
-      <SnoopyGraphic 
+      <Graphic 
         sx={{
           width: "50%",
           height: "100%",
           color: "primary.light"
         }}  
       />
-      <Typography 
-        variant= "h3" 
-        align= "center"
-        sx={{ color: "primary.main" }} 
-      >
+      <Typography variant= "h4" align= "center">
         No Content
       </Typography>
     </Stack>
@@ -50,16 +46,16 @@ export default function PostList({ posts, setIsSubmit }) {
   <>
     {posts 
       ? <Stack 
-        component={List} 
-        spacing={2}
-      >
-        {posts.map(( post ) => ( 
-          <ListItem key={post.id} sx={{ padding: 0 }} >
-            <Post post={post} setIsSubmit={setIsSubmit} />
-          </ListItem>
-        ))}
-      </Stack>
-      : <NoContent />}
+          component={List} 
+          spacing={2}
+        >
+          {posts.map(( post ) => ( 
+            <ListItem key={post.id} sx={{ padding: 0 }} >
+              <Post post={post} setIsSubmit={setIsSubmit} />
+            </ListItem>
+          ))}
+        </Stack>
+      : <EmptyList />}
   </>
   );
 }

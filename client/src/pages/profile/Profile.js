@@ -1,23 +1,13 @@
 import React, { useContext } from 'react';
-// MUI Components
-import Container from '@mui/material/Container';
 
 import { UserContext } from "../../context/UserContext";
-import Nav from '../../components/Nav';
-import PostForm from "../../components/post/PostForm";
-import UserStack from "../../components/user/UserStack";
+import User from "../../components/User";
 
 const Profile = () => {
-  const { user } = useContext(UserContext)
+  const { user } = useContext(UserContext);
 
   return (
-  <>
-    <Nav />
-    <Container>
-      <PostForm />
-      <UserStack username={user.username} />
-    </Container>
-  </>
+    <User username={user.username} />
   );
 }
 

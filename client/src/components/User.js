@@ -1,11 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 // MUI Components
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import { postHelper } from '../../helpers';
-import PostList from "../../components/post/PostList";
+import { UserContext } from "../context/UserContext";
+import { postHelper } from '../helpers';
+import Nav from './Nav';
+import PostForm from "./post/PostForm";
+import PostList from "./post/PostList";
 
-const UserStack = ({ username }) => {
+const User = ({ username }) => {
+  const { user } = useContext(UserContext);
+  const [isProfile, setIsProfile] = useState(false);
+  useEffect(() => {
+    user.username === username && setIsProfile(true);
+  }, [user.username, username])
 
   const [isSubmit, setIsSubmit] = useState(false);
   useEffect(() => {
@@ -46,20 +56,24 @@ const UserStack = ({ username }) => {
 
   return (
   <>
-    <section>
-      <Typography>
+    <Typography variant="body1" color="white">
+      Username: {username}
+    </Typography>
+    <PostForm />
+    <Box component="section">
+      <Typography variant="h3" align="center" gutterBottom>
         My posts
       </Typography>
       <PostList posts={posts} setIsSubmit={setIsSubmit} />
-    </section>
-    <section>
-      <Typography>
+    </Box>
+    <Box component="section">
+      <Typography variant="h3" align="center" gutterBottom>
         My Likes
       </Typography>
       <PostList posts={likes} setIsSubmit={setIsSubmit} />
-    </section>
+    </Box>
   </>
   );
 }
 
-export default UserStack;
+export default User;

@@ -1,8 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+// MUI Components
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
 
+import { UserContext } from "../../context/UserContext";
 import { accountHelper } from "../../helpers";
+import Nav from '../../components/Nav';
 
-const Settings = () => {
+export default function Settings() {
+  const { user } = useContext(UserContext)
+
   const [formValues, setFormValues] = useState({
     username: ''
   });
@@ -28,13 +36,26 @@ const Settings = () => {
   };
 
   return (
-    <div>
-      <h1>Settings</h1>
-
-      <button onClick={handleSubmit}>update</button>
-
-    </div>
+    <>
+      <Nav />
+      <Container maxWidth="md">
+        <Box
+          component="form"
+          sx={{
+            '& .MuiTextField-root': { m: 1, width: '25ch' },
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField
+            error={false}
+            id="outlined-error-helper-text"
+            // label="Error"
+            // defaultValue="Hello World"
+            // helperText="Incorrect entry."
+          />
+        </Box>
+      </Container>
+    </>
   );
 }
-
-export default Settings;
