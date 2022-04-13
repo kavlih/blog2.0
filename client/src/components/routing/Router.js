@@ -31,6 +31,7 @@ export default function Router() {
           <Route path="settings" element={<Settings />} />
         </Route>
         <Route path="users" element={<Users />} />
+        // ?? Navigate to user profile causes reload
         <Route path="users/:username" element={<UserProfile />} />
         <Route path="account/*" element={<Account />} />
       </Route>

@@ -1,22 +1,13 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 // MUI Components
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import { UserContext } from "../context/UserContext";
 import { postHelper } from '../helpers';
-import Nav from './Nav';
 import PostForm from "./post/PostForm";
 import PostList from "./post/PostList";
 
 const User = ({ username }) => {
-  const { user } = useContext(UserContext);
-  const [isProfile, setIsProfile] = useState(false);
-  useEffect(() => {
-    user.username === username && setIsProfile(true);
-  }, [user.username, username])
-
   const [isSubmit, setIsSubmit] = useState(false);
   useEffect(() => {
     isSubmit && setIsSubmit(false);
@@ -56,9 +47,6 @@ const User = ({ username }) => {
 
   return (
   <>
-    <Typography variant="body1" color="white">
-      Username: {username}
-    </Typography>
     <PostForm />
     <Box component="section">
       <Typography variant="h3" align="center" gutterBottom>

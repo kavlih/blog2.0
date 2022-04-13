@@ -7,12 +7,11 @@ import Register from './Register';
 
 const Account = () => {
   const navigate = useNavigate();
-
   useEffect(() => {
     const loggedInUser = localStorage.getItem("user");
 
     if (loggedInUser) {
-      navigate("/feed");
+      navigate("feed");
     }
   });
 

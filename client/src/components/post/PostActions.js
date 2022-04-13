@@ -68,6 +68,8 @@ const LikeButton = ({ post, setIsSubmit }) => {
 }
 
 const MoreButton = ({ post, setIsSubmit }) => {
+  const { user } = useContext(UserContext);
+
   // Popper
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
@@ -148,10 +150,15 @@ const MoreButton = ({ post, setIsSubmit }) => {
                   id="menu"
                   onKeyDown={handleListKeyDown}
                 >
-                  <MenuItem onClick={handleDelete} disableRipple>
-                    <DeleteIcon />
-                    Delete Post
-                  </MenuItem>
+                  {user.id === post.user_id 
+                    ? <MenuItem onClick={handleDelete} disableRipple>
+                        <DeleteIcon />
+                        Delete Post
+                      </MenuItem>
+                    : <MenuItem disabled>
+                        Report Post
+                      </MenuItem>
+                  }
                 </MenuList>
               </ClickAwayListener>
             </Paper>

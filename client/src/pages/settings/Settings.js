@@ -6,7 +6,6 @@ import TextField from '@mui/material/TextField';
 
 import { UserContext } from "../../context/UserContext";
 import { accountHelper } from "../../helpers";
-import Nav from '../../components/Nav';
 
 export default function Settings() {
   const { user } = useContext(UserContext)
@@ -37,9 +36,7 @@ export default function Settings() {
 
   return (
     <>
-      <Nav />
-      <Container maxWidth="md">
-        <Box
+      <Box
           component="form"
           sx={{
             '& .MuiTextField-root': { m: 1, width: '25ch' },
@@ -55,7 +52,6 @@ export default function Settings() {
             // helperText="Incorrect entry."
           />
         </Box>
-      </Container>
     </>
   );
 }
