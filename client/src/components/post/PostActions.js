@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 // MUI Components
+import Button from '@mui/material/Button';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Grow from '@mui/material/Grow';
 import IconButton from '@mui/material/IconButton';
@@ -8,7 +9,6 @@ import MenuList from '@mui/material/MenuList';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 // MUI Icons
 import DeleteIcon from '@mui/icons-material/Delete';
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
@@ -43,22 +43,27 @@ const LikeButton = ({ post, setIsSubmit }) => {
   };
 
   return(
-    <IconButton 
+    <Button 
       aria-label="like"
       onClick={handleLike}
       size="small"
+      variant="body2" 
+      endIcon={isLiked ? <FavoriteRoundedIcon fontSize="small" /> : <FavoriteBorderRoundedIcon fontSize="small" />}
       sx={{
-        color: isLiked ? "red.main" : "default",
+        minWidth: "unset",
+        p: "5px",
+        color: isLiked ? "red.main" : "text.secondary",
         "&:hover": {
+          bgcolor: "transparent",
           color: "red.main",
+        },
+        "&>span": {
+          ml: "2px"
         }
       }}
     >
-      {likes > 0 && <Typography variant="body2" fontSize="small" sx={{ mt:"-1px", mr:"1px" }}>
-        {likes}
-      </Typography>}
-      {isLiked ? <FavoriteRoundedIcon fontSize="small" /> : <FavoriteBorderRoundedIcon fontSize="small" />}
-    </IconButton>
+      {likes > 0 && likes}
+    </Button>
   );
 }
 

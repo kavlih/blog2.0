@@ -21,7 +21,7 @@ const PostAvatar = ({ post }) => {
   return (
     <Link 
       href={post.user_id === user.id ? "/profile" : `/users/${post.username}`}
-      sx={{ height: {xs: "40px", sm: "60px"} }}
+      sx={{ mt:"7px", height: {xs: "40px", sm: "60px"} }}
     >
       <Avatar 
         variant="post"
@@ -92,12 +92,12 @@ const PostContent = ({ post, setIsSubmit }) => {
   }, [post]);
 
   return (
-    <CardContent>
+    <CardContent sx={{ "&:last-child": { pb:"16px" } }}>
       {/* Header */}
       <Stack 
         direction="row"
         justifyContent="space-between"
-        sx={{ mt: "-10px", mb: "10px" }}
+        sx={{ mt: "-10px" }}
       >
         <Stack 
           direction="row" 
@@ -105,17 +105,16 @@ const PostContent = ({ post, setIsSubmit }) => {
           spacing={2} 
         >
           {/* Username */}
-          <Stack 
+          <Typography 
             component={Link}
             variant="body2" 
             fontSize="small"
-            direction="row"
-            alignItems="center"
             href={post.user_id === user.id ? "/profile" : `/users/${post.username}`}
             sx={{ 
+              display:"flex",
+              alignItems:"center",
               py:"2px",
               mt:"-1px",
-              color:"text.primary",
               fontWeight:"500", 
               "&:hover": {
                 pl:"2px",
@@ -128,16 +127,14 @@ const PostContent = ({ post, setIsSubmit }) => {
                 mr:"4px", 
                 mt:"2px", 
                 fontSize:"14px", 
-                color:"text.secondary" 
               }} 
             />
             {post.username}
-          </Stack>
+          </Typography>
           {/* Date */}
           <Typography 
             variant="body2" 
             fontSize="small"
-            sx={{ color: "text.secondary" }}
           >
             {date}
           </Typography>

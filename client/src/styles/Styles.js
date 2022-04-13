@@ -66,7 +66,8 @@ theme = createTheme(theme, {
     body2: {
       fontFamily: "Roboto Mono",
       fontSize: "1rem",
-      fontWeight: 400
+      fontWeight: 400,
+      color: theme.palette.text.secondary,
     },
     // button: undefined,
     // caption: undefined,
@@ -136,10 +137,7 @@ theme = createTheme(theme, {
       },
       styleOverrides: {
         root: {
-          color: theme.palette.secondary.main,
-          '&:hover': {
-            color: "white",
-          }
+          color: theme.palette.secondary.main
         }
       }
     },
