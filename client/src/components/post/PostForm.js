@@ -92,6 +92,7 @@ const PostForm = ({ setIsSubmit }) => {
       <Stack direction="row" spacing={{ xs: 1, sm: 2 }} width={"100%"}>
         {/* Avatar */}
         <Avatar 
+          variant="post"
           src={identiconService(user.identicon)}
           alt={user.username}
         />

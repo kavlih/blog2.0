@@ -24,6 +24,7 @@ const PostAvatar = ({ post }) => {
       sx={{ height: {xs: "40px", sm: "60px"} }}
     >
       <Avatar 
+        variant="post"
         src={identiconService(post.identicon)}
         alt={user.username}
       />        

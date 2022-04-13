@@ -27,7 +27,7 @@ let theme = createTheme({
       dark: Colors.secondaryDark
     },
     text: {
-      // primary: Colors.white,
+      primary: Colors.white,
       secondary: Colors.secondary,
       link: Colors.blue
     },
@@ -78,16 +78,23 @@ theme = createTheme(theme, {
       styleOverrides: {
         root: {
           background: Colors.white,
-          padding:"6px",
-          width:"28px",
-          height:"28px",
-          [theme.breakpoints.up("sm")]: {
-            padding:"10px",
-            width:"40px",
-            height:"40px"
-          },
         }
-      }
+      },
+      variants: [
+        {
+          props: { variant: "post" },
+          style: {
+            padding:"6px",
+            width:"28px",
+            height:"28px",
+            [theme.breakpoints.up("sm")]: {
+              padding:"10px",
+              width:"40px",
+              height:"40px"
+            },
+          },
+        },
+      ],
     },
     MuiCard: {
       styleOverrides: {
