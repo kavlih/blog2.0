@@ -256,7 +256,7 @@ final class Post extends AbstractModel {
 
           /** @var \PDOStatement $stmt */
           $stmt = $this->DbHandler->prepare($query);
-          $stmt->bindValue(':postId', $postData["user_id"]);
+          $stmt->bindValue(':postId', $postData["id"]);
           $stmt->execute();
 
           /** @var array||FALSE $result */

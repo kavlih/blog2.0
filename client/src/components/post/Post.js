@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 // MUI Components
 import { makeStyles } from '@mui/styles';
 import Avatar from '@mui/material/Avatar';
@@ -12,7 +13,6 @@ import Typography from '@mui/material/Typography';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 
 import { UserContext } from '../../context/UserContext';
-import { SubmitContext } from '../../context/SubmitContext';
 import { identiconService } from '../../services';
 import PostActions from './PostActions';
 import PostButton from './PostButton';
@@ -50,8 +50,6 @@ const PostAvatar = ({ post }) => {
 
 const PostContent = ({ post }) => {
   const { user } = useContext(UserContext);
-  const { setIsSubmit } = useContext(SubmitContext);
-
   const classes = useStyles();
 
   const [date, setDate] = useState("");
@@ -110,6 +108,16 @@ const PostContent = ({ post }) => {
     }
   }, [post]);
 
+  const navigate = useNavigate();  
+  const handleClick = () => {
+    if(post.user_id === user.id) {
+      navigate("/profile");
+    }
+    else {
+      navigate(`/users/${post.username}`);
+    }
+  };
+
   return (
     <CardContent sx={{ "&:last-child": { pb:"16px" } }}>
       {/* Header */}
@@ -126,7 +134,7 @@ const PostContent = ({ post }) => {
           {/* Username */}
           <PostButton
             aria-label="user"
-            href={post.user_id === user.id ? "/profile" : `/users/${post.username}`}
+            onClick={handleClick}
             size="small"
             className={classes.button}
             startIcon={<CircleOutlinedIcon />}

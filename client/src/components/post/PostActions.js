@@ -21,7 +21,8 @@ import PostButton from './PostButton';
 
 const LikeButton = ({ post }) => {
   const { user } = useContext(UserContext);
-  const { setIsSubmit } = useContext(SubmitContext);
+  const { setPostSubmit } = useContext(SubmitContext);
+
   const [likes, setLikes] = useState(post.likes.length);
 
   const [isLiked, setIsLiked] = useState(false);
@@ -37,7 +38,7 @@ const LikeButton = ({ post }) => {
       await postHelper.toggleLike(post.id, fields);
       setLikes(isLiked ? likes - 1 : likes + 1);
       setIsLiked(!isLiked);
-      setIsSubmit(true);
+      setPostSubmit(true);
     }
     catch(err) {
       // console.log(err.response.data.errors);
@@ -65,7 +66,7 @@ const LikeButton = ({ post }) => {
 
 const MoreButton = ({ post }) => {
   const { user } = useContext(UserContext);
-  const { setIsSubmit } = useContext(SubmitContext);
+  const { setPostSubmit } = useContext(SubmitContext);
 
   // Popper
   const [open, setOpen] = useState(false);
@@ -104,7 +105,7 @@ const MoreButton = ({ post }) => {
   const handleDelete = () => {
     postHelper.deletePost(post.id)
     .then((res) => {
-      setIsSubmit(true);
+      setPostSubmit(true);
     })
     .catch((error) => {
     });

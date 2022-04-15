@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 // MUI Components
 import { styled } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -9,8 +11,11 @@ import CardActionArea from '@mui/material/CardActionArea';
 import CardActions from '@mui/material/CardActions';
 
 import { UserContext } from '../../context/UserContext';
+import { SubmitContext } from '../../context/SubmitContext';
 import { identiconService } from '../../services';
 import { userHelper } from '../../helpers';
+import { margin } from '@mui/system';
+import { ClassNames } from '@emotion/react';
 
 const StyledCard = styled(Card)(({ theme }) => ({ 
   width: "100%", 
@@ -25,18 +30,65 @@ const StyledCard = styled(Card)(({ theme }) => ({
     right: "16px",
     padding: 0
   },
-  "&:hover": {
-    backgroundColor: "default"
-  }
+  "& .MuiCardActionArea-root": {
+    color: "transparent",
+
+    "&:hover .MuiCardHeader-title:before": {
+      content: '">"',
+      marginRight: "4px"
+    }
+  },
 }));
 
-const UserCard = ({ receiver, setIsSubmit }) => {
+const useStyles = makeStyles(() => ({
+  button: {
+    width: "90px",
+    "&> span": {
+      display: "none",
+      marginRight: "4px"
+    },
+    "&:hover > span": {
+      display: "block"
+    }
+  }
+})); 
+
+const MyCardHeader = ({ receiver }) => {
+  return (
+    <CardHeader
+      titleTypographyProps={{ 
+        variant: "body1",
+        fontWeight: 500,
+        fontSize: {sm: "1.125rem"},
+        color: "common.white"
+      }}
+      avatar={
+        <Avatar 
+          variant="post"
+          src={identiconService(receiver.identicon)}
+          alt={receiver.username}
+        />
+      }
+      title={receiver.username}
+      // subheader=""
+    />
+  );
+};
+
+export default function UserCard({ receiver, isButton=true }) {
   const { user } = useContext(UserContext);
+  const { setUserSubmit } = useContext(SubmitContext);
+  const classes = useStyles();
   
   const [isFollowing, setIsFollowing] = useState();
   useEffect(() => {
     setIsFollowing(receiver.isFollowing);
   }, [user.id, receiver.isFollowing]);
+
+  const navigate = useNavigate();  
+  const handleClick = () => {
+    navigate(`/users/${receiver.username}`);
+  };
 
   const handleFollow = async () => {
     const fields = new FormData();
@@ -45,7 +97,7 @@ const UserCard = ({ receiver, setIsSubmit }) => {
     try {
       await userHelper.toggleFollow(receiver.id, fields);
       setIsFollowing(!isFollowing);
-      setIsSubmit(true);
+      setUserSubmit(true);
     }
     catch(err) {
       // console.log(err.response.data.errors);
@@ -55,40 +107,22 @@ const UserCard = ({ receiver, setIsSubmit }) => {
   return (
   <>
   <StyledCard>
-    <CardActionArea>
-      <CardHeader
-        titleTypographyProps={{ 
-          variant: "body1",
-          fontWeight: 500,
-          fontSize: {sm: "1.125rem"}
-        }}
-        avatar={
-          <Avatar 
-            variant="post"
-            src={identiconService(receiver.identicon)}
-            alt={receiver.username}
-          />
-        }
-        title={receiver.username}
-        // subheader=""
-      />
-    </CardActionArea>
+    {isButton 
+      ? <CardActionArea onClick={handleClick}>
+          <MyCardHeader receiver={receiver} />
+        </CardActionArea>
+      : <MyCardHeader receiver={receiver} />
+    }
     {receiver.id !== user.id &&
       <CardActions>
       <Button 
         aria-label={isFollowing ? "unfollow" : "follow"}
         onClick={handleFollow}
+        className={classes.button}
         sx={{
-          width: "85px",
           color: isFollowing ? "default" : "success.main",
-          "&>span": {
-            display: "none"
-          },
           "&:hover": {
-            color: isFollowing ? "error.main" : "default",
-            "&>span": {
-              display: "block"
-            }
+            color: isFollowing ? "error.main" : "default"
           }
         }}
       >
@@ -99,6 +133,4 @@ const UserCard = ({ receiver, setIsSubmit }) => {
   </StyledCard>
   </>
   );
-}
-
-export default UserCard;
+};

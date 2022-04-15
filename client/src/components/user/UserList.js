@@ -40,7 +40,7 @@ const EmptyList = () => {
   );
 }
 
-export default function UserList({ users, setIsSubmit }) {
+export default function UserList({ users }) {
   return (
   <>
     {users 
@@ -50,7 +50,7 @@ export default function UserList({ users, setIsSubmit }) {
         >
           {users.map(( user ) => ( 
             <Grid item key={user.id} xs={12} sm={6} sx={{ padding: 0 }} >
-              <UserCard receiver={user} setIsSubmit={setIsSubmit} />
+              <UserCard receiver={user} />
             </Grid>
           ))}
         </Grid>

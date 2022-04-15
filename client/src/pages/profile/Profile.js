@@ -8,6 +8,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
 
 import { UserContext } from "../../context/UserContext";
+import { SubmitContext } from "../../context/SubmitContext";
 import { postHelper, userHelper } from '../../helpers';
 import PostForm from "../../components/post/PostForm";
 import PostList from "../../components/post/PostList";
@@ -33,12 +34,11 @@ export default function Profile() {
   console.log("profile got rendered");
 
   const { user } = useContext(UserContext);
+  const { postSubmit, setPostSubmit, userSubmit, setUserSubmit } = useContext(SubmitContext);
 
-  const [isUserSubmit, setIsUserSubmit] = useState(false);
-  const [isPostSubmit, setIsPostSubmit] = useState(false);
   useEffect(() => {
-    isPostSubmit && setIsPostSubmit(false);
-    isUserSubmit && setIsUserSubmit(false);
+    postSubmit && setPostSubmit(false);
+    userSubmit && setUserSubmit(false);
   });
 
   // Counters
@@ -56,85 +56,74 @@ export default function Profile() {
   };
   
   // Fetches
-  const [posts, setPosts] = useState(null)
+  const [posts, setPosts] = useState(null);
+  const [likes, setLikes] = useState(null);
   useEffect(() => {
     let isMounted = true;
 
     const fetchPosts = async () => {
-      const res = await postHelper.getUserPosts(user.username);
+      let res = await postHelper.getUserPosts(user.username);
+      let res2 = await postHelper.getUserLikes(user.username);
+      res = res.data.result;
+      res2 = res2.data.result;
+
       if (isMounted) {
-        setPosts(res.data.result);
-        setPostsCount(res.data.result.length)
+        setPosts(res);
+        res ? setPostsCount(res.length) : setPostsCount(0);
+        setLikes(res2);
+        res2 ? setLikesCount(res2.length) : setLikesCount(0);
       }
     };
     fetchPosts()
-      .catch(console.error);;
+      .catch(console.error);
 
     return () => isMounted = false;
-  }, [user.username, isPostSubmit]);
+  }, [user.username, postSubmit]);
 
-  const [likes, setLikes] = useState(null)
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchPosts = async () => {
-      const res = await postHelper.getUserLikes(user.username);
-      if (isMounted) {
-        setLikes(res.data.result);
-        setLikesCount(res.data.result.length);
-      }
-    };
-    fetchPosts()
-      .catch(console.error);;
-
-    return () => isMounted = false;
-  }, [user.username, isPostSubmit]);
-
-  const [followers, setFollowers] = useState(null)
-  const [following, setFollowing] = useState(null)
+  const [followers, setFollowers] = useState(null);
+  const [following, setFollowing] = useState(null);
   useEffect(() => {
     let isMounted = true;
 
     const fetchUsers = async () => {
+      let res = await userHelper.getFollowers(user.id);
+      let res2 = await userHelper.getFollowing(user.id);
+      res = res.data.result;
+      res2 = res2.data.result;
+      
+      res.forEach(e => {
+        e["isFollowing"] = false;
+        
+        res2.forEach(e2 => {
+          if(e.id === e2.id) {
+            e["isFollowing"] = true;
+          }
+        });
+      });
+
+      res2.forEach(e => {
+        e["isFollowing"] = true;
+      });
+
       if (isMounted) {
-        let res = await userHelper.getFollowers(user.id);
-        let res2 = await userHelper.getFollowing(user.id);
-        res = res.data.result;
-        res2 = res2.data.result;
-
-        res.forEach(user => {
-          user["isFollowing"] = false;
-          
-          res2.forEach(user2 => {
-            if(user.id === user2.id) {
-              user["isFollowing"] = true;
-            }
-          });
-        });
-
-        res2.forEach(user => {
-          user["isFollowing"] = true;
-        });
-
-        // console.log(res);
-
         setFollowers(res);
+        res ? setFollowersCount(res.length) : setFollowersCount(0);
+        
         setFollowing(res2);
-        setFollowersCount(res.length);
-        setFollowingCount(res2.length);
+        res2 ? setFollowingCount(res2.length) : setFollowingCount(0);
       }
     };
     fetchUsers()
       .catch(console.error);
 
     return () => isMounted = false;
-  }, [user.id, isUserSubmit]);
+  }, [user.id, userSubmit]);
 
   return (
   <>
-    <UserCard receiver={user} />
+    {/* <UserCard receiver={user} /> */}
 
-    <PostForm setIsSubmit={isPostSubmit} />
+    <PostForm />
 
     <Stack spacing={"10px"} direction={{ xs:"column", sm:"row" }} justifyContent="center" >
       <StyledToggleButtonGroup
@@ -172,27 +161,27 @@ export default function Profile() {
     {/* Posts */}
     {nav === "posts" &&
       <Box component="section">
-        <PostList posts={posts} setIsSubmit={setIsPostSubmit} />
+        <PostList posts={posts} />
       </Box>
     }
 
     {/* Likes */}
     {nav === "likes" &&
       <Box component="section">
-        <PostList posts={likes} setIsSubmit={setIsPostSubmit} />
+        <PostList posts={likes} />
       </Box>
     }
 
     {/* Followers */}
     {nav === "followers" &&
       <Box component="section">
-        <UserList users={followers} setIsSubmit={setIsUserSubmit} />
+        <UserList users={followers} />
       </Box>
     }
     
     {nav === "following" &&
       <Box component="section">
-        <UserList users={following} setIsSubmit={setIsUserSubmit} />
+        <UserList users={following} />
       </Box>
     }
       

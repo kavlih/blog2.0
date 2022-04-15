@@ -1,12 +1,12 @@
 import React, { useState, useContext } from 'react';
 // MUI Components
+import { makeStyles } from '@mui/styles';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
-import { makeStyles } from '@mui/styles';
 // MUI Icons
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 
@@ -50,7 +50,7 @@ const useStyles = makeStyles(( theme ) => ({
 
 const PostForm = () => {
   const { user } = useContext(UserContext);
-  const { setIsSubmit } = useContext(SubmitContext);
+  const { setPostSubmit } = useContext(SubmitContext);
   const classes = useStyles();
 
   const [ messageValue, setMessageValue ] = useState("")
@@ -70,7 +70,7 @@ const PostForm = () => {
     postHelper.createPost(user.id, formData)
     .then((res) => {
       console.log(res?.data);
-      setIsSubmit(true);
+      setPostSubmit(true);
       setFormErrors();
       setMessageValue("");
     })
@@ -108,7 +108,7 @@ const PostForm = () => {
         />
       </Stack>
       {/* Form errors */}
-      {formErrors && <Typography variant="body1" mt={2} sx={{ color: "red.main" }}>
+      {formErrors && <Typography variant="body1" mt={2} sx={{ color: "error.main" }}>
         {formErrors}
       </Typography>}
       {/* Submit button */}

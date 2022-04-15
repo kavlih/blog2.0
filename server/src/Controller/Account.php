@@ -66,7 +66,7 @@ final class Account extends AbstractController {
             $this->printJSON([
                 'success'   => TRUE,
                 'user'      => [
-                    'id'        => $result['user_id'],
+                    'id'        => $result['id'],
                     'username'  => $result['username'],
                     'email'     => $result['email'],
                     'identicon' => $result['identicon'],

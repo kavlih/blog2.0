@@ -4,8 +4,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 
 import { UserContext } from '../../context/UserContext';
-import { postHelper } from '../../helpers';
+import { postHelper, userHelper } from '../../helpers';
 import PostList from "../../components/post/PostList";
+import UserCard from '../../components/user/UserCard';
 
 const UserPosts = ({ username }) => {
   const [isSubmit, setIsSubmit] = useState(false);
@@ -37,18 +38,36 @@ export default function UserProfile() {
   const { user } = useContext(UserContext);
 
   const navigate = useNavigate();
+  const [ receiver, setReceiver ] = useState(null);
   useEffect(() => {
-    
     if(user.username === username) {
       navigate("/profile");
     }
+
+    let isMounted = true;
+
+    const fetchPosts = async () => {
+      const res = await userHelper.getUser(username);
+      if (isMounted) {
+        setReceiver(res.data.result);
+      }
+    };
+    fetchPosts()
+      .catch(console.error);;
+
+    return () => isMounted = false;
   }, [user.username, username, navigate]);
 
   return (
   <>
-    <Box component="section">
-      <UserPosts username={username} />
-    </Box>
+    {receiver &&
+      <div>
+        <UserCard receiver={receiver} isButton={false} />
+        <Box component="section">
+          <UserPosts username={receiver.username} />
+        </Box>
+      </div>
+    }
   </>
   );
 }

@@ -9,12 +9,13 @@ import theme from './styles/Styles';
 
 const App = () => {
   const [ user, setUser ] = useState(JSON.parse(localStorage.getItem('user')));
-  const [ isSubmit, setIsSubmit ] = useState(false);
+  const [ postSubmit, setPostSubmit ] = useState(false);
+  const [ userSubmit, setUserSubmit ] = useState(false);
 
   return (
     <ThemeProvider theme={theme}>
       <UserContext.Provider value={{ user, setUser }}>    
-        <SubmitContext.Provider value={{ isSubmit, setIsSubmit }}>
+        <SubmitContext.Provider value={{ postSubmit, setPostSubmit, userSubmit, setUserSubmit }}>
           <Router />
         </SubmitContext.Provider>
       </UserContext.Provider>

@@ -10,13 +10,13 @@ const Feed = () => {
   console.log("feed got rendered");
 
   const { user } = useContext(UserContext);
-  const { isSubmit, setIsSubmit } = useContext(SubmitContext);
+  const { postSubmit, setPostSubmit } = useContext(SubmitContext);
 
   useEffect(() => {
-    isSubmit && setIsSubmit(false);
+    postSubmit && setPostSubmit(false);
   });
   
-  const [ posts, setPosts ] = useState(null)
+  const [ posts, setPosts ] = useState(null);
   useEffect(() => {
     let isMounted = true;
 
@@ -30,7 +30,7 @@ const Feed = () => {
       .catch(console.error);;
 
     return () => isMounted = false;
-  }, [user.id, isSubmit]);
+  }, [user.id, postSubmit]);
 
   return (
   <>
