@@ -42,7 +42,7 @@ export default function UserProfile() {
     if(user.username === username) {
       navigate("/profile");
     }
-  }, [user.username, username]);
+  }, [user.username, username, navigate]);
 
   return (
   <>

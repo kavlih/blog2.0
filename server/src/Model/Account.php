@@ -30,15 +30,15 @@ final class Account extends AbstractModel {
         }
         
         /** @var string $query */
-        $query = 'DELETE FROM users WHERE user_id = :user_id;
-                  DELETE FROM posts WHERE user_id = :user_id;
-                  DELETE FROM identicon WHERE user_id = :user_id;
-                  DELETE FROM followers WHERE follower_id = :user_id OR receiver_id = :user_id;
-                  DELETE l FROM likes AS l INNER JOIN posts AS p ON p.id = l.post_id WHERE l.user_id = :user_id OR p.user_id = :user_id;';
+        $query = 'DELETE FROM users WHERE id = :userId;
+                  DELETE FROM posts WHERE user_id = :userId;
+                  DELETE FROM identicon WHERE user_id = :userId;
+                  DELETE FROM followers WHERE follower_id = :userId OR receiver_id = :userId;
+                  DELETE l FROM likes AS l INNER JOIN posts AS p ON p.id = l.post_id WHERE l.user_id = :userId OR p.user_id = :userId;';
 
         /** @var \PDOStatement $stmt */
         $stmt = $this->DbHandler->prepare($query);
-        $stmt->bindValue(':user_id', $userData['user_id']);
+        $stmt->bindValue(':userId', $userData['id']);
         $stmt->execute();
 
         return !empty($stmt->rowCount());
@@ -133,7 +133,7 @@ final class Account extends AbstractModel {
             /** @var array||NULL $userData */
             $userData = $this->getUserbyEmail($errors, $inputEmail);
             /** @var bool $insertAdditionals */
-            $insertAdditionals = $this->insertAdditionals($userData['user_id']);
+            $insertAdditionals = $this->insertAdditionals($userData['id']);
         } 
         
         return $insertUser && $insertAdditionals;
@@ -165,12 +165,12 @@ final class Account extends AbstractModel {
         }
 
         /** @var string $query */
-        $query = 'UPDATE users SET email = :email WHERE user_id = :user_id;';
+        $query = 'UPDATE users SET email = :email WHERE id = :userId;';
 
         /** @var \PDOStatement $stmt */
         $stmt = $this->DbHandler->prepare($query);
         $stmt->bindValue(':email', $email);
-        $stmt->bindValue(':user_id', $userId);
+        $stmt->bindValue(':userId', $userId);
         $stmt->execute();
 
         return !empty($stmt->rowCount());
@@ -232,13 +232,13 @@ final class Account extends AbstractModel {
         $hashedPwd = $this->createHashedPwd($passwordNew, $hashedSalt);
 
         /** @var string $query */
-        $query = 'UPDATE users SET password = :password, salt = :salt WHERE user_id = :user_id;';
+        $query = 'UPDATE users SET password = :password, salt = :salt WHERE id = :userId;';
 
         /** @var \PDOStatement $stmt */
         $stmt = $this->DbHandler->prepare($query);
         $stmt->bindValue(':salt', $hashedSalt);
         $stmt->bindValue(':password', $hashedPwd);
-        $stmt->bindValue(':user_id', $userId);
+        $stmt->bindValue(':userId', $userId);
         $stmt->execute();
 
         return !empty($stmt->rowCount());
@@ -260,12 +260,12 @@ final class Account extends AbstractModel {
         }
         
         /** @var string $query */
-        $query = 'UPDATE users SET username = :username WHERE user_id = :user_id;';
+        $query = 'UPDATE users SET username = :username WHERE id = :userId;';
 
         /** @var \PDOStatement $stmt */
         $stmt = $this->DbHandler->prepare($query);
         $stmt->bindValue(':username', $username);
-        $stmt->bindValue(':user_id', $userId);
+        $stmt->bindValue(':userId', $userId);
         $stmt->execute();
 
         return !empty($stmt->rowCount());
@@ -338,12 +338,12 @@ final class Account extends AbstractModel {
     */
     private function insertAdditionals(int $userId) : bool {
         /** @var string $query */
-        $query = 'INSERT INTO identicon(user_id, identicon) VALUES (:user_id, :user_id);
-            INSERT INTO followers(follower_id, receiver_id) VALUES (:user_id, :user_id);';
+        $query = 'INSERT INTO identicon(user_id, identicon) VALUES (:userId, :userId);
+            INSERT INTO followers(follower_id, receiver_id) VALUES (:userId, :userId);';
 
         /** @var \PDOStatement $stmt */
         $stmt = $this->DbHandler->prepare($query);
-        $stmt->bindValue(':user_id', $userId);
+        $stmt->bindValue(':userId', $userId);
         $stmt->execute();
 
         return !empty($stmt->rowCount());
@@ -358,12 +358,12 @@ final class Account extends AbstractModel {
      */
     private function insertIdenticon(int $userId, string $identicon) {
         /** @var string $query */
-        $query = 'UPDATE identicon SET identicon = :identicon WHERE user_id = :user_id;';
+        $query = 'UPDATE identicon SET identicon = :identicon WHERE user_id = :userId;';
 
         /** @var \PDOStatement $stmt */
         $stmt = $this->DbHnadler->prepare($query);
         $stmt->bindValue(':identicon', $identicon);
-        $stmt->bindValue(':user_id', $userId);
+        $stmt->bindValue(':userId', $userId);
         $stmt->execute();
 
         return !empty($stmt->rowCount());
@@ -405,8 +405,7 @@ final class Account extends AbstractModel {
      * @param string|NULL $email
      * @return bool
      */
-    private function validateEmail(array &$errors, ?string $email) : bool
-    {
+    private function validateEmail(array &$errors, ?string $email) : bool {
         if(is_null($email) || empty($email)) {
             $errors['email'][] = 'Please type in an email address';
         }

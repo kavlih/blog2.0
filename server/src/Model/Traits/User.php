@@ -20,7 +20,7 @@ trait User {
 
     /** @var string $query */
     $query = 'SELECT u.*, i.identicon FROM users AS u
-      LEFT JOIN identicon AS i ON i.user_id = u.user_id 
+      LEFT JOIN identicon AS i ON i.user_id = u.id 
       WHERE u.username = :username';
 
     /** @var \PDOStatement $stmt */
@@ -50,8 +50,8 @@ trait User {
 
     /** @var string $query */
     $query = 'SELECT u.*, i.identicon FROM users AS u
-      LEFT JOIN identicon AS i ON i.user_id = u.user_id 
-      WHERE u.user_id = :userId';
+      LEFT JOIN identicon AS i ON i.user_id = u.id 
+      WHERE u.id = :userId';
 
     /** @var \PDOStatement $stmt */
     $stmt = $this->DbHandler->prepare($query);
@@ -80,7 +80,7 @@ trait User {
 
     /** @var string $query */
     $query = 'SELECT u.*, i.identicon FROM users AS u
-      LEFT JOIN identicon AS i ON i.user_id = u.user_id 
+      LEFT JOIN identicon AS i ON i.user_id = u.id 
       WHERE u.email = :email';
 
     /** @var \PDOStatement $stmt */

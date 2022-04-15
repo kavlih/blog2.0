@@ -1,17 +1,20 @@
 import React, { useState, useEffect, useContext } from 'react';
 
 import { UserContext } from "../../context/UserContext";
+import { SubmitContext } from "../../context/SubmitContext";
 import { postHelper } from '../../helpers';
 import PostForm from "../../components/post/PostForm";
 import PostList from "../../components/post/PostList";
 
 const Feed = () => {
-  const { user } = useContext(UserContext)
+  console.log("feed got rendered");
 
-  const [isSubmit, setIsSubmit] = useState(false);
+  const { user } = useContext(UserContext);
+  const { isSubmit, setIsSubmit } = useContext(SubmitContext);
+
   useEffect(() => {
     isSubmit && setIsSubmit(false);
-  }, [isSubmit])
+  });
   
   const [ posts, setPosts ] = useState(null)
   useEffect(() => {
@@ -31,8 +34,8 @@ const Feed = () => {
 
   return (
   <>
-    <PostForm setIsSubmit={setIsSubmit} />
-    <PostList posts={posts} setIsSubmit={setIsSubmit} />
+    <PostForm />
+    <PostList posts={posts} />
   </>
   );
 }

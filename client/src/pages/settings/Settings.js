@@ -23,7 +23,7 @@ export default function Settings() {
     e.preventDefault();
 
     const fields = new FormData();
-    fields.append("user_id", 1)
+    fields.append("userId", 1)
     
     try {
       const res = await accountHelper.updateIdenticon(fields);

@@ -56,8 +56,6 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `password` varchar(128) NOT NULL,
   `salt` varchar(128) NOT NULL,
-  `role` int(11) NOT NULL DEFAULT '3' COMMENT '1=Admin, 2=Moderator, 3=User',
-  `image` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --

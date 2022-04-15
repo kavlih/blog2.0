@@ -30,11 +30,11 @@ final class Post extends AbstractModel {
           }
 
           /** @var string $query */
-          $query = 'INSERT INTO posts(user_id, message, timestamp) VALUES (:user_id, :message, :timestamp);';
+          $query = 'INSERT INTO posts(user_id, message, timestamp) VALUES (:userId, :message, :timestamp);';
 
           /** @var \PDOStatement $stmt */
           $stmt = $this->DbHandler->prepare($query);
-          $stmt->bindValue(':user_id', $userId);
+          $stmt->bindValue(':userId', $userId);
           $stmt->bindValue(':message', $inputMsg);
           $stmt->bindValue(':timestamp', $_SERVER['REQUEST_TIME']);
           $stmt->execute();
@@ -50,11 +50,11 @@ final class Post extends AbstractModel {
       */
      function delete(int $postId) : bool {
           /** @var string $query */
-          $query = 'DELETE FROM posts WHERE id = :post_id;';
+          $query = 'DELETE FROM posts WHERE id = :postId;';
 
           /** @var \PDOStatement $stmt */
           $stmt = $this->DbHandler->prepare($query);
-          $stmt->bindValue(':post_id', $postId);
+          $stmt->bindValue(':postId', $postId);
           $stmt->execute();
 
           return !empty($stmt->rowCount());
@@ -79,13 +79,13 @@ final class Post extends AbstractModel {
 
           /** @var string $query */
           $query = $getLike 
-               ? 'DELETE FROM likes WHERE post_id = :post_id AND user_id = :user_id;'
-               : 'INSERT INTO likes (post_id, user_id) VALUES (:post_id, :user_id);';
+               ? 'DELETE FROM likes WHERE post_id = :postId AND user_id = :userId;'
+               : 'INSERT INTO likes (post_id, user_id) VALUES (:postId, :userId);';
           
           /** @var \PDOStatement $stmt */
           $stmt = $this->DbHandler->prepare($query);
-          $stmt->bindValue(':post_id', $postId);
-          $stmt->bindValue(':user_id', $userId);
+          $stmt->bindValue(':postId', $postId);
+          $stmt->bindValue(':userId', $userId);
           $stmt->execute();
 
           return !empty($stmt->rowCount());
@@ -100,17 +100,17 @@ final class Post extends AbstractModel {
       */
      function getAllFeed(array &$result, int $userId) : bool {
           /** @var string $query */
-          $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
+          $query = 'SELECT p.id, p.message, p.timestamp, p.user_id, u.username, i.identicon
           FROM followers AS f
           INNER JOIN posts AS p ON f.receiver_id = p.user_id 
-          INNER JOIN users AS u ON p.user_id = u.user_id
-          INNER JOIN identicon AS i ON u.user_id = i.user_id
-          WHERE f.follower_id = :user_id
+          INNER JOIN users AS u ON p.user_id = u.id
+          INNER JOIN identicon AS i ON u.id = i.user_id
+          WHERE f.follower_id = :userId
           ORDER BY p.id DESC;';
 
           /** @var \PDOStatement $stmt */
           $stmt = $this->DbHandler->prepare($query);
-          $stmt->bindValue(':user_id', $userId);
+          $stmt->bindValue(':userId', $userId);
           $stmt->execute();
 
           /** @var array||FALSE $result */
@@ -134,17 +134,17 @@ final class Post extends AbstractModel {
       */
       function getAllLiked(array &$result, int $userId) : bool {
           /** @var string $query */
-          $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
+          $query = 'SELECT p.id, p.message, p.timestamp, p.user_id, u.username, i.identicon
           FROM likes AS l
           INNER JOIN posts AS p ON p.id = l.post_id
-          INNER JOIN users AS u ON u.user_id = p.user_id
-          INNER JOIN identicon AS i ON i.user_id = u.user_id
-          WHERE l.user_id = :user_id
+          INNER JOIN users AS u ON u.id = p.user_id
+          INNER JOIN identicon AS i ON i.user_id = u.id
+          WHERE l.user_id = :userId
           ORDER BY p.id DESC;';
 
           /** @var \PDOStatement $stmt */
           $stmt = $this->DbHandler->prepare($query);
-          $stmt->bindValue(':user_id', $userId);
+          $stmt->bindValue(':userId', $userId);
           $stmt->execute();
 
           /** @var array||FALSE $result */
@@ -169,16 +169,16 @@ final class Post extends AbstractModel {
       */
      function getAllUser(array &$errors, array &$result, int $userId) : bool {
           /** @var string $query */
-          $query = 'SELECT p.id, p.message, p.timestamp, u.user_id, u.username, i.identicon, u.role
+          $query = 'SELECT p.id, p.message, p.timestamp, p.user_id, u.username, i.identicon
                FROM posts AS p
-               INNER JOIN users AS u ON p.user_id = u.user_id
-               INNER JOIN identicon AS i ON u.user_id = i.user_id
-               WHERE p.user_id = :user_id
+               INNER JOIN users AS u ON p.user_id = u.id
+               INNER JOIN identicon AS i ON u.id = i.user_id
+               WHERE p.user_id = :userId
                ORDER BY p.id DESC;';
 
           /** @var \PDOStatement $stmt */
           $stmt = $this->DbHandler->prepare($query);
-          $stmt->bindValue(':user_id', $userId);
+          $stmt->bindValue(':userId', $userId);
           $stmt->execute();
 
           /** @var array||FALSE $result */
@@ -202,15 +202,15 @@ final class Post extends AbstractModel {
      */
      function getPostById(array &$errors, ?int $postId) : ?array {
           /** @var string||NULL $query */
-          $query = 'SELECT p.id, p.message, p.timestamp, p.user_id, u.username, i.identicon, u.role
+          $query = 'SELECT p.id, p.message, p.timestamp, p.user_id, u.username, i.identicon
           FROM posts AS p
-          INNER JOIN users AS u ON p.user_id = u.user_id
-          INNER JOIN identicon AS i ON u.user_id = i.user_id
-          WHERE p.id = :post_id;';
+          INNER JOIN users AS u ON p.user_id = u.id
+          INNER JOIN identicon AS i ON u.id = i.user_id
+          WHERE p.id = :postId;';
 
           /** @var \PDOStatement $pdo */
           $stmt = $this->DbHandler->prepare($query);
-          $stmt->bindValue(':post_id', $postId);
+          $stmt->bindValue(':postId', $postId);
           $stmt->execute();
 
           /** @var array||FALSE $result */
@@ -233,12 +233,12 @@ final class Post extends AbstractModel {
      */
      private function getLike(int $userId, int $postId) : bool {
           /** @var string $query */
-          $query = 'SELECT id FROM likes WHERE post_id = :post_id AND user_id = :user_id;';
+          $query = 'SELECT id FROM likes WHERE post_id = :postId AND user_id = :userId;';
 
           /** @var \PDOStatement $stmt */
           $stmt = $this->DbHandler->prepare($query);
-          $stmt->bindValue(':post_id', $postId);
-          $stmt->bindValue(':user_id', $userId);
+          $stmt->bindValue(':postId', $postId);
+          $stmt->bindValue(':userId', $userId);
           $stmt->execute();
 
           return !empty($stmt->rowCount());
@@ -252,11 +252,11 @@ final class Post extends AbstractModel {
       */
      private function getLikes(array $postData) : array {
           /** @var string $query */
-          $query = 'SELECT l.user_id FROM likes AS l  WHERE post_id = :post_id;';
+          $query = 'SELECT l.user_id FROM likes AS l  WHERE post_id = :postId;';
 
           /** @var \PDOStatement $stmt */
           $stmt = $this->DbHandler->prepare($query);
-          $stmt->bindValue(':post_id', $postData["id"]);
+          $stmt->bindValue(':postId', $postData["user_id"]);
           $stmt->execute();
 
           /** @var array||FALSE $result */

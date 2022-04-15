@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 // MUI Components
+import { makeStyles } from '@mui/styles';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
@@ -12,8 +12,24 @@ import Typography from '@mui/material/Typography';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 
 import { UserContext } from '../../context/UserContext';
+import { SubmitContext } from '../../context/SubmitContext';
 import { identiconService } from '../../services';
 import PostActions from './PostActions';
+import PostButton from './PostButton';
+
+const useStyles = makeStyles(() => ({
+  button: {
+    marginTop: "-1px 0 0 0 !important",
+    "&:hover": {
+      marginLeft: "2px !important",
+      marginRight: "-2px !important",
+    },
+    "& .MuiButton-startIcon>svg": {
+      fontSize: "14px",
+      marginTop: "1px !important"
+    },
+  }
+}));
 
 const PostAvatar = ({ post }) => {
   const { user } = useContext(UserContext);
@@ -32,8 +48,11 @@ const PostAvatar = ({ post }) => {
   );
 }
 
-const PostContent = ({ post, setIsSubmit }) => {
+const PostContent = ({ post }) => {
   const { user } = useContext(UserContext);
+  const { setIsSubmit } = useContext(SubmitContext);
+
+  const classes = useStyles();
 
   const [date, setDate] = useState("");
   useEffect(() => {
@@ -105,32 +124,15 @@ const PostContent = ({ post, setIsSubmit }) => {
           spacing={2} 
         >
           {/* Username */}
-          <Typography 
-            component={Link}
-            variant="body2" 
-            fontSize="small"
+          <PostButton
+            aria-label="user"
             href={post.user_id === user.id ? "/profile" : `/users/${post.username}`}
-            sx={{ 
-              display:"flex",
-              alignItems:"center",
-              py:"2px",
-              mt:"-1px",
-              fontWeight:"500", 
-              "&:hover": {
-                pl:"2px",
-                mr:"-2px",
-              }
-            }}
+            size="small"
+            className={classes.button}
+            startIcon={<CircleOutlinedIcon />}
           >
-            <CircleOutlinedIcon 
-              sx={{ 
-                mr:"4px", 
-                mt:"2px", 
-                fontSize:"14px", 
-              }} 
-            />
             {post.username}
-          </Typography>
+          </PostButton>
           {/* Date */}
           <Typography 
             variant="body2" 
@@ -140,7 +142,7 @@ const PostContent = ({ post, setIsSubmit }) => {
           </Typography>
         </Stack>
         {/* Header end */}
-        <PostActions post={post} setIsSubmit={setIsSubmit}/>
+        <PostActions post={post} />
       </Stack>
       {/* Message */}
       <Typography variant="body1" >
@@ -150,16 +152,16 @@ const PostContent = ({ post, setIsSubmit }) => {
   );
 }
 
-const PostMedia = ({ post }) => {
-  return (
-    <CardMedia
-      component="img"
-      height="100%"
-      image="/static/images/cards/paella.jpg"
-      alt=""
-    />
-  );
-}
+// const PostMedia = ({ post }) => {
+//   return (
+//     <CardMedia
+//       component="img"
+//       height="100%"
+//       image="/static/images/cards/paella.jpg"
+//       alt=""
+//     />
+//   );
+// }
 
 export default function Post({ post, setIsSubmit }) {
   return (

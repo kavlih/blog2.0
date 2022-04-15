@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 // MUI Components
-import Button from '@mui/material/Button';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Grow from '@mui/material/Grow';
 import IconButton from '@mui/material/IconButton';
@@ -16,10 +15,13 @@ import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import { UserContext } from '../../context/UserContext';
+import { SubmitContext } from '../../context/SubmitContext';
 import { postHelper } from '../../helpers';
+import PostButton from './PostButton';
 
-const LikeButton = ({ post, setIsSubmit }) => {
+const LikeButton = ({ post }) => {
   const { user } = useContext(UserContext);
+  const { setIsSubmit } = useContext(SubmitContext);
   const [likes, setLikes] = useState(post.likes.length);
 
   const [isLiked, setIsLiked] = useState(false);
@@ -43,32 +45,27 @@ const LikeButton = ({ post, setIsSubmit }) => {
   };
 
   return(
-    <Button 
+    <PostButton 
       aria-label="like"
       onClick={handleLike}
       size="small"
-      variant="body2" 
       endIcon={isLiked ? <FavoriteRoundedIcon fontSize="small" /> : <FavoriteBorderRoundedIcon fontSize="small" />}
       sx={{
-        minWidth: "unset",
-        p: "5px",
-        color: isLiked ? "red.main" : "text.secondary",
+        color: isLiked ? "error.main" : "default",
         "&:hover": {
           bgcolor: "transparent",
-          color: "red.main",
-        },
-        "&>span": {
-          ml: "2px"
+          color: "error.main",
         }
       }}
     >
       {likes > 0 && likes}
-    </Button>
+    </PostButton>
   );
 }
 
-const MoreButton = ({ post, setIsSubmit }) => {
+const MoreButton = ({ post }) => {
   const { user } = useContext(UserContext);
+  const { setIsSubmit } = useContext(SubmitContext);
 
   // Popper
   const [open, setOpen] = useState(false);
@@ -171,7 +168,7 @@ const MoreButton = ({ post, setIsSubmit }) => {
 
 export default function PostActions ({ post, setIsSubmit }) {
   return (
-    <Stack direction="row" sx={{ mr: "-5px" }} >
+    <Stack direction="row" spacing={1} sx={{ mr: "-5px" }} >
       <LikeButton post={post} setIsSubmit={setIsSubmit} />
       <MoreButton post={post} setIsSubmit={setIsSubmit} />      
     </Stack>

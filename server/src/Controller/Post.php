@@ -23,7 +23,6 @@ final class Post extends AbstractController {
      * @return void
      */
     function create(?int $userId) : void {
-
         /** @var array $errors */
         $errors = [];
 
@@ -139,7 +138,7 @@ final class Post extends AbstractController {
             $this->responseCode(400);
             $this->printJSON(['success' => FALSE, 'errors' => $errors]);
         }
-        elseif(!$this->PostModel->getAllLiked($result, $userData['user_id'])) {
+        elseif(!$this->PostModel->getAllLiked($result, $userData['id'])) {
             $this->responseCode(204);
             $this->printJSON(['success' => TRUE]);
         }
@@ -167,7 +166,7 @@ final class Post extends AbstractController {
             $this->responseCode(400);
             $this->printJSON(['success' => FALSE, 'errors' => $errors]);
         }
-        elseif(!$this->PostModel->getAllUser($errors, $result, $userData['user_id'])) {
+        elseif(!$this->PostModel->getAllUser($errors, $result, $userData['id'])) {
             $this->responseCode(204);
             $this->printJSON(['success' => TRUE]);
         }

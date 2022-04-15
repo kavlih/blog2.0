@@ -16,8 +16,8 @@ const updateUsername = (data) => {
   return axiosService.post('/account/updateUsername', data)
 }
 
-const updateIdenticon = (user_id) => {
-  return axiosService.put(`/account/updateIdenticon/${user_id}`)
+const updateIdenticon = (userId) => {
+  return axiosService.put(`/account/updateIdenticon/${userId}`)
 }
 
 export const accountHelper = {

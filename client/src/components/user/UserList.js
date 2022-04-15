@@ -1,12 +1,11 @@
 import React from 'react';
 // MUI Components
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
+import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import SvgIcon from '@mui/material/SvgIcon';
 
-import Post from './Post';
+import UserCard from './UserCard';
 import { ReactComponent as SnoopySleep } from '../../assets/graphics/SnoopySleep.svg';
 
 const Graphic = (props) => {
@@ -41,20 +40,20 @@ const EmptyList = () => {
   );
 }
 
-export default function PostList({ posts }) {
+export default function UserList({ users, setIsSubmit }) {
   return (
   <>
-    {posts 
-      ? <Stack 
-          component={List} 
+    {users 
+      ? <Grid 
+          container
           spacing={2}
         >
-          {posts.map(( post ) => ( 
-            <ListItem key={post.id} sx={{ padding: 0 }} >
-              <Post post={post} />
-            </ListItem>
+          {users.map(( user ) => ( 
+            <Grid item key={user.id} xs={12} sm={6} sx={{ padding: 0 }} >
+              <UserCard receiver={user} setIsSubmit={setIsSubmit} />
+            </Grid>
           ))}
-        </Stack>
+        </Grid>
       : <EmptyList />}
   </>
   );

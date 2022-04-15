@@ -11,6 +11,7 @@ import { makeStyles } from '@mui/styles';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 
 import { UserContext } from '../../context/UserContext';
+import { SubmitContext } from '../../context/SubmitContext';
 import { identiconService } from '../../services';
 import { postHelper } from '../../helpers';
 
@@ -47,8 +48,9 @@ const useStyles = makeStyles(( theme ) => ({
   }
 }));
 
-const PostForm = ({ setIsSubmit }) => {
-  const { user } = useContext(UserContext)
+const PostForm = () => {
+  const { user } = useContext(UserContext);
+  const { setIsSubmit } = useContext(SubmitContext);
   const classes = useStyles();
 
   const [ messageValue, setMessageValue ] = useState("")
