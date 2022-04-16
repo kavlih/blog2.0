@@ -4,16 +4,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 
 import { UserContext } from '../../context/UserContext';
+import { SubmitContext } from '../../context/SubmitContext';
 import { postHelper, userHelper } from '../../helpers';
 import PostList from "../../components/post/PostList";
 import UserCard from '../../components/user/UserCard';
 
 const UserPosts = ({ username }) => {
-  const [isSubmit, setIsSubmit] = useState(false);
-  useEffect(() => {
-    isSubmit && setIsSubmit(false);
-  }, [isSubmit])
-  
+  const { isUpdatedPost, setIsUpdatedPost } = useContext(SubmitContext);
+
   const [posts, setPosts] = useState(null)
   useEffect(() => {
     let isMounted = true;
@@ -28,9 +26,9 @@ const UserPosts = ({ username }) => {
       .catch(console.error);;
 
     return () => isMounted = false;
-  }, [username, isSubmit]);
+  }, [username, isUpdatedPost]);
 
-  return <PostList posts={posts} setIsSubmit={setIsSubmit} />;
+  return <PostList posts={posts} />;
 }
 
 export default function UserProfile() {
@@ -47,7 +45,7 @@ export default function UserProfile() {
     let isMounted = true;
 
     const fetchPosts = async () => {
-      const res = await userHelper.getUser(username);
+      const res = await userHelper.get(username);
       if (isMounted) {
         setReceiver(res.data.result);
       }
