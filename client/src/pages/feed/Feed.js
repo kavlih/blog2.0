@@ -2,11 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 
 import Stack from '@mui/material/Stack';
 
-import { UserContext } from "../../context/UserContext";
-import { SubmitContext } from "../../context/SubmitContext";
+import { UserContext } from '../../context/UserContext';
+import { SubmitContext } from '../../context/SubmitContext';
 import { postHelper } from '../../helpers';
-import PostForm from "../../components/post/PostForm";
-import PostList from "../../components/post/PostList";
+import PostForm from '../../components/post/PostForm';
+import PostList from '../../components/post/PostList';
 
 const Feed = () => {
   const { user } = useContext(UserContext);

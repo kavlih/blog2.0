@@ -28,23 +28,23 @@ const NavMenu = () => {
   const navigate = useNavigate();  
   const handleLogout = () => {
     accountHelper.logout()
-    navigate("/account/login")
+    navigate('/account/login')
   };
 
   return (
     <>
       <IconButton
-        id="basic-button"
-        aria-label="more"
+        id='basic-button'
+        aria-label='more'
         aria-controls={open ? 'basic-menu' : undefined}
         aria-expanded={open ? 'true' : undefined}
-        aria-haspopup="true"
+        aria-haspopup='true'
         onClick={handleClick}
       >
         <SettingsIcon />
       </IconButton>
       <Menu
-        id="basic-menu"
+        id='basic-menu'
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
@@ -52,7 +52,7 @@ const NavMenu = () => {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem component={Link} href="/settings">Settings</MenuItem>
+        <MenuItem component={Link} href='/settings'>Settings</MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </>
@@ -66,10 +66,10 @@ export default function Nav() {
 
   return (
     <Container>
-      <Stack component="nav" direction="row" spacing={2} justifyContent="center">
-        <NavLink to="/feed" style={style}>Feed</NavLink>
-        <NavLink to="/profile" style={style}>Profile</NavLink>
-        <NavLink to="/users" style={style}>Users</NavLink>
+      <Stack component='nav' direction='row' spacing={2} justifyContent='center'>
+        <NavLink to='/feed' style={style}>Feed</NavLink>
+        <NavLink to='/profile' style={style}>Profile</NavLink>
+        <NavLink to='/users' style={style}>Users</NavLink>
       </Stack>
       <NavMenu />
     </Container>

@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios from 'axios';
 
-const CONFIG = "http://localhost:8888";
+const CONFIG = 'http://localhost:8888';
 
 const get = (url) => {
   return axios.get(CONFIG + url)
@@ -9,7 +9,7 @@ const get = (url) => {
 const post = (url, body) => {
   return axios.post(CONFIG + url, body, {
     headers: { 
-      "Content-Type": "multipart/form-data"
+      'Content-Type': 'multipart/form-data'
     },
   })
 }

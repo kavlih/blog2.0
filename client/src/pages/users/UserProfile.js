@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import { UserContext } from '../../context/UserContext';
 import { SubmitContext } from '../../context/SubmitContext';
 import { postHelper, userHelper } from '../../helpers';
-import PostList from "../../components/post/PostList";
+import PostList from '../../components/post/PostList';
 import UserCard from '../../components/user/UserCard';
 
 const UserPosts = ({ username }) => {
@@ -39,7 +39,7 @@ export default function UserProfile() {
   const [ receiver, setReceiver ] = useState(null);
   useEffect(() => {
     if(user.username === username) {
-      navigate("/profile");
+      navigate('/profile');
     }
 
     let isMounted = true;
@@ -61,7 +61,7 @@ export default function UserProfile() {
     {receiver &&
       <div>
         <UserCard receiver={receiver} isButton={false} />
-        <Box component="section">
+        <Box component='section'>
           <UserPosts username={receiver.username} />
         </Box>
       </div>

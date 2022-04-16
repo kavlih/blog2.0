@@ -20,21 +20,21 @@ const Graphic = (props) => {
 const EmptyList = () => {
   return (
     <Stack
-      alignItems= "center"
+      alignItems= 'center'
       sx={{
-        width: "100%",
-        maxWidth: "300px",
-        margin: "auto"
+        width: '100%',
+        maxWidth: '300px',
+        margin: 'auto'
       }}
     >
       <Graphic 
         sx={{
-          width: "50%",
-          height: "100%",
-          color: "primary.light"
+          width: '50%',
+          height: '100%',
+          color: 'primary.light'
         }}  
       />
-      <Typography variant= "h4" align= "center">
+      <Typography variant= 'h4' align= 'center'>
         No Content
       </Typography>
     </Stack>
@@ -48,7 +48,7 @@ export default function PostList({ posts }) {
       ? <Stack 
           component={List} 
           spacing={2}
-          sx={{ p: 0, "&> li": { p: 0 } }}
+          sx={{ p: 0, '&> li': { p: 0 } }}
         >
           {posts.map(( post ) => ( 
             <ListItem key={post.id}>

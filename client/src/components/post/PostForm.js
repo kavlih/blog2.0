@@ -17,37 +17,37 @@ import { postHelper } from '../../helpers';
 
 const useStyles = makeStyles(( theme ) => ({
   box: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: "20px"
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '20px'
   },
   textarea: {
-    padding: "22px 16px",
-    outline: "none",
-    resize: "none",
-    width: "100%",
-    minHeight: "16px",
-    backgroundColor: "transparent",
+    padding: '22px 16px',
+    outline: 'none',
+    resize: 'none',
+    width: '100%',
+    minHeight: '16px',
+    backgroundColor: 'transparent',
     border: `1px solid ${theme.palette.secondary.dark}`,
     borderRadius: theme.shape.borderRadius,
-    color: "white",
+    color: 'white',
     fontFamily: theme.typography.body1.fontFamily,
     
-    "&::placeholder": {
+    '&::placeholder': {
       fontFamily: 'Roboto Mono',
       color: theme.palette.text.secondary,
-      opacity: "1",
+      opacity: '1',
     },
-    "&:focus::placeholder": {
-      color: "transparent",
+    '&:focus::placeholder': {
+      color: 'transparent',
     }
   },
   btnCreate: {
     color: theme.palette.primary.dark,
     backgroundColor: theme.palette.success.main,
-    padding: "4px",
-    "&:hover": {
+    padding: '4px',
+    '&:hover': {
       color: theme.palette.primary.dark,
       backgroundColor: theme.palette.success.dark,
     }
@@ -59,7 +59,7 @@ const PostForm = () => {
   const { isUpdatedPost, setIsUpdatedPost } = useContext(SubmitContext);
   const classes = useStyles();
 
-  const [ messageValue, setMessageValue ] = useState("");
+  const [ messageValue, setMessageValue ] = useState('');
   const [ formErrors, setFormErrors ] = useState([]);
 
   const handleChange = (e) => {
@@ -71,11 +71,11 @@ const PostForm = () => {
     e.preventDefault();
 
     let formData = new FormData();
-    formData.append("message", messageValue);
+    formData.append('message', messageValue);
 
     try {
       await postHelper.createPost(user.id, formData);
-      setMessageValue("");
+      setMessageValue('');
       if(formErrors) setFormErrors([]);
       setIsUpdatedPost(!isUpdatedPost);
     }
@@ -87,14 +87,14 @@ const PostForm = () => {
   return (
   <>
     <Box 
-      component="form" 
-      method="POST" 
+      component='form' 
+      method='POST' 
       className={classes.box}
     >
-      <Stack direction="row" spacing={{ xs: 1, sm: 2 }} width={"100%"}>
+      <Stack direction='row' spacing={{ xs: 1, sm: 2 }} width={'100%'}>
         {/* Avatar */}
         <Avatar 
-          variant="post"
+          variant='post'
           src={identiconService(user.identicon)}
           alt={user.username}
         />
@@ -108,16 +108,16 @@ const PostForm = () => {
         />
       </Stack>
       {/* Form errors */}
-      {formErrors.length > 0 && <Typography variant="body1" sx={{ color: "error.main" }}>
+      {formErrors.length > 0 && <Typography variant='body1' sx={{ color: 'error.main' }}>
         {formErrors}
       </Typography>}
       {/* Submit button */}
       <IconButton 
-        aria-label="create post"
+        aria-label='create post'
         onClick={handleSubmit} 
         className={classes.btnCreate}
       >
-        <ArrowForwardRoundedIcon fontSize="large" />
+        <ArrowForwardRoundedIcon fontSize='large' />
       </IconButton>
     </Box>
   </>

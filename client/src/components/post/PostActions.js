@@ -30,7 +30,7 @@ const LikeButton = ({ post }) => {
 
   const toggleLike = async () => {
     const fields = new FormData();
-    fields.append("userId", user.id)
+    fields.append('userId', user.id)
 
     try {
       await postHelper.toggleLike(post.id, fields);
@@ -44,15 +44,15 @@ const LikeButton = ({ post }) => {
 
   return(
     <PostButton 
-      aria-label="like"
+      aria-label='like'
       onClick={toggleLike}
-      size="small"
-      endIcon={isLiked ? <FavoriteRoundedIcon fontSize="small" /> : <FavoriteBorderRoundedIcon fontSize="small" />}
+      size='small'
+      endIcon={isLiked ? <FavoriteRoundedIcon fontSize='small' /> : <FavoriteBorderRoundedIcon fontSize='small' />}
       sx={{
-        color: isLiked ? "error.main" : "default",
-        "&:hover": {
-          bgcolor: "transparent",
-          color: "error.main",
+        color: isLiked ? 'error.main' : 'default',
+        '&:hover': {
+          bgcolor: 'transparent',
+          color: 'error.main',
         }
       }}
     >
@@ -113,13 +113,13 @@ const MoreButton = ({ post }) => {
     <>
       <IconButton
         ref={anchorRef}
-        aria-label="more"
+        aria-label='more'
         aria-controls={open ? 'menu' : undefined}
         aria-expanded={open ? 'true' : undefined}
-        aria-haspopup="true"
+        aria-haspopup='true'
         onClick={handleToggle}
-        size="small"
-        sx={{ width: "20px" }}
+        size='small'
+        sx={{ width: '20px' }}
       >
         <MoreVertIcon />
       </IconButton>
@@ -127,7 +127,7 @@ const MoreButton = ({ post }) => {
         open={open}
         anchorEl={anchorRef.current}
         role={undefined}
-        placement="bottom-start"
+        placement='bottom-start'
         transition
         disablePortal
       >
@@ -143,7 +143,7 @@ const MoreButton = ({ post }) => {
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList
                   autoFocusItem={open}
-                  id="menu"
+                  id='menu'
                   onKeyDown={handleListKeyDown}
                 >
                   {user.id === post.user_id 
@@ -167,7 +167,7 @@ const MoreButton = ({ post }) => {
 
 export default function PostActions ({ post, setIsSubmit }) {
   return (
-    <Stack direction="row" spacing={1} sx={{ mr: "-5px" }} >
+    <Stack direction='row' spacing={1} sx={{ mr: '-5px' }} >
       <LikeButton post={post} />
       <MoreButton post={post} />      
     </Stack>

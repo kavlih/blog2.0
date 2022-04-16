@@ -13,25 +13,25 @@ import FormControl from '@mui/material/FormControl';
 
 const useStyles = makeStyles(( theme ) => ({
   textarea: {
-    // padding: "22px 16px",
-    // minHeight: "16px",
-    // resize: "none",
+    // padding: '22px 16px',
+    // minHeight: '16px',
+    // resize: 'none',
     
-    width: "100%",
-    outline: "none",
-    backgroundColor: "transparent",
+    width: '100%',
+    outline: 'none',
+    backgroundColor: 'transparent',
     border: `1px solid ${theme.palette.secondary.dark}`,
     borderRadius: theme.shape.borderRadius,
-    color: "white",
+    color: 'white',
     fontFamily: theme.typography.body1.fontFamily,
     
-    "&::placeholder": {
+    '&::placeholder': {
       fontFamily: 'Roboto Mono',
       color: theme.palette.text.secondary,
-      opacity: "1",
+      opacity: '1',
     },
-    "&:focus::placeholder": {
-      color: "transparent",
+    '&:focus::placeholder': {
+      color: 'transparent',
     }
   }
 }));
@@ -42,7 +42,7 @@ const Users = () => {
   return (
     <>
       <Box
-        component="form"
+        component='form'
         className={classes.textarea}
         sx={{ 
           p: '2px 4px', 
@@ -54,12 +54,12 @@ const Users = () => {
           inputProps={{ 
             'aria-label': 'search user' 
           }}
-          placeholder="Search user"
+          placeholder='Search user'
           sx={{ ml: 1, flex: 1 }}
         />
         <IconButton 
-          type="submit" 
-          aria-label="search"
+          type='submit' 
+          aria-label='search'
           sx={{ p: '10px' }} 
         >
           <SearchIcon />

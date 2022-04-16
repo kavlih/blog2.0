@@ -16,7 +16,7 @@ import Layout from '../../components/Layout';
 
 const NoRoute = () => {
   return (
-    <Typography variant="h3">This page does not exist: 404!</Typography>
+    <Typography variant='h3'>This page does not exist: 404!</Typography>
   );
 };
 
@@ -24,17 +24,17 @@ export default function Router() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="" element={<PrivateRoute />}>
+        <Route path='' element={<PrivateRoute />}>
           <Route index element={<Feed />} />
-          <Route path="feed" element={<Feed />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path='feed' element={<Feed />} />
+          <Route path='profile' element={<Profile />} />
+          <Route path='settings' element={<Settings />} />
         </Route>
-        <Route path="users" element={<Users />} />
-        <Route path="users/:username" element={<UserProfile />} />
-        <Route path="account/*" element={<Account />} />
+        <Route path='users' element={<Users />} />
+        <Route path='users/:username' element={<UserProfile />} />
+        <Route path='account/*' element={<Account />} />
       </Route>
-      <Route path="*" element={<NoRoute />} />
+      <Route path='*' element={<NoRoute />} />
     </Routes>
   );
 };

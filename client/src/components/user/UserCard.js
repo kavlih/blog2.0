@@ -16,37 +16,37 @@ import { identiconService } from '../../services';
 import { userHelper } from '../../helpers';
 
 const StyledCard = styled(Card)(({ theme }) => ({ 
-  width: "100%", 
-  maxWidth:{sm: "450px"}, 
-  backgroundColor: "#13161B", 
+  width: '100%', 
+  maxWidth:{sm: '450px'}, 
+  backgroundColor: '#13161B', 
 
-  position: "relative",
-  display: "flex",
-  alignItems: "center",
-  "& .MuiCardActions-root": {
-    position: "absolute",
-    right: "16px",
-    padding: "30px 0"
+  position: 'relative',
+  display: 'flex',
+  alignItems: 'center',
+  '& .MuiCardActions-root': {
+    position: 'absolute',
+    right: '16px',
+    padding: '30px 0'
   },
-  "& .MuiCardActionArea-root": {
-    color: "transparent",
+  '& .MuiCardActionArea-root': {
+    color: 'transparent',
 
-    "&:hover .MuiCardHeader-title:before": {
-      content: '">"',
-      marginRight: "4px"
+    '&:hover .MuiCardHeader-title:before': {
+      content: ''>'',
+      marginRight: '4px'
     }
   },
 }));
 
 const useStyles = makeStyles(() => ({
   button: {
-    width: "90px",
-    "&> span": {
-      display: "none",
-      marginRight: "4px"
+    width: '90px',
+    '&> span': {
+      display: 'none',
+      marginRight: '4px'
     },
-    "&:hover > span": {
-      display: "block"
+    '&:hover > span': {
+      display: 'block'
     }
   }
 })); 
@@ -55,20 +55,20 @@ const MyCardHeader = ({ receiver }) => {
   return (
     <CardHeader
       titleTypographyProps={{ 
-        variant: "body1",
+        variant: 'body1',
         fontWeight: 500,
-        fontSize: {sm: "1.125rem"},
-        color: "common.white"
+        fontSize: {sm: '1.125rem'},
+        color: 'common.white'
       }}
       avatar={
         <Avatar 
-          variant="post"
+          variant='post'
           src={identiconService(receiver.identicon)}
           alt={receiver.username}
         />
       }
       title={receiver.username}
-      // subheader=""
+      // subheader=''
     />
   );
 };
@@ -90,7 +90,7 @@ export default function UserCard({ receiver, isButton=true }) {
 
   const handleFollow = async () => {
     const fields = new FormData();
-    fields.append("userId", user.id)
+    fields.append('userId', user.id)
   
     try {
       await userHelper.follow(receiver.id, fields);
@@ -114,17 +114,17 @@ export default function UserCard({ receiver, isButton=true }) {
     {receiver.id !== user.id &&
       <CardActions>
       <Button 
-        aria-label={isFollowing ? "unfollow" : "follow"}
+        aria-label={isFollowing ? 'unfollow' : 'follow'}
         onClick={handleFollow}
         className={classes.button}
         sx={{
-          color: isFollowing ? "default" : "success.main",
-          "&:hover": {
-            color: isFollowing ? "error.main" : "default"
+          color: isFollowing ? 'default' : 'success.main',
+          '&:hover': {
+            color: isFollowing ? 'error.main' : 'default'
           }
         }}
       >
-        <span>{">"}</span>{isFollowing ? "unfollow" : "follow"}
+        <span>{'>'}</span>{isFollowing ? 'unfollow' : 'follow'}
       </Button>
       </CardActions>
     }

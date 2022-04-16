@@ -1,7 +1,7 @@
 import React from 'react';
 
 const DropDownCard = ({ data = [], setOpen }) => (
-  <div className="dropdown">
+  <div className='dropdown'>
     <ul>
       {data.map((item, i) => (
         <li key={i} onClick={() => setOpen(false)}>

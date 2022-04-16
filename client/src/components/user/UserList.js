@@ -19,21 +19,21 @@ const Graphic = (props) => {
 const EmptyList = () => {
   return (
     <Stack
-      alignItems= "center"
+      alignItems= 'center'
       sx={{
-        width: "100%",
-        maxWidth: "300px",
-        margin: "auto"
+        width: '100%',
+        maxWidth: '300px',
+        margin: 'auto'
       }}
     >
       <Graphic 
         sx={{
-          width: "50%",
-          height: "100%",
-          color: "primary.light"
+          width: '50%',
+          height: '100%',
+          color: 'primary.light'
         }}  
       />
-      <Typography variant= "h4" align= "center">
+      <Typography variant= 'h4' align= 'center'>
         No Content
       </Typography>
     </Stack>

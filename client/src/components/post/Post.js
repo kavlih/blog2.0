@@ -18,14 +18,14 @@ import PostButton from './PostButton';
 
 const useStyles = makeStyles(() => ({
   button: {
-    marginTop: "-1px 0 0 0 !important",
-    "&:hover": {
-      marginLeft: "2px !important",
-      marginRight: "-2px !important",
+    marginTop: '-1px 0 0 0 !important',
+    '&:hover': {
+      marginLeft: '2px !important',
+      marginRight: '-2px !important',
     },
-    "& .MuiButton-startIcon>svg": {
-      fontSize: "14px",
-      marginTop: "1px !important"
+    '& .MuiButton-startIcon>svg': {
+      fontSize: '14px',
+      marginTop: '1px !important'
     },
   }
 }));
@@ -37,14 +37,14 @@ const Post = ({ post, setIsSubmit }) => {
   const navigate = useNavigate();  
   const handleClick = () => {
     if(post.user_id === user.id) {
-      navigate("/profile");
+      navigate('/profile');
     }
     else {
       navigate(`/users/${post.username}`);
     }
   };
 
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState('');
   useEffect(() => {
     const currentTime = Math.floor(Date.now() / 1000);
     let time = currentTime - post.timestamp;
@@ -52,11 +52,11 @@ const Post = ({ post, setIsSubmit }) => {
     switch(true) {
       // 0s - 1m
       case time < 60:
-        setDate("now");
+        setDate('now');
         break;
       // 1m - 2m
       case time < 120:
-        setDate("1 minute ago");
+        setDate('1 minute ago');
         break;
       // 2m - 1h
       case time < 3600:
@@ -65,7 +65,7 @@ const Post = ({ post, setIsSubmit }) => {
         break;
       // 1h - 2h
       case time < 7200:
-        setDate("1 hour ago");
+        setDate('1 hour ago');
         break;                
       // 2h - 24h
       case time < 86400:
@@ -74,7 +74,7 @@ const Post = ({ post, setIsSubmit }) => {
         break;
       // 1d - 2d
       case time < 172800:
-        setDate("1 day ago");
+        setDate('1 day ago');
         break;
       // 2d - 3d
       case time < 259200:
@@ -87,10 +87,10 @@ const Post = ({ post, setIsSubmit }) => {
         const date = new Date(timestamp);
 
         let dd = date.getDate()
-        dd = dd < 10 ? "0" + dd : dd
+        dd = dd < 10 ? '0' + dd : dd
 
         let mm = date.getMonth() + 1
-        mm = mm < 10 ? "0" + mm : mm
+        mm = mm < 10 ? '0' + mm : mm
 
         let yy = date.getFullYear()
         yy = yy.toString().substring(2)        
@@ -102,32 +102,32 @@ const Post = ({ post, setIsSubmit }) => {
 
   return (
   <>
-    <Box component={Stack} direction="row" spacing={{xs: 1, sm: 2}} width={"100%"}>
+    <Box component={Stack} direction='row' spacing={{xs: 1, sm: 2}} width={'100%'}>
       <Avatar 
-        component="button"
+        component='button'
         onClick={handleClick}
         src={identiconService(post.identicon)}
         // alt={}
-        sx={{ mt:"7px" }}
+        sx={{ mt:'7px' }}
       />
-      <Card sx={{ width: "100%" }} >
-        <CardContent sx={{ "&:last-child": { pb:"16px" } }}>
+      <Card sx={{ width: '100%' }} >
+        <CardContent sx={{ '&:last-child': { pb:'16px' } }}>
           {/* Header */}
-          <Stack direction="row" justifyContent="space-between" sx={{ mt: "-10px" }} >
+          <Stack direction='row' justifyContent='space-between' sx={{ mt: '-10px' }} >
             {/* Header start */}
-            <Stack direction="row" alignItems="center" spacing={2} >
+            <Stack direction='row' alignItems='center' spacing={2} >
               {/* Username */}
               <PostButton
-                aria-label="user"
+                aria-label='user'
                 onClick={handleClick}
-                size="small"
+                size='small'
                 className={classes.button}
                 startIcon={<CircleOutlinedIcon />}
               >
                 {post.username}
               </PostButton>
               {/* Date */}
-              <Typography variant="body2" fontSize="small" >
+              <Typography variant='body2' fontSize='small' >
                 {date}
               </Typography>
             </Stack>
@@ -135,15 +135,15 @@ const Post = ({ post, setIsSubmit }) => {
             <PostActions post={post} />
           </Stack>
           {/* Message */}
-          <Typography variant="body1" >
+          <Typography variant='body1' >
             {post.message}
           </Typography>
         </CardContent>
         {/* <CardMedia
-          component="img"
-          height="100%"
-          image="/static/images/cards/paella.jpg"
-          alt=""
+          component='img'
+          height='100%'
+          image='/static/images/cards/paella.jpg'
+          alt=''
         /> */}
       </Card>
     </Box>
