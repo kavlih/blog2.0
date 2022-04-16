@@ -254,10 +254,7 @@ final class Post extends AbstractModel {
       */
      private function getLikes(array &$postData) : bool {
           /** @var string $query */
-          $query = 'SELECT u.username 
-          FROM likes AS l  
-          INNER JOIN users AS u ON l.user_id = u.id
-          WHERE post_id = :postId;';
+          $query = 'SELECT l.user_id FROM likes AS l WHERE post_id = :postId;';
 
           /** @var \PDOStatement $stmt */
           $stmt = $this->DbHandler->prepare($query);
@@ -268,7 +265,7 @@ final class Post extends AbstractModel {
 
           if($result) {
                foreach($result as $user) {
-                    $postData['likes'][] = $user['username'];
+                    $postData['likes'][] = $user['user_id'];
                }
           }
           else {

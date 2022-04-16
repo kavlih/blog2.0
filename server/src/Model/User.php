@@ -15,60 +15,6 @@ final class User extends AbstractModel {
   use UserTraits;
 
   /**
-   * Get all users that the requested user follows
-   * 
-   * @param array $result
-   * @param int $userId
-   * @return bool
-   */
-  function getFollowers(array &$result, int $userId) : bool {
-    /** @var string $query */
-    $query = 'SELECT u.id, u.username, i.identicon
-    FROM followers AS f
-    INNER JOIN users AS u ON f.follower_id = u.id
-    INNER JOIN identicon AS i ON u.id = i.user_id
-    WHERE NOT f.receiver_id = f.follower_id AND f.receiver_id = :userId 
-    ORDER BY u.username;';
-
-    /** @var \PDOStatement $stmt */
-    $stmt = $this->DbHandler->prepare($query);
-    $stmt->bindValue(':userId', $userId);
-    $stmt->execute();
-
-    /** @var array||FALSE $result */
-    $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    
-    return !empty($stmt->rowCount());
-  }
-
-   /**
-   * Get all users who follow the requested user
-   * 
-   * @param array $result
-   * @param int $userId
-   * @return bool
-   */
-  function getFollowing(array &$result, int $userId) : bool {
-    /** @var string $query */
-    $query = 'SELECT u.id, u.username, i.identicon
-    FROM followers AS f
-    INNER JOIN users AS u ON f.receiver_id = u.id
-    INNER JOIN identicon AS i ON u.id = i.user_id
-    WHERE NOT f.receiver_id = f.follower_id AND f.follower_id = :userId 
-    ORDER BY u.username;';
-
-    /** @var \PDOStatement $stmt */
-    $stmt = $this->DbHandler->prepare($query);
-    $stmt->bindValue(':userId', $userId);
-    $stmt->execute();
-
-    /** @var array||FALSE $result */
-    $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    
-    return !empty($stmt->rowCount());
-  }
-
-  /**
    * Toggle follow of a user
    * 
    * @param array $errors
