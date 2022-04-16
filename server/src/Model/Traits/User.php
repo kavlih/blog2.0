@@ -10,6 +10,66 @@ namespace application\Model\Traits;
 trait User {
 
   /**
+   * Get all users that the requested user follows
+   * 
+   * @param array $userData
+   * @return bool
+   */
+  function getFollowers(array &$userData) : bool {
+      /** @var string $query */
+      $query = 'SELECT u.username, i.identicon
+      FROM followers AS f
+      INNER JOIN users AS u ON f.follower_id = u.id
+      INNER JOIN identicon AS i ON u.id = i.user_id
+      WHERE NOT f.receiver_id = f.follower_id AND f.receiver_id = :userId 
+      ORDER BY u.username;';
+
+      /** @var \PDOStatement $stmt */
+      $stmt = $this->DbHandler->prepare($query);
+      $stmt->bindValue(':userId', $userData['id']);
+      $stmt->execute();
+
+      if(!empty($stmt->rowCount())) {
+          $userData['followers'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+          return TRUE;
+      }
+      else {
+          $userData['followers'] = [];
+          return FALSE;
+      }
+  }
+
+  /**
+   * Get all users who follow the requested user
+   * 
+   * @param array $userData
+   * @return bool
+   */
+  function getFollowing(array &$userData) : bool {
+      /** @var string $query */
+      $query = 'SELECT u.username, i.identicon
+      FROM followers AS f
+      INNER JOIN users AS u ON f.receiver_id = u.id
+      INNER JOIN identicon AS i ON u.id = i.user_id
+      WHERE NOT f.receiver_id = f.follower_id AND f.follower_id = :userId 
+      ORDER BY u.username;';
+  
+      /** @var \PDOStatement $stmt */
+      $stmt = $this->DbHandler->prepare($query);
+      $stmt->bindValue(':userId', $userData['id']);
+      $stmt->execute();
+
+      if(!empty($stmt->rowCount())) {
+          $userData['following'] = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+          return TRUE;
+      }
+      else {
+          $userData['following'] = [];
+          return FALSE;
+      }
+  }
+
+  /**
    * Get user by username
    * 
    * @param  array $errors

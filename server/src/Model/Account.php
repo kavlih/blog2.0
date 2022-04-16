@@ -60,10 +60,10 @@ final class Account extends AbstractModel {
         // If inputs are empty
         if(!$inputUser || !$inputPwd) {
             if(!$inputUser) {
-                $errors[] = 'Please type in your username or email address';
+                $errors['login'][] = 'Please type in your username or email address';
             }
             if(!$inputPwd) {
-                $errors[] = 'Please type in your password';
+                $errors['login'][] = 'Please type in your password';
             }
             return FALSE;
         }
@@ -74,23 +74,24 @@ final class Account extends AbstractModel {
         $getEmail = $this->getUserbyEmail($errors, $inputUser);
 
         // If user was found, set $result
-        if($getUsername) {
-            /** @var array $userData */
-            $result = $getUsername;
-        }
-        elseif($getEmail) {
-            /** @var array $userData */
-            $result = $getEmail;
-        }
+        if($getUsername || $getEmail) {
+            
+            if($getUsername) $result = $getUsername;
+            elseif($getEmail) $result = $getEmail;
 
-        // Empty $errors
-        $errors = [];
+            // Empty $errors
+            $errors = [];
 
-        // If user was not found OR password is wrong
-        if(!($getUsername || $getEmail) 
-            || !$this->comparePasswords($result, $inputPwd)) 
-        {
-            $errors[] = 'This combination does not exist';
+            if($this->comparePasswords($result, $inputPwd)) {
+                $this->getFollowers($result);
+                $this->getFollowing($result);
+            }
+            else {
+                $errors['login'][] = 'This combination does not exist';
+            }
+        }
+        else {
+            $errors['login'][] = 'This combination does not exist';
         }
 
         return empty($errors);
