@@ -31,23 +31,9 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
 }));
 
 export default function Profile() {
-  console.log("profile got rendered");
-
   const { user } = useContext(UserContext);
-  const { postSubmit, setPostSubmit, userSubmit, setUserSubmit } = useContext(SubmitContext);
+  const { isUpdatedPost, isUpdatedUser } = useContext(SubmitContext);
 
-  useEffect(() => {
-    postSubmit && setPostSubmit(false);
-    userSubmit && setUserSubmit(false);
-  });
-
-  // Counters
-  const [postsCount, setPostsCount] = useState(0);
-  const [likesCount, setLikesCount] = useState(0);
-  const [followersCount, setFollowersCount] = useState(0);
-  const [followingCount, setFollowingCount] = useState(0);
-
-  // Handlers
   const [nav, setNav] = useState("posts");
   const handleNav = (event, newTab) => {
     if (newTab !== null) {
@@ -55,69 +41,45 @@ export default function Profile() {
     }
   };
   
-  // Fetches
-  const [posts, setPosts] = useState(null);
-  const [likes, setLikes] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [liked, setLiked] = useState([]);
   useEffect(() => {
     let isMounted = true;
 
     const fetchPosts = async () => {
-      let res = await postHelper.getUserPosts(user.username);
-      let res2 = await postHelper.getUserLikes(user.username);
-      res = res.data.result;
-      res2 = res2.data.result;
+      const res = await postHelper.getUserPosts(user.username);
+      const res2 = await postHelper.getUserLikes(user.username);
 
       if (isMounted) {
-        setPosts(res);
-        res ? setPostsCount(res.length) : setPostsCount(0);
-        setLikes(res2);
-        res2 ? setLikesCount(res2.length) : setLikesCount(0);
+        setPosts(res.data.result);
+        setLiked(res2.data.result);
       }
     };
     fetchPosts()
       .catch(console.error);
 
     return () => isMounted = false;
-  }, [user.username, postSubmit]);
+  }, [user.username, isUpdatedPost]);
 
-  const [followers, setFollowers] = useState(null);
-  const [following, setFollowing] = useState(null);
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
   useEffect(() => {
     let isMounted = true;
 
     const fetchUsers = async () => {
-      let res = await userHelper.getFollowers(user.id);
-      let res2 = await userHelper.getFollowing(user.id);
-      res = res.data.result;
-      res2 = res2.data.result;
-      
-      res.forEach(e => {
-        e["isFollowing"] = false;
-        
-        res2.forEach(e2 => {
-          if(e.id === e2.id) {
-            e["isFollowing"] = true;
-          }
-        });
-      });
-
-      res2.forEach(e => {
-        e["isFollowing"] = true;
-      });
+      const res = await userHelper.followers(user.id);
+      const res2 = await userHelper.following(user.id);
 
       if (isMounted) {
-        setFollowers(res);
-        res ? setFollowersCount(res.length) : setFollowersCount(0);
-        
-        setFollowing(res2);
-        res2 ? setFollowingCount(res2.length) : setFollowingCount(0);
+        setFollowers(res.data.result);
+        setFollowing(res2.data.result);
       }
     };
     fetchUsers()
       .catch(console.error);
 
     return () => isMounted = false;
-  }, [user.id, userSubmit]);
+  }, [user.id, isUpdatedUser]);
 
   return (
   <>
@@ -133,11 +95,11 @@ export default function Profile() {
         onChange={handleNav}
       >
         <ToggleButton value="posts" aria-label="posts">
-          <Typography component="span" variant="body2">{postsCount > 0 && postsCount}</Typography>
+          <Typography component="span" variant="body2">{posts.length > 0 && posts.length}</Typography>
           Posts
         </ToggleButton>
         <ToggleButton value="likes" aria-label="likes">
-          <Typography component="span" variant="body2">{likesCount > 0 && likesCount}</Typography>
+          <Typography component="span" variant="body2">{liked.length > 0 && liked.length}</Typography>
           Likes
         </ToggleButton>
       </StyledToggleButtonGroup>
@@ -148,11 +110,11 @@ export default function Profile() {
         onChange={handleNav}
       >
         <ToggleButton value="followers" aria-label="followers">
-          <Typography component="span" variant="body2">{followersCount > 0 && followersCount}</Typography>
+          <Typography component="span" variant="body2">{followers.length > 0 && followers.length}</Typography>
           Followers
         </ToggleButton>
         <ToggleButton value="following" aria-label="following">
-          <Typography component="span" variant="body2">{followingCount > 0 && followingCount}</Typography>
+          <Typography component="span" variant="body2">{following.length > 0 && following.length}</Typography>
           Following
         </ToggleButton>
       </StyledToggleButtonGroup>
@@ -168,7 +130,7 @@ export default function Profile() {
     {/* Likes */}
     {nav === "likes" &&
       <Box component="section">
-        <PostList posts={likes} />
+        <PostList posts={liked} />
       </Box>
     }
 

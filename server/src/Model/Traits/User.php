@@ -10,63 +10,50 @@ namespace application\Model\Traits;
 trait User {
 
   /**
+   * Add followers to user array
+   * 
+   * @param  array $userData
+   * @return void
+   */
+  function addFollowers(array &$userData) : void {
+    /** @var array $followers */
+    $result = [];
+
+    if($this->getFollowers($result, $userData['id'])) {
+      foreach($result as $user) {
+        $userData['followers'][] = $user['id'];
+      }
+    }
+    else {
+      $userData['followers'] = [];
+    }
+  }
+  
+  /**
    * Get all users that the requested user follows
    * 
-   * @param array $userData
+   * @param array $result
+   * @param int $userId
    * @return bool
    */
-  function getFollowers(array &$userData) : bool {
-      /** @var string $query */
-      $query = 'SELECT f.follower_id FROM followers AS f 
-      WHERE NOT f.receiver_id = f.follower_id AND f.receiver_id = :userId;';
+  function getFollowers(array &$result, int $userId) : bool {
+    /** @var string $query */
+    $query = 'SELECT u.id, u.username, i.identicon
+    FROM followers AS f
+    INNER JOIN users AS u ON f.follower_id = u.id
+    INNER JOIN identicon AS i ON u.id = i.user_id
+    WHERE NOT f.receiver_id = f.follower_id AND f.receiver_id = :userId 
+    ORDER BY u.username;';
 
-      /** @var \PDOStatement $stmt */
-      $stmt = $this->DbHandler->prepare($query);
-      $stmt->bindValue(':userId', $userData['id']);
-      $stmt->execute();
+    /** @var \PDOStatement $stmt */
+    $stmt = $this->DbHandler->prepare($query);
+    $stmt->bindValue(':userId', $userId);
+    $stmt->execute();
 
-      $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    /** @var array||FALSE $result */
+    $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-      if($result) {
-           foreach($result as $user) {
-                $userData['followers'][] = $user['follower_id'];
-           }
-      }
-      else {
-          $userData['followers'] = [];
-      }
-
-      return !empty($stmt->rowCount());
-  }
-
-  /**
-   * Get all users who follow the requested user
-   * 
-   * @param array $userData
-   * @return bool
-   */
-  function getFollowing(array &$userData) : bool {
-      /** @var string $query */
-      $query = 'SELECT f.receiver_id FROM followers AS f
-      WHERE NOT f.receiver_id = f.follower_id AND f.follower_id = :userId;';
-  
-      /** @var \PDOStatement $stmt */
-      $stmt = $this->DbHandler->prepare($query);
-      $stmt->bindValue(':userId', $userData['id']);
-      $stmt->execute();
-
-      $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-      if($result) {
-           foreach($result as $user) {
-                $userData['following'][] = $user['receiver_id'];
-           }
-      }
-      else {
-          $userData['following'] = [];
-      }
-
-      return !empty($stmt->rowCount());
+    return !empty($stmt->rowCount());
   }
 
   /**
@@ -91,12 +78,14 @@ trait User {
     /** @var array||FALSE $result */
     $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-    if(!$result) {
+    if($result) {
+      $this->addFollowers($result);
+      return $result;
+    }
+    else {
       $errors[] = 'User does not exist';
       return NULL;
     }
-
-    return $result;
   }
   
   /**
@@ -121,12 +110,14 @@ trait User {
     /** @var array||FALSE $result */
     $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-    if(!$result) {
+    if($result) {
+      $this->addFollowers($result);
+      return $result;
+    }
+    else {
       $errors[] = 'User does not exist';
       return NULL;
     }
-
-    return $result;
   }
   
   /**
@@ -151,12 +142,14 @@ trait User {
     /** @var array||FALSE $result */
     $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-    if(!$result) {
+    if($result) {
+      $this->addFollowers($result);
+      return $result;
+    }
+    else {
       $errors[] = 'User does not exist';
       return NULL;
     }
-
-    return $result;
   }
 
 }

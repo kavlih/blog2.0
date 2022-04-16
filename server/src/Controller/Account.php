@@ -69,9 +69,7 @@ final class Account extends AbstractController {
                     'id'        => $result['id'],
                     'username'  => $result['username'],
                     'email'     => $result['email'],
-                    'identicon' => $result['identicon'],
-                    'followers' => $result['followers'],
-                    'following' => $result['following'],
+                    'identicon' => $result['identicon']
                 ]
             ]);
         }

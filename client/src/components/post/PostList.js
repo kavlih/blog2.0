@@ -48,9 +48,10 @@ export default function PostList({ posts }) {
       ? <Stack 
           component={List} 
           spacing={2}
+          sx={{ p: 0, "&> li": { p: 0 } }}
         >
           {posts.map(( post ) => ( 
-            <ListItem key={post.id} sx={{ padding: 0 }} >
+            <ListItem key={post.id}>
               <Post post={post} />
             </ListItem>
           ))}

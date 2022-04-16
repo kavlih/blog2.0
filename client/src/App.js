@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Router from './components/routing/Router';
 import { UserContext } from './context/UserContext';
@@ -9,13 +9,13 @@ import theme from './styles/Styles';
 
 const App = () => {
   const [ user, setUser ] = useState(JSON.parse(localStorage.getItem('user')));
-  const [ postSubmit, setPostSubmit ] = useState(false);
-  const [ userSubmit, setUserSubmit ] = useState(false);
+  const [ isUpdatedPost, setIsUpdatedPost ] = useState(1);
+  const [ isUpdatedUser, setIsUpdatedUser ] = useState(1);
 
   return (
     <ThemeProvider theme={theme}>
       <UserContext.Provider value={{ user, setUser }}>    
-        <SubmitContext.Provider value={{ postSubmit, setPostSubmit, userSubmit, setUserSubmit }}>
+        <SubmitContext.Provider value={{ isUpdatedPost, setIsUpdatedPost, isUpdatedUser, setIsUpdatedUser }}>
           <Router />
         </SubmitContext.Provider>
       </UserContext.Provider>

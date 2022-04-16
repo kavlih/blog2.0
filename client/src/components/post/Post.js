@@ -6,7 +6,6 @@ import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 // MUI Icons
@@ -31,26 +30,19 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const PostAvatar = ({ post }) => {
-  const { user } = useContext(UserContext);
-
-  return (
-    <Link 
-      href={post.user_id === user.id ? "/profile" : `/users/${post.username}`}
-      sx={{ mt:"7px", height: {xs: "40px", sm: "60px"} }}
-    >
-      <Avatar 
-        variant="post"
-        src={identiconService(post.identicon)}
-        alt={user.username}
-      />        
-    </Link>
-  );
-}
-
-const PostContent = ({ post }) => {
+const Post = ({ post, setIsSubmit }) => {
   const { user } = useContext(UserContext);
   const classes = useStyles();
+
+  const navigate = useNavigate();  
+  const handleClick = () => {
+    if(post.user_id === user.id) {
+      navigate("/profile");
+    }
+    else {
+      navigate(`/users/${post.username}`);
+    }
+  };
 
   const [date, setDate] = useState("");
   useEffect(() => {
@@ -108,79 +100,55 @@ const PostContent = ({ post }) => {
     }
   }, [post]);
 
-  const navigate = useNavigate();  
-  const handleClick = () => {
-    if(post.user_id === user.id) {
-      navigate("/profile");
-    }
-    else {
-      navigate(`/users/${post.username}`);
-    }
-  };
-
-  return (
-    <CardContent sx={{ "&:last-child": { pb:"16px" } }}>
-      {/* Header */}
-      <Stack 
-        direction="row"
-        justifyContent="space-between"
-        sx={{ mt: "-10px" }}
-      >
-        <Stack 
-          direction="row" 
-          alignItems="center" 
-          spacing={2} 
-        >
-          {/* Username */}
-          <PostButton
-            aria-label="user"
-            onClick={handleClick}
-            size="small"
-            className={classes.button}
-            startIcon={<CircleOutlinedIcon />}
-          >
-            {post.username}
-          </PostButton>
-          {/* Date */}
-          <Typography 
-            variant="body2" 
-            fontSize="small"
-          >
-            {date}
-          </Typography>
-        </Stack>
-        {/* Header end */}
-        <PostActions post={post} />
-      </Stack>
-      {/* Message */}
-      <Typography variant="body1" >
-        {post.message}
-      </Typography>
-    </CardContent>
-  );
-}
-
-// const PostMedia = ({ post }) => {
-//   return (
-//     <CardMedia
-//       component="img"
-//       height="100%"
-//       image="/static/images/cards/paella.jpg"
-//       alt=""
-//     />
-//   );
-// }
-
-export default function Post({ post, setIsSubmit }) {
   return (
   <>
     <Box component={Stack} direction="row" spacing={{xs: 1, sm: 2}} width={"100%"}>
-      <PostAvatar post={post} />
+      <Avatar 
+        component="button"
+        onClick={handleClick}
+        src={identiconService(post.identicon)}
+        // alt={}
+        sx={{ mt:"7px" }}
+      />
       <Card sx={{ width: "100%" }} >
-        <PostContent post={post} setIsSubmit={setIsSubmit} />
-        {/* <PostMedia post={post} /> */}
+        <CardContent sx={{ "&:last-child": { pb:"16px" } }}>
+          {/* Header */}
+          <Stack direction="row" justifyContent="space-between" sx={{ mt: "-10px" }} >
+            {/* Header start */}
+            <Stack direction="row" alignItems="center" spacing={2} >
+              {/* Username */}
+              <PostButton
+                aria-label="user"
+                onClick={handleClick}
+                size="small"
+                className={classes.button}
+                startIcon={<CircleOutlinedIcon />}
+              >
+                {post.username}
+              </PostButton>
+              {/* Date */}
+              <Typography variant="body2" fontSize="small" >
+                {date}
+              </Typography>
+            </Stack>
+            {/* Header end */}
+            <PostActions post={post} />
+          </Stack>
+          {/* Message */}
+          <Typography variant="body1" >
+            {post.message}
+          </Typography>
+        </CardContent>
+        {/* <CardMedia
+          component="img"
+          height="100%"
+          image="/static/images/cards/paella.jpg"
+          alt=""
+        /> */}
       </Card>
     </Box>
   </>
   );
 }
+
+export default Post;

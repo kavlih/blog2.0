@@ -37,6 +37,68 @@ final class User extends AbstractController {
   /**
    * @GET
    * 
+   * @param int||NULL $userId
+   * @return void
+   */
+  function followers(?int $userId) : void {
+    /** @var array $errors */
+    $errors = [];
+    /** @var array $result */
+    $result = [];
+            
+    if(!$this->isMethod(self::METHOD_GET)
+      || !$this->UserModel->getUserById($errors, $userId)) 
+    {
+      $this->responseCode(400);
+      $this->printJSON(['success' => FALSE, 'errors' => $errors]);
+    }
+    elseif(!$this->UserModel->getFollowers($result, $userId)) {
+      $this->responseCode(204);
+      $this->printJSON(['success' => TRUE]);
+    }
+    else {
+      foreach($result as &$user) {
+        $this->UserModel->addFollowers($user);
+      }
+      $this->responseCode(200);
+      $this->printJSON(['success' => TRUE, 'result' => $result]);
+    }
+  }
+
+  /**
+   * @GET
+   * 
+   * @param int||NULL $userId
+   * @return void
+   */
+  function following(?int $userId) : void {
+    /** @var array $errors */
+    $errors = [];
+    /** @var array $result */
+    $result = [];
+            
+    if(!$this->isMethod(self::METHOD_GET)
+      || !$this->UserModel->getUserById($errors, $userId)) 
+    {
+      $this->responseCode(400);
+      $this->printJSON(['success' => FALSE, 'errors' => $errors]);
+    }
+    elseif(!$this->UserModel->getFollowing($result, $userId)) {
+      $this->responseCode(204);
+      $this->printJSON(['success' => TRUE]);
+    }
+    else {
+      foreach($result as &$user) {
+        $this->UserModel->addFollowers($user);
+      }
+      $this->responseCode(200);
+      $this->printJSON(['success' => TRUE, 'result' => $result]);
+    }
+  }
+
+  /**
+   * @GET
+   * 
    * @param string||NULL $username
    * @return void
    */
@@ -58,64 +120,9 @@ final class User extends AbstractController {
           'id'        => $result['id'],
           'username'  => $result['username'],
           'identicon' => $result['identicon'],
+          'followers' => $result['followers'],
         ]
       ]);
-    }
-  }
-
-  /**
-   * @GET
-   * 
-   * @param int||NULL $userId
-   * @return void
-   */
-  function getFollowers(?int $userId) : void {
-    /** @var array $errors */
-    $errors = [];
-    /** @var array $result */
-    $result = [];
-            
-    if(!$this->isMethod(self::METHOD_GET)
-      || !$this->UserModel->getUserById($errors, $userId)) 
-    {
-      $this->responseCode(400);
-      $this->printJSON(['success' => FALSE, 'errors' => $errors]);
-    }
-    elseif(!$this->UserModel->getFollowers($result, $userId)) {
-      $this->responseCode(204);
-      $this->printJSON(['success' => TRUE]);
-    }
-    else {
-      $this->responseCode(200);
-      $this->printJSON(['success' => TRUE, 'result' => $result]);
-    }
-  }
-  
-  /**
-   * @GET
-   * 
-   * @param int||NULL $userId
-   * @return void
-   */
-  function getFollowing(?int $userId) : void {
-    /** @var array $errors */
-    $errors = [];
-    /** @var array $result */
-    $result = [];
-            
-    if(!$this->isMethod(self::METHOD_GET)
-      || !$this->UserModel->getUserById($errors, $userId)) 
-    {
-      $this->responseCode(400);
-      $this->printJSON(['success' => FALSE, 'errors' => $errors]);
-    }
-    elseif(!$this->UserModel->getFollowing($result, $userId)) {
-      $this->responseCode(204);
-      $this->printJSON(['success' => TRUE]);
-    }
-    else {
-      $this->responseCode(200);
-      $this->printJSON(['success' => TRUE, 'result' => $result]);
     }
   }
 

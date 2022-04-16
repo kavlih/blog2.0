@@ -19,26 +19,23 @@ import { SubmitContext } from '../../context/SubmitContext';
 import { postHelper } from '../../helpers';
 import PostButton from './PostButton';
 
-const LikeButton = ({ post }) => {
+const LikeButton = ({ post }) => {  
   const { user } = useContext(UserContext);
-  const { setPostSubmit } = useContext(SubmitContext);
-
-  const [likes, setLikes] = useState(post.likes.length);
+  const { isUpdatedPost, setIsUpdatedPost } = useContext(SubmitContext);
 
   const [isLiked, setIsLiked] = useState(false);
   useEffect(() => {
     setIsLiked(post.likes.includes(user.id));
   }, [user.id, post.likes]);
 
-  const handleLike = async () => {
+  const toggleLike = async () => {
     const fields = new FormData();
     fields.append("userId", user.id)
 
     try {
       await postHelper.toggleLike(post.id, fields);
-      setLikes(isLiked ? likes - 1 : likes + 1);
       setIsLiked(!isLiked);
-      setPostSubmit(true);
+      setIsUpdatedPost(!isUpdatedPost);
     }
     catch(err) {
       // console.log(err.response.data.errors);
@@ -48,7 +45,7 @@ const LikeButton = ({ post }) => {
   return(
     <PostButton 
       aria-label="like"
-      onClick={handleLike}
+      onClick={toggleLike}
       size="small"
       endIcon={isLiked ? <FavoriteRoundedIcon fontSize="small" /> : <FavoriteBorderRoundedIcon fontSize="small" />}
       sx={{
@@ -59,14 +56,14 @@ const LikeButton = ({ post }) => {
         }
       }}
     >
-      {likes > 0 && likes}
+      {post.likes.length > 0 && post.likes.length}
     </PostButton>
   );
 }
 
 const MoreButton = ({ post }) => {
   const { user } = useContext(UserContext);
-  const { setPostSubmit } = useContext(SubmitContext);
+  const { isUpdatedPost, setIsUpdatedPost } = useContext(SubmitContext);
 
   // Popper
   const [open, setOpen] = useState(false);
@@ -102,13 +99,14 @@ const MoreButton = ({ post }) => {
   }, [open]);
   
   // Delete post
-  const handleDelete = () => {
-    postHelper.deletePost(post.id)
-    .then((res) => {
-      setPostSubmit(true);
-    })
-    .catch((error) => {
-    });
+  const handleDelete = async () => {
+    try {
+      await postHelper.deletePost(post.id);
+      setIsUpdatedPost(!isUpdatedPost);
+    }
+    catch(err) {
+      // console.log(err.response.data.errors);
+    }
   };
 
   return(
@@ -170,8 +168,8 @@ const MoreButton = ({ post }) => {
 export default function PostActions ({ post, setIsSubmit }) {
   return (
     <Stack direction="row" spacing={1} sx={{ mr: "-5px" }} >
-      <LikeButton post={post} setIsSubmit={setIsSubmit} />
-      <MoreButton post={post} setIsSubmit={setIsSubmit} />      
+      <LikeButton post={post} />
+      <MoreButton post={post} />      
     </Stack>
   );
 }

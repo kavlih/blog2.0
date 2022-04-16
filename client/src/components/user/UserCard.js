@@ -14,8 +14,6 @@ import { UserContext } from '../../context/UserContext';
 import { SubmitContext } from '../../context/SubmitContext';
 import { identiconService } from '../../services';
 import { userHelper } from '../../helpers';
-import { margin } from '@mui/system';
-import { ClassNames } from '@emotion/react';
 
 const StyledCard = styled(Card)(({ theme }) => ({ 
   width: "100%", 
@@ -28,7 +26,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   "& .MuiCardActions-root": {
     position: "absolute",
     right: "16px",
-    padding: 0
+    padding: "30px 0"
   },
   "& .MuiCardActionArea-root": {
     color: "transparent",
@@ -77,13 +75,13 @@ const MyCardHeader = ({ receiver }) => {
 
 export default function UserCard({ receiver, isButton=true }) {
   const { user } = useContext(UserContext);
-  const { setUserSubmit } = useContext(SubmitContext);
+  const { isUpdatedUser, setIsUpdatedUser } = useContext(SubmitContext);
   const classes = useStyles();
-  
-  const [isFollowing, setIsFollowing] = useState();
+
+  const [isFollowing, setIsFollowing] = useState(false);
   useEffect(() => {
-    setIsFollowing(receiver.isFollowing);
-  }, [user.id, receiver.isFollowing]);
+    setIsFollowing(receiver.followers.includes(user.id));
+  }, [receiver.id, receiver.followers]);
 
   const navigate = useNavigate();  
   const handleClick = () => {
@@ -95,12 +93,12 @@ export default function UserCard({ receiver, isButton=true }) {
     fields.append("userId", user.id)
   
     try {
-      await userHelper.toggleFollow(receiver.id, fields);
+      await userHelper.follow(receiver.id, fields);
       setIsFollowing(!isFollowing);
-      setUserSubmit(true);
+      setIsUpdatedUser(!isUpdatedUser);
     }
     catch(err) {
-      // console.log(err.response.data.errors);
+      console.log(err);
     }
   };
   

@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 
+import Stack from '@mui/material/Stack';
+
 import { UserContext } from "../../context/UserContext";
 import { SubmitContext } from "../../context/SubmitContext";
 import { postHelper } from '../../helpers';
@@ -7,16 +9,10 @@ import PostForm from "../../components/post/PostForm";
 import PostList from "../../components/post/PostList";
 
 const Feed = () => {
-  console.log("feed got rendered");
-
   const { user } = useContext(UserContext);
-  const { postSubmit, setPostSubmit } = useContext(SubmitContext);
-
-  useEffect(() => {
-    postSubmit && setPostSubmit(false);
-  });
+  const { isUpdatedPost } = useContext(SubmitContext);
   
-  const [ posts, setPosts ] = useState(null);
+  const [ posts, setPosts ] = useState([]);
   useEffect(() => {
     let isMounted = true;
 
@@ -27,15 +23,17 @@ const Feed = () => {
       }
     };
     fetchPosts()
-      .catch(console.error);;
+      .catch(console.error);
 
     return () => isMounted = false;
-  }, [user.id, postSubmit]);
+  }, [user.id, isUpdatedPost]);
 
   return (
   <>
-    <PostForm />
-    <PostList posts={posts} />
+    <Stack spacing={4}>
+      <PostForm />
+      <PostList posts={posts} />
+    </Stack>
   </>
   );
 }

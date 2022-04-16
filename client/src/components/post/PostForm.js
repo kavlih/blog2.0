@@ -16,6 +16,12 @@ import { identiconService } from '../../services';
 import { postHelper } from '../../helpers';
 
 const useStyles = makeStyles(( theme ) => ({
+  box: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "20px"
+  },
   textarea: {
     padding: "22px 16px",
     outline: "none",
@@ -50,11 +56,11 @@ const useStyles = makeStyles(( theme ) => ({
 
 const PostForm = () => {
   const { user } = useContext(UserContext);
-  const { setPostSubmit } = useContext(SubmitContext);
+  const { isUpdatedPost, setIsUpdatedPost } = useContext(SubmitContext);
   const classes = useStyles();
 
-  const [ messageValue, setMessageValue ] = useState("")
-  const [ formErrors, setFormErrors ] = useState()
+  const [ messageValue, setMessageValue ] = useState("");
+  const [ formErrors, setFormErrors ] = useState([]);
 
   const handleChange = (e) => {
     const {value} = e.target;
@@ -67,16 +73,15 @@ const PostForm = () => {
     let formData = new FormData();
     formData.append("message", messageValue);
 
-    postHelper.createPost(user.id, formData)
-    .then((res) => {
-      console.log(res?.data);
-      setPostSubmit(true);
-      setFormErrors();
+    try {
+      await postHelper.createPost(user.id, formData);
       setMessageValue("");
-    })
-    .catch((error) => {
-      setFormErrors(error.response.data.errors);
-    });
+      if(formErrors) setFormErrors([]);
+      setIsUpdatedPost(!isUpdatedPost);
+    }
+    catch(err) {
+      setFormErrors(err.response.data.errors);
+    }
   }
 
   return (
@@ -84,12 +89,7 @@ const PostForm = () => {
     <Box 
       component="form" 
       method="POST" 
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        mb: "50px"
-      }}
+      className={classes.box}
     >
       <Stack direction="row" spacing={{ xs: 1, sm: 2 }} width={"100%"}>
         {/* Avatar */}
@@ -108,7 +108,7 @@ const PostForm = () => {
         />
       </Stack>
       {/* Form errors */}
-      {formErrors && <Typography variant="body1" mt={2} sx={{ color: "error.main" }}>
+      {formErrors.length > 0 && <Typography variant="body1" sx={{ color: "error.main" }}>
         {formErrors}
       </Typography>}
       {/* Submit button */}
@@ -116,7 +116,6 @@ const PostForm = () => {
         aria-label="create post"
         onClick={handleSubmit} 
         className={classes.btnCreate}
-        sx={{ marginTop: 2 }}
       >
         <ArrowForwardRoundedIcon fontSize="large" />
       </IconButton>

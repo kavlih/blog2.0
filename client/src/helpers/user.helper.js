@@ -1,24 +1,30 @@
 import { axiosService } from '../services';
 
-const getFollowers = (userId) => {
-  return axiosService.get(`/user/getFollowers/${userId}`)
-}
-
-const getFollowing = (userId) => {
-  return axiosService.get(`/user/getFollowing/${userId}`)
-}
-
-const getUser = (username) => {
-  return axiosService.get(`/user/get/${username}`)
-}
-
-const toggleFollow = (receiverId, data) => {
+const follow = (receiverId, data) => {
   return axiosService.post(`/user/follow/${receiverId}`, data)
 }
 
+const followers = (userId) => {
+  return axiosService.get(`/user/followers/${userId}`)
+}
+
+const following = (userId) => {
+  return axiosService.get(`/user/following/${userId}`)
+}
+
+const get = (username) => {
+  return axiosService.get(`/user/get/${username}`)
+}
+
+const isFollow = (receiverId, data) => {
+  return axiosService.post(`/user/isFollow/${receiverId}`, data)
+}
+
+
 export const userHelper = {
-  getFollowers,
-  getFollowing,
-  getUser,
-  toggleFollow
+  follow,
+  followers,
+  following,
+  get,
+  isFollow
 }

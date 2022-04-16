@@ -73,27 +73,24 @@ final class Account extends AbstractModel {
         /** @var array||NULL $getEmail */
         $getEmail = $this->getUserbyEmail($errors, $inputUser);
 
-        // If user was found, set $result
-        if($getUsername || $getEmail) {
-            
-            if($getUsername) $result = $getUsername;
-            elseif($getEmail) $result = $getEmail;
-
-            // Empty $errors
-            $errors = [];
-
-            if($this->comparePasswords($result, $inputPwd)) {
-                $this->getFollowers($result);
-                $this->getFollowing($result);
-            }
-            else {
-                $errors['login'][] = 'This combination does not exist';
-            }
+        // Set $result
+        if($getUsername) {
+            $result = $getUsername;
         }
-        else {
+        elseif($getEmail) {
+            $result = $getEmail;
+        }
+
+        // Empty $errors
+        $errors = [];
+
+        // If user was not found or password is wrong
+        if(!($getUsername || $getEmail) 
+            || !$this->comparePasswords($result, $inputPwd)) 
+        {
             $errors['login'][] = 'This combination does not exist';
         }
-
+        
         return empty($errors);
     }
 

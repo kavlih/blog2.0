@@ -81,21 +81,27 @@ theme = createTheme(theme, {
       styleOverrides: {
         root: {
           background: Colors.white,
+          padding:"6px",
+          width:"28px",
+          height:"28px",
+          [theme.breakpoints.up("sm")]: {
+            padding:"10px",
+            width:"40px",
+            height:"40px"
+          }
         }
       },
       variants: [
         {
           props: { 
-            variant: "post" 
+            component: "button" 
           },
           style: {
-            padding:"6px",
-            width:"28px",
-            height:"28px",
+            width:"40px",
+            height:"40px",
             [theme.breakpoints.up("sm")]: {
-              padding:"10px",
-              width:"40px",
-              height:"40px"
+              width:"60px",
+              height:"60px"
             }
           }
         }
