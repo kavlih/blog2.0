@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 // MUI Components
 import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Stack from '@mui/material/Stack';
 
 import { UserContext } from '../../context/UserContext';
 import { SubmitContext } from '../../context/SubmitContext';
@@ -10,7 +12,7 @@ import PostList from '../../components/post/PostList';
 import UserCard from '../../components/user/UserCard';
 
 const UserPosts = ({ username }) => {
-  const { isUpdatedPost, setIsUpdatedPost } = useContext(SubmitContext);
+  const { isUpdatedPost } = useContext(SubmitContext);
 
   const [posts, setPosts] = useState(null)
   useEffect(() => {
@@ -59,12 +61,14 @@ export default function UserProfile() {
   return (
   <>
     {receiver &&
-      <div>
-        <UserCard receiver={receiver} isButton={false} />
+      <Stack spacing={6}>
+        <Container maxWidth='xs'>
+          <UserCard receiver={receiver} isButton={false} />
+        </Container>
         <Box component='section'>
           <UserPosts username={receiver.username} />
         </Box>
-      </div>
+      </Stack>
     }
   </>
   );

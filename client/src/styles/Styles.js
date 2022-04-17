@@ -4,8 +4,9 @@ const Colors = {
   primaryLight: '#1F2433',
   primary: '#171B26',
   primaryDark: '#0B0D12',
-  secondary: '#646973',
-  secondaryDark: '#32353c',
+  secondaryLight: '#646973',
+  secondary: '#32353c',
+  secondaryDark: '#13161B',
   // green: '#58c255',
   // red: '#da3849',
   blue: '#80B0f5',
@@ -15,6 +16,9 @@ const Colors = {
 let theme = createTheme({
   palette: {
     mode: 'dark',
+    background: {
+      default: Colors.primaryDark
+    },
     common: {
       white: Colors.white
     },
@@ -24,14 +28,15 @@ let theme = createTheme({
       dark: Colors.primaryDark
     },
     secondary: {
+      light: Colors.secondaryLight,
       main: Colors.secondary,
       dark: Colors.secondaryDark
     },
     text: {
       primary: Colors.white,
-      secondary: Colors.secondary,
-      disabled: Colors.secondaryDark,
-      icon: Colors.secondary,
+      secondary: Colors.secondaryLight,
+      disabled: Colors.secondary,
+      icon: Colors.secondaryLight,
       link: Colors.blue
     }
   }
@@ -56,7 +61,10 @@ theme = createTheme(theme, {
       fontWeight: 300,
     },
     h5: undefined,
-    h6: undefined,
+    h6: {
+      fontFamily: 'Roboto Mono',
+      fontWeight: 400,
+    },
     subtitle1: undefined,
     subtitle2: undefined,
     body2: {
@@ -65,7 +73,6 @@ theme = createTheme(theme, {
       color: theme.palette.text.secondary,
     },
     button: {
-      fontFamily: 'Roboto Mono',
       textTransform: 'none',
       // fontSize: '0.75rem',
       // color: theme.palette.text.secondary,
@@ -80,37 +87,23 @@ theme = createTheme(theme, {
     MuiAvatar: {
       styleOverrides: {
         root: {
+          border:'none',
           background: Colors.white,
           padding:'6px',
-          width:'28px',
-          height:'28px',
+          width:'40px',
+          height:'40px',
           [theme.breakpoints.up('sm')]: {
             padding:'10px',
-            width:'40px',
-            height:'40px'
+            width:'60px',
+            height:'60px'
           }
         }
-      },
-      variants: [
-        {
-          props: { 
-            component: 'button' 
-          },
-          style: {
-            width:'40px',
-            height:'40px',
-            [theme.breakpoints.up('sm')]: {
-              width:'60px',
-              height:'60px'
-            }
-          }
-        }
-      ]
+      }
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          border: `1px solid ${theme.palette.secondary.dark}`,
+          border: `1px solid ${theme.palette.secondary.main}`,
           boxShadow: 'none',
           backgroundColor: 'transparent',
           backgroundImage: 'none'
@@ -124,9 +117,9 @@ theme = createTheme(theme, {
       styleOverrides: {
         root: {
           border: '1px solid',
-          color: theme.palette.secondary.main,
+          color: theme.palette.secondary.light,
           '&:disabled': {
-            color: theme.palette.secondary.main,
+            color: theme.palette.secondary.light,
           }
         }
       }
@@ -139,7 +132,7 @@ theme = createTheme(theme, {
           flexDirection: 'row', 
           alignItems: 'center', 
           backgroundColor: 'transparent',
-          border: `1px solid ${theme.palette.secondary.dark}`,
+          border: `1px solid ${theme.palette.secondary.main}`,
           borderRadius: theme.shape.borderRadius,
 
           '& input::placeholder': {
@@ -159,7 +152,7 @@ theme = createTheme(theme, {
       },
       styleOverrides: {
         root: {
-          color: theme.palette.secondary.main
+          color: theme.palette.secondary.light
         }
       }
     },

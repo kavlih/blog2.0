@@ -3,7 +3,6 @@ import React, { useState, useContext } from 'react';
 import { makeStyles } from '@mui/styles';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -30,7 +29,7 @@ const useStyles = makeStyles(( theme ) => ({
     resize: 'none',
     outline: 'none',
     backgroundColor: 'transparent',
-    border: `1px solid ${theme.palette.secondary.dark}`,
+    border: `1px solid ${theme.palette.secondary.main}`,
     borderRadius: theme.shape.borderRadius,
     color: 'white',
     fontFamily: theme.typography.body1.fontFamily,

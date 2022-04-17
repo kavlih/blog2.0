@@ -108,7 +108,7 @@ const Post = ({ post, setIsSubmit }) => {
         onClick={handleClick}
         src={identiconService(post.identicon)}
         // alt={}
-        sx={{ mt:'7px' }}
+        sx={{ mt:'7px', cursor:'pointer' }}
       />
       <Card sx={{ width: '100%' }} >
         <CardContent sx={{ '&:last-child': { pb:'16px' } }}>

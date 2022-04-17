@@ -1,26 +1,21 @@
 import React, { useState } from 'react';
 // MUI Components
-import { makeStyles } from '@mui/styles';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
-import Input from '@mui/material/Input';
 import InputBase from '@mui/material/InputBase';
+import Typography from '@mui/material/Typography';
 // MUI Icons
 import SearchIcon from '@mui/icons-material/Search';
 
 import { userHelper } from '../../helpers';
 import UserList from '../../components/user/UserList';
 
-// const useStyles = makeStyles(( theme ) => ({
-// }));
-
 const Users = () => {
-  // const classes = useStyles();
-
   const [ inputValue, setInputValue ] = useState('');
   const [ searchResult, setSearchResult ] = useState([]);
+  const [ isSubmit, setIsSubmit ] = useState(false);
 
   const handleChange = (e) => {
     const {value} = e.target;
@@ -33,7 +28,7 @@ const Users = () => {
     try {
       const res = await userHelper.search(inputValue);
       setSearchResult(res.data.result);
-      setInputValue('');
+      setIsSubmit(true);
     }
     catch(error) {
       // console.log(error);
@@ -45,6 +40,7 @@ const Users = () => {
       <Container maxWidth='xs'>
         <Box
           component='form'
+          mb={6}
           sx={{ 
             display: 'flex', 
             gap: '20px',
@@ -69,6 +65,7 @@ const Users = () => {
             </IconButton>
           </FormControl>
         </Box>
+        {isSubmit && searchResult && <Typography variant='h6' textAlign='center' mb={2}>{searchResult.length} {searchResult.length > 1 ? 'users' : 'user'} found</Typography>}
         <Box component='section'>
           <UserList users={searchResult} itemWidth={12} />
         </Box>
