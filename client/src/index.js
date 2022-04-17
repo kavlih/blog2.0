@@ -4,8 +4,6 @@ import { render } from 'react-dom';
 import App from './App';
 
 import 'normalize.css';
-import './styles/main.scss';
-// import 'bootstrap/dist/js/bootstrap.min.js';
 
 render(
   <BrowserRouter>
