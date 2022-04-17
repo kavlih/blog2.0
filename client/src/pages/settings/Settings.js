@@ -3,14 +3,18 @@ import React, { useState, useEffect, useContext } from 'react';
 import { makeStyles } from '@mui/styles';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
-import Typography from '@mui/material/Typography';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import FormLabel from '@mui/material/FormLabel';
 import FormHelperText from '@mui/material/FormHelperText';
+import FormLabel from '@mui/material/FormLabel';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import InputBase from '@mui/material/InputBase';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 // MUI Icons
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import { UserContext } from '../../context/UserContext';
 import { accountHelper } from '../../helpers';
@@ -19,11 +23,47 @@ const useStyles = makeStyles(( theme ) => ({
   box: {
     display: 'flex', 
     flexDirection: 'column', 
-    alignItems: 'center', 
     gap: '20px',
-    
-    padding: '15px',
-    border: '1px solid',
+    padding: '20px',
+    borderRadius: theme.shape.borderRadius,
+    border: `1px solid ${theme.palette.secondary.main}`,
+    backgroundColor: theme.palette.secondary.dark,
+
+    '& .MuiInputBase-root': {
+      backgroundColor: theme.palette.primary.dark,
+      borderRadius: theme.shape.borderRadius,
+      border: `1px solid ${theme.palette.secondary.main}`,
+      paddingRight: '14px',
+      '&:focus-within': {
+        border: `1px solid ${theme.palette.secondary.light}`,
+      }
+    },
+    '& .MuiInputBase-input': {
+      padding: '10px 12px',
+    },
+    '& .MuiInputAdornment-root': {
+      display: 'none'
+    },
+    '& .MuiInputBase-input:focus ~ .MuiInputAdornment-root': {
+      '&~ .MuiInputAdornment-root': {
+        display: 'flex'
+      },
+    },
+    '& .MuiTypography-root': {
+      marginBottom: '5px'
+    },
+    '& .MuiFormHelperText-root': {
+      marginLeft: 0
+    },
+    '&>button': {
+      alignSelf:'center'
+    },
+    '&>label': {
+      fontSize: theme.typography.h6.fontSize,
+      fontFamily: theme.typography.h6.fontFamily,
+      fontWeight: theme.typography.h6.fontWeight,
+      color: theme.palette.text.primary
+    }
   }
 }));
 
@@ -34,7 +74,7 @@ export default function Settings() {
   const initialValues = {
     email: [],
     username: [],
-    passwordOld: [],
+    password: [],
     passwordNew: [],
     passwordNewRepeat: [],
     delete: [],
@@ -43,13 +83,35 @@ export default function Settings() {
   const [ formErrors, setFormErrors ] = useState(initialValues);
   const [ formValues, setFormValues ] = useState(initialValues);
 
+  const [ isFocus, setIsFocus ] = useState('');
+  const [ showPassword, setShowPassword ] = useState({
+    password: false,
+    passwordNew: false,
+    passwordNewRepeat: false,
+  });
+
+
   const handleChange = (e) => {
     const {name, value} = e.target;
     setFormValues({...formValues, [name]: value}); 
   };
 
   const handleFocus = (e) => {
-    setFormErrors({...formErrors, [e.target.name]: initialValues.username});
+    const { name } = e.target;
+    setIsFocus(name);
+    setFormErrors({...formErrors, [name]: initialValues.username});
+  };
+
+  const handleBlur = () => {
+    setIsFocus('');
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword({...showPassword, [isFocus]: !showPassword[isFocus]});
+  };
+
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault();
   };
 
   const handleSubmitUsername = async (e) => {
@@ -85,70 +147,206 @@ export default function Settings() {
       setFormErrors({...formErrors, 'email': error.response.data.errors.email})
     }
   }
+  
+  const handleSubmitPassword = async (e) => {
+    e.preventDefault();
+
+    const fields = new FormData();
+    fields.append('password', formValues.password)
+    fields.append('passwordNew', formValues.passwordNew)
+    fields.append('passwordNewRepeat', formValues.passwordNewRepeat)
+
+    try {
+      await accountHelper.updatePassword(user.id, fields);
+      setFormErrors({...formErrors, 
+        'password': initialValues.password,
+        'passwordNew': initialValues.passwordNew,
+        'passwordNewRepeat': initialValues.passwordNewRepeat
+      });
+      setFormValues({...formValues, 
+        'password': initialValues.password,
+        'passwordNew': initialValues.passwordNew,
+        'passwordNewRepeat': initialValues.passwordNewRepeat
+      });
+    }
+    catch(error) {
+      setFormErrors({...formErrors, 
+        'password': error.response.data.errors.password || [],
+        'passwordNew': error.response.data.errors.passwordNew || [],
+        'passwordNewRepeat': error.response.data.errors.passwordNewRepeat || []
+      });
+    }
+  }
  
   return (
     <>
       <Container maxWidth='xs'>
-        <Box
-          component='form'
-          autoComplete="off"
-          className={classes.box}
-        >
-          <FormControl 
-            error={formErrors.username.length ? true : false}
+        <Stack spacing={4}>
+          {/* Update username form */}
+          <Box
+            component='form'
+            autoComplete="off"
+            className={classes.box}
           >
             <FormLabel>Change username</FormLabel>
-            <Typography variant='body2'>Current username: {user.username}</Typography>
-            <OutlinedInput
-              value={formValues.username}
-              name='username'
-              onChange={handleChange}
-              onFocus={handleFocus}
-              aria-describedby="input change username"
-            />
-            {formErrors.username.map((error) => (
-              <FormHelperText key={error}>{error}</FormHelperText>
-            ))}
-          </FormControl>
-          <IconButton 
-            variant='submit'
-            type='submit'
-            aria-label='submit change username'
-            onClick={handleSubmitUsername} 
-          >
-            <ArrowForwardRoundedIcon fontSize='large' />
-          </IconButton>
-        </Box>
-        <Box
-          component='form'
-          autoComplete="off"
-          className={classes.box}
-        >
-          <FormControl 
-            error={formErrors.email.length ? true : false}
+            <FormControl error={formErrors.username.length ? true : false} >
+              <Typography variant='body2'>Current username: {user.username}</Typography>
+              <InputBase
+                value={formValues.username}
+                name='username'
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                aria-describedby="username"
+              />
+              {formErrors.username.map((error) => (
+                <FormHelperText key={error}>{error}</FormHelperText>
+              ))}
+            </FormControl>
+            <IconButton 
+              variant='submit'
+              type='submit'
+              aria-label='submit username'
+              onClick={handleSubmitUsername} 
+            >
+              <ArrowForwardRoundedIcon fontSize='large' />
+            </IconButton>
+          </Box>
+          {/* Update email form */}
+          <Box
+            component='form'
+            autoComplete="off"
+            className={classes.box}
           >
             <FormLabel>Change email</FormLabel>
-            <Typography variant='body2'>Current email: {user.email}</Typography>
-            <OutlinedInput
-              value={formValues.email}
-              name='email'
-              onChange={handleChange}
-              onFocus={handleFocus}
-              aria-describedby="input change email"
-            />
-            {formErrors.email.map((error) => (
-              <FormHelperText key={error}>{error}</FormHelperText>
-            ))}
-          </FormControl>
-          <IconButton 
-            variant='submit'
-            type='submit'
-            aria-label='submit change email'
-            onClick={handleSubmitEmail} 
+            <FormControl error={formErrors.email.length ? true : false} >
+              <Typography variant='body2'>Current email: {user.email}</Typography>
+              <InputBase
+                value={formValues.email}
+                name='email'
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                aria-describedby="email"
+              />
+              {formErrors.email.map((error) => (
+                <FormHelperText key={error}>{error}</FormHelperText>
+              ))}
+            </FormControl>
+            <IconButton 
+              variant='submit'
+              type='submit'
+              aria-label='submit email'
+              onClick={handleSubmitEmail} 
+            >
+              <ArrowForwardRoundedIcon fontSize='large' />
+            </IconButton>
+          </Box>
+          {/* Update password form */}
+          <Box
+            component='form'
+            autoComplete="off"
+            className={classes.box}
           >
-            <ArrowForwardRoundedIcon fontSize='large' />
-          </IconButton>
-        </Box>
+            <FormLabel>Change password</FormLabel>
+            {/* Input password */}
+            <FormControl error={formErrors.password.length ? true : false} >
+              <Typography variant='body2'>Current password</Typography>
+              <InputBase
+                value={formValues.password}
+                type={showPassword.password ? 'text' : 'password'}
+                name='password'
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                aria-describedby="current password"
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword.password ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+              {formErrors.password.map((error) => (
+                <FormHelperText key={error}>{error}</FormHelperText>
+              ))}
+            </FormControl>
+            {/* Input passwordNew */}
+            <FormControl 
+              error={formErrors.passwordNew.length ? true : false}
+            >
+              <Typography variant='body2'>New password</Typography>
+              <InputBase
+                value={formValues.passwordNew}
+                type={showPassword.passwordNew ? 'text' : 'password'}
+                name='passwordNew'
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                aria-describedby="new password"
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword.passwordNew ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+              {formErrors.passwordNew.map((error) => (
+                <FormHelperText key={error}>{error}</FormHelperText>
+              ))}
+            </FormControl>
+            {/* Input passwordNewRepeat */}
+            <FormControl 
+              error={formErrors.passwordNewRepeat.length ? true : false}
+            >
+              <Typography variant='body2'>New password repeat</Typography>
+              <InputBase
+                value={formValues.passwordNewRepeat}
+                type={showPassword.passwordNewRepeat ? 'text' : 'password'}
+                name='passwordNewRepeat'
+                onChange={handleChange}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                aria-describedby="new password repeat"
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword.passwordNewRepeat ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+              {formErrors.passwordNewRepeat.map((error) => (
+                <FormHelperText key={error}>{error}</FormHelperText>
+              ))}
+            </FormControl>
+            <IconButton 
+              variant='submit'
+              type='submit'
+              aria-label='submit change password'
+              onClick={handleSubmitPassword} 
+            >
+              <ArrowForwardRoundedIcon fontSize='large' />
+            </IconButton>
+          </Box>
+        </Stack>
       </Container>
     </>
   );

@@ -199,16 +199,12 @@ final class Account extends AbstractModel {
      * @return bool
      */
     function updatePassword(array &$errors, int $userId) : bool {
+        /** @var ?string $passwordNewRepeat */
+        $passwordNewRepeat = filter_input(INPUT_POST, 'passwordNewRepeat');
         /** @var ?string $passwordNew */
         $passwordNew = filter_input(INPUT_POST, 'passwordNew');
         /** @var ?string $passwordDb */
         $passwordDb = filter_input(INPUT_POST, 'password');
-
-        // Return FALSE if passwords are the same
-        if($passwordNew === $passwordDb) {
-            $errors['password'][] = 'This is already your password';
-            return FALSE;
-        }
 
         /** @var array $userData */
         $userData = $this->getUserbyId($errors, $userId);
@@ -217,9 +213,18 @@ final class Account extends AbstractModel {
         $validatePwdDb = $this->validatePwdDb($errors, $userData, $passwordDb);
         /** @var bool $validatePwd */
         $validatePwd = $this->validatePwd($errors, $passwordNew);
-
+        
         // Return FALSE if validations were not successful
         if(!$validatePwdDb || !$validatePwd) {
+            return FALSE;
+        }
+        elseif($passwordNew !== $passwordNewRepeat) {
+            $errors['passwordNewRepeat'][] = 'Passwords do not match';
+            return FALSE;
+        }  
+        // Return FALSE if passwords are the same
+        elseif($passwordNew === $passwordDb) {
+            $errors['passwordNew'][] = 'This is already your password';
             return FALSE;
         }
 
@@ -437,29 +442,29 @@ final class Account extends AbstractModel {
      */
     private function validatePwd(array &$errors, ?string $password) : bool {
         if(is_null($password) || empty($password)) {
-            $errors['password'][] = 'Please type in a password';
+            $errors['passwordNew'][] = 'Please type in a password';
         }
         else {
             if(strlen($password) < 8) {
-                $errors['password'][] = 'Password has to be at least 8 characters long';
+                $errors['passwordNew'][] = 'Password has to be at least 8 characters long';
             }
             if(preg_match('/\s/', $password)) {
-                $errors['password'][] = 'Password should not contain any whitespace.';
+                $errors['passwordNew'][] = 'Password should not contain any whitespace.';
             }
             if(!preg_match('/[a-z]/', $password)) {
-                $errors['password'][] = 'Password should contain minimum one lowercase letter.';
+                $errors['passwordNew'][] = 'Password should contain minimum one lowercase letter.';
             }
             if(!preg_match('/[A-Z]/', $password)) {
-                $errors['password'][] = 'Password should contain minimum one uppercase letter.';
+                $errors['passwordNew'][] = 'Password should contain minimum one uppercase letter.';
             }
             if(!preg_match('/\d/', $password)) {
-                $errors['password'][] = 'Password should contain minimum one number.';
+                $errors['passwordNew'][] = 'Password should contain minimum one number.';
             }
             if(!preg_match( '/\W/', $password)) {
-                $errors['password'][] = 'Password should contain minimum one special character.';
+                $errors['passwordNew'][] = 'Password should contain minimum one special character.';
             }
         }
-        return (!isset($errors['password'])); 
+        return (!isset($errors['passwordNew'])); 
     }
 
     /**
@@ -477,13 +482,13 @@ final class Account extends AbstractModel {
      */
     private function validatePwdDb(array &$errors, ?array $user_data, ?string $password) : bool {
         if(is_null($password) || empty($password)) {
-            $errors['passwordDb'][] = 'Please type in your password';
+            $errors['password'][] = 'Please type in your password';
         }
         elseif(!$this->comparePasswords($user_data, $password)) {
-            $errors['passwordDb'][] = 'Password is wrong';
+            $errors['password'][] = 'Password is wrong';
         }
 
-        return !isset($errors['passwordDb']);
+        return !isset($errors['password']);
     }
 
     /**

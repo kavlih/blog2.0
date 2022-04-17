@@ -62,8 +62,7 @@ theme = createTheme(theme, {
     },
     h5: undefined,
     h6: {
-      fontFamily: 'Roboto Mono',
-      fontWeight: 400,
+      fontWeight: 500,
     },
     subtitle1: undefined,
     subtitle2: undefined,
