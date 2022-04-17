@@ -11,11 +11,24 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import { userHelper } from '../../helpers';
 import UserList from '../../components/user/UserList';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles(( theme ) => ({
+  formControl: {
+    display: 'flex', 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    border: `1px solid ${theme.palette.secondary.main}`,
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: 'transparent',
+  }
+}))
 
 const Users = () => {
   const [ inputValue, setInputValue ] = useState('');
   const [ searchResult, setSearchResult ] = useState([]);
   const [ isSubmit, setIsSubmit ] = useState(false);
+  const classes = useStyles(makeStyles);
 
   const handleChange = (e) => {
     const {value} = e.target;
@@ -47,7 +60,7 @@ const Users = () => {
             flexDirection: 'column', 
           }}
         >
-          <FormControl>
+          <FormControl className={classes.formControl}>
             <InputBase
               value={inputValue}
               onChange={handleChange}
@@ -65,7 +78,7 @@ const Users = () => {
             </IconButton>
           </FormControl>
         </Box>
-        {isSubmit && searchResult && <Typography variant='h6' textAlign='center' mb={2}>{searchResult.length} {searchResult.length > 1 ? 'users' : 'user'} found</Typography>}
+        {isSubmit && searchResult && <Typography variant='h6' textAlign='center' mb={2}>{searchResult.length} user{searchResult.length > 1 ? 's' : ''} found</Typography>}
         <Box component='section'>
           <UserList users={searchResult} itemWidth={12} />
         </Box>

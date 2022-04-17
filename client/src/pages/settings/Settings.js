@@ -2,56 +2,105 @@ import React, { useState, useEffect, useContext } from 'react';
 // MUI Components
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
+import FormControl from '@mui/material/FormControl';
+import InputBase from '@mui/material/InputBase';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import Input from '@mui/material/Input';
+import FormLabel from '@mui/material/FormLabel';
+
+import InputAdornment from '@mui/material/InputAdornment';
+
+import FormHelperText from '@mui/material/FormHelperText';
+// MUI Icons
+import SearchIcon from '@mui/icons-material/Search';
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 
 import { UserContext } from '../../context/UserContext';
 import { accountHelper } from '../../helpers';
 
 export default function Settings() {
-  const { user } = useContext(UserContext)
+  const { user, setUser } = useContext(UserContext)
 
-  const [formValues, setFormValues] = useState({
-    username: ''
-  });
+  const initialValues = {
+    email: [],
+    username: [],
+    password: {
+      old: '',
+      new: '',
+      newRepeat: '',
+    },
+    delete: [],
+  }
+
+  const [ formErrors, setFormErrors ] = useState(initialValues);
+  const [ formValues, setFormValues ] = useState(initialValues);
 
   const handleChange = (e) => {
     const {name, value} = e.target;
     setFormValues({...formValues, [name]: value}); 
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmitUsername = async (e) => {
     e.preventDefault();
 
     const fields = new FormData();
-    fields.append('userId', 1)
-    
-    try {
-      const res = await accountHelper.updateIdenticon(fields);
-      // localStorage.setItem('user', JSON.stringify(res.data.user));
-      console.log(res.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    fields.append('username', formValues.username);
 
+    try {
+      await accountHelper.updateUsername(user.id, fields);
+      setUser({...user, 'username': formValues.username});
+      setFormErrors({...formErrors, 'username': initialValues.username});
+      setFormValues({...formValues, 'username': initialValues.username});
+    }
+    catch(error) {
+      setFormErrors({...formErrors, 'username': error.response.data.errors.username})
+    }
+  }
+ 
   return (
     <>
-      <Box
+      <Container maxWidth='xs'>
+        <Box
           component='form'
-          sx={{
-            '& .MuiTextField-root': { m: 1, width: '25ch' },
+          autoComplete="off"
+          mb={6}
+          sx={{ 
+            display: 'flex', 
+            gap: '20px',
+            flexDirection: 'column', 
+            padding: '15px',
+            border: '1px solid'
           }}
-          noValidate
-          autoComplete='off'
         >
-          <TextField
-            error={false}
-            id='outlined-error-helper-text'
-            // label='Error'
-            // defaultValue='Hello World'
-            // helperText='Incorrect entry.'
-          />
+          <FormControl 
+            error={formErrors.username.length ? true : false}
+          >
+            <FormLabel>Change username</FormLabel>
+            <Typography variant='body2'>Current username: {user.username}</Typography>
+            <OutlinedInput
+              value={formValues.username}
+              name='username'
+              onChange={handleChange}
+              aria-describedby="input change username"
+            />
+            {formErrors.username.map((error) => (
+              <FormHelperText key={error}>{error}</FormHelperText>
+            ))}
+          </FormControl>
+          <IconButton 
+            variant='submit'
+            type='submit'
+            aria-label='submit change username'
+            onClick={handleSubmitUsername} 
+          >
+            <ArrowForwardRoundedIcon fontSize='large' />
+          </IconButton>
         </Box>
+      </Container>
     </>
   );
 }

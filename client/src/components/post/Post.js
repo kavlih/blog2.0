@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
@@ -14,7 +15,6 @@ import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import { UserContext } from '../../context/UserContext';
 import { identiconService } from '../../services';
 import PostActions from './PostActions';
-import PostButton from './PostButton';
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -117,7 +117,8 @@ const Post = ({ post, setIsSubmit }) => {
             {/* Header start */}
             <Stack direction='row' alignItems='center' spacing={2} >
               {/* Username */}
-              <PostButton
+              <Button
+                variant='post'
                 aria-label='user'
                 onClick={handleClick}
                 size='small'
@@ -125,7 +126,7 @@ const Post = ({ post, setIsSubmit }) => {
                 startIcon={<CircleOutlinedIcon />}
               >
                 {post.username}
-              </PostButton>
+              </Button>
               {/* Date */}
               <Typography variant='body2' fontSize='small' >
                 {date}

@@ -126,9 +126,7 @@ const Login = () => {
           <p className='m-form-footer text-center'><small><Link to='/'>Forgot your password?</Link></small></p>
         </div>
       </div>
-      <button type='submit' className='btn m-btn m-btn-green' name='submit' disabled={isSubmitDisabled}>
-        {/* <FontAwesomeIcon icon={faArrowRight} />           */}
-      </button>
+      <button type='submit' className='btn m-btn m-btn-green' name='submit' disabled={isSubmitDisabled} style={{width: '30px', height: '30px'}}></button>
     </form>
   </>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Router from './components/routing/Router';
 import { UserContext } from './context/UserContext';
@@ -13,6 +13,11 @@ const App = () => {
   const [ isUpdatedPost, setIsUpdatedPost ] = useState(1);
   const [ isUpdatedUser, setIsUpdatedUser ] = useState(1);
   const [light, setLight] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('user', JSON.stringify(user));
+  }, [user])
+  
 
   return (
     <ThemeProvider theme={light ? theme : theme}>

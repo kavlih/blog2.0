@@ -42,15 +42,6 @@ const useStyles = makeStyles(( theme ) => ({
     '&:focus::placeholder': {
       color: 'transparent',
     }
-  },
-  btnCreate: {
-    color: theme.palette.primary.dark,
-    backgroundColor: theme.palette.success.main,
-    padding: '4px',
-    '&:hover': {
-      color: theme.palette.primary.dark,
-      backgroundColor: theme.palette.success.dark,
-    }
   }
 }));
 
@@ -113,10 +104,10 @@ const PostForm = () => {
       </Typography>}
       {/* Submit button */}
       <IconButton 
+        variant='submit'
         type='submit'
         aria-label='create post'
         onClick={handleSubmit} 
-        className={classes.btnCreate}
       >
         <ArrowForwardRoundedIcon fontSize='large' />
       </IconButton>

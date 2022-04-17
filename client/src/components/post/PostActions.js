@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 // MUI Components
+import Button from '@mui/material/Button';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Grow from '@mui/material/Grow';
 import IconButton from '@mui/material/IconButton';
@@ -17,7 +18,6 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { UserContext } from '../../context/UserContext';
 import { SubmitContext } from '../../context/SubmitContext';
 import { postHelper } from '../../helpers';
-import PostButton from './PostButton';
 
 const LikeButton = ({ post }) => {  
   const { user } = useContext(UserContext);
@@ -43,7 +43,8 @@ const LikeButton = ({ post }) => {
   };
 
   return(
-    <PostButton 
+    <Button 
+      variant='post'
       aria-label='like'
       onClick={toggleLike}
       size='small'
@@ -57,7 +58,7 @@ const LikeButton = ({ post }) => {
       }}
     >
       {post.likes.length > 0 && post.likes.length}
-    </PostButton>
+    </Button>
   );
 }
 

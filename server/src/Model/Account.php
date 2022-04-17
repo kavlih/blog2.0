@@ -253,7 +253,7 @@ final class Account extends AbstractModel {
         /** @var ?string $username */
         $username = filter_input(INPUT_POST, 'username');
 
-        if($this->validateUsername($errors, $username)) {
+        if(!$this->validateUsername($errors, $username)) {
             return FALSE;
         }
         
@@ -515,7 +515,7 @@ final class Account extends AbstractModel {
             if(preg_match('/[^a-z0-9äüöß]/i', $username)) {
                 $errors['username'][] = 'Use only letters or numbers';
             }
-            if($this->getUserbyUsername($unset, $username)) {
+            if($this->getUserbyUsername($errors, $username)) {
                 $errors['username'][] = 'Username already exists';
             }
         }

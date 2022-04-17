@@ -122,19 +122,29 @@ theme = createTheme(theme, {
             color: theme.palette.secondary.light,
           }
         }
-      }
+      },
+      variants: [
+        {
+          props: { variant: 'post' },
+          style: {
+            border: 'none',
+            fontSize: 'small',
+            padding: 0,
+            minWidth: 'unset',
+            '& .MuiButton-startIcon': {
+              marginRight: '4px'
+            },
+            '& .MuiButton-endIcon': {
+              marginLeft: '2px'
+            },
+          },
+        }
+      ],
     },
     MuiFormControl: {
       styleOverrides: {
         root: {
           width: '100%',
-          display: 'flex', 
-          flexDirection: 'row', 
-          alignItems: 'center', 
-          backgroundColor: 'transparent',
-          border: `1px solid ${theme.palette.secondary.main}`,
-          borderRadius: theme.shape.borderRadius,
-
           '& input::placeholder': {
             fontFamily: 'Roboto Mono',
             color: theme.palette.text.secondary,
@@ -154,7 +164,23 @@ theme = createTheme(theme, {
         root: {
           color: theme.palette.secondary.light
         }
-      }
+      },
+      variants: [
+        {
+          props: { variant: 'submit' },
+          style: {
+            width: '40px',
+            height: '40px',
+            color: theme.palette.primary.dark,
+            backgroundColor: theme.palette.success.main,
+            padding: '4px',
+            '&:hover': {
+              color: theme.palette.primary.dark,
+              backgroundColor: theme.palette.success.dark,
+            },
+          },
+        },
+      ],
     },
     MuiLink: {
       defaultProps: {

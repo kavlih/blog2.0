@@ -12,8 +12,8 @@ const register = (data) => {
   return axiosService.post('/account/register', data)
 }
 
-const updateUsername = (data) => {
-  return axiosService.post('/account/updateUsername', data)
+const updateUsername = (userId, data) => {
+  return axiosService.post(`/account/updateUsername/${userId}`, data)
 }
 
 const updateIdenticon = (userId) => {
