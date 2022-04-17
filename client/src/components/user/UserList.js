@@ -40,7 +40,7 @@ const EmptyList = () => {
   );
 }
 
-export default function UserList({ users }) {
+export default function UserList({ users, itemWidth=6 }) {
   return (
   <>
     {users 
@@ -49,7 +49,7 @@ export default function UserList({ users }) {
           spacing={2}
         >
           {users.map(( user ) => ( 
-            <Grid item key={user.id} xs={12} sm={6} sx={{ padding: 0 }} >
+            <Grid item key={user.id} xs={12} sm={itemWidth} sx={{ padding: 0 }} >
               <UserCard receiver={user} />
             </Grid>
           ))}

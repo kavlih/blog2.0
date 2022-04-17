@@ -19,7 +19,6 @@ const StyledCard = styled(Card)(({ theme }) => ({
   width: '100%', 
   maxWidth:{sm: '450px'}, 
   backgroundColor: '#13161B', 
-
   position: 'relative',
   display: 'flex',
   alignItems: 'center',
@@ -32,7 +31,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
     color: 'transparent',
 
     '&:hover .MuiCardHeader-title:before': {
-      content: ''>'',
+      content: "'>'",
       marginRight: '4px'
     }
   },
@@ -101,6 +100,19 @@ export default function UserCard({ receiver, isButton=true }) {
       console.log(err);
     }
   };
+
+  const [buttonValue, setButtonValue] = useState('');
+  useEffect(() => {
+    if(receiver.id === user.id){
+     setButtonValue('you');
+    }
+    else if(isFollowing) {
+     setButtonValue('unfollow');
+    }
+    else {
+     setButtonValue('follow');
+    }
+  })
   
   return (
   <>
@@ -111,23 +123,22 @@ export default function UserCard({ receiver, isButton=true }) {
         </CardActionArea>
       : <MyCardHeader receiver={receiver} />
     }
-    {receiver.id !== user.id &&
-      <CardActions>
-      <Button 
-        aria-label={isFollowing ? 'unfollow' : 'follow'}
-        onClick={handleFollow}
-        className={classes.button}
-        sx={{
-          color: isFollowing ? 'default' : 'success.main',
-          '&:hover': {
-            color: isFollowing ? 'error.main' : 'default'
-          }
-        }}
-      >
-        <span>{'>'}</span>{isFollowing ? 'unfollow' : 'follow'}
-      </Button>
-      </CardActions>
-    }
+    <CardActions>
+    <Button 
+      aria-label={isFollowing ? 'unfollow' : 'follow'}
+      onClick={handleFollow}
+      disabled={receiver.id === user.id && true}
+      className={classes.button}
+      sx={{
+        color: isFollowing ? 'default' : 'success.main',
+        '&:hover': {
+          color: isFollowing ? 'error.main' : 'default'
+        }
+      }}
+    >
+      <span>{'>'}</span>{buttonValue}
+    </Button>
+    </CardActions>
   </StyledCard>
   </>
   );

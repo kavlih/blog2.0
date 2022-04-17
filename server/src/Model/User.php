@@ -42,6 +42,30 @@ final class User extends AbstractModel {
   }
 
   /**
+   * Search user like username
+   * 
+   * @param array $result
+   * @param  string $search
+   * @return bool
+   */
+  function searchUser(array &$result, string $search) : bool {
+    /** @var string $query */
+    $query = 'SELECT u.id, u.username, i.identicon FROM users AS u
+      LEFT JOIN identicon AS i ON i.user_id = u.id 
+      WHERE u.username LIKE :search';
+
+    /** @var \PDOStatement $stmt */
+    $stmt = $this->DbHandler->prepare($query);
+    $stmt->bindValue(':search', "%$search%");
+    $stmt->execute();
+
+    /** @var array||FALSE $result */
+    $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+    return !empty($stmt->rowCount());
+  }
+
+  /**
    * Toggle follow of a user
    * 
    * @param array $errors

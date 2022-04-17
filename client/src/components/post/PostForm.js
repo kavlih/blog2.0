@@ -3,6 +3,7 @@ import React, { useState, useContext } from 'react';
 import { makeStyles } from '@mui/styles';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -23,11 +24,11 @@ const useStyles = makeStyles(( theme ) => ({
     gap: '20px'
   },
   textarea: {
-    padding: '22px 16px',
-    outline: 'none',
-    resize: 'none',
     width: '100%',
+    padding: '22px 16px',
     minHeight: '16px',
+    resize: 'none',
+    outline: 'none',
     backgroundColor: 'transparent',
     border: `1px solid ${theme.palette.secondary.dark}`,
     borderRadius: theme.shape.borderRadius,
@@ -113,6 +114,7 @@ const PostForm = () => {
       </Typography>}
       {/* Submit button */}
       <IconButton 
+        type='submit'
         aria-label='create post'
         onClick={handleSubmit} 
         className={classes.btnCreate}

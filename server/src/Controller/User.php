@@ -126,4 +126,34 @@ final class User extends AbstractController {
     }
   }
 
+  /**
+   * @GET
+   * 
+   * @param string||NULL $search
+   * @return void
+   */
+  function search(?string $search) : void {
+    /** @var array $errors */
+    $errors = [];
+    /** @var array $result */
+    $result = [];
+            
+    if(!$this->isMethod(self::METHOD_GET) || is_null($search)) 
+    {
+      $this->responseCode(400);
+      $this->printJSON(['success' => FALSE]);
+    }
+    elseif(!$this->UserModel->searchUser($result, $search)) {
+      $this->responseCode(204);
+      $this->printJSON(['success' => TRUE]);
+    }
+    else {
+      foreach($result as &$user) {
+        $this->UserModel->addFollowers($user);
+      }
+      $this->responseCode(200);
+      $this->printJSON(['success' => TRUE, 'result' => $result]);
+    }
+  }
+
 }

@@ -125,6 +125,31 @@ theme = createTheme(theme, {
         root: {
           border: '1px solid',
           color: theme.palette.secondary.main,
+          '&:disabled': {
+            color: theme.palette.secondary.main,
+          }
+        }
+      }
+    },
+    MuiFormControl: {
+      styleOverrides: {
+        root: {
+          width: '100%',
+          display: 'flex', 
+          flexDirection: 'row', 
+          alignItems: 'center', 
+          backgroundColor: 'transparent',
+          border: `1px solid ${theme.palette.secondary.dark}`,
+          borderRadius: theme.shape.borderRadius,
+
+          '& input::placeholder': {
+            fontFamily: 'Roboto Mono',
+            color: theme.palette.text.secondary,
+            opacity: '1',
+          },
+          '& input:focus::placeholder': {
+            color: 'transparent',
+          }
         }
       }
     },

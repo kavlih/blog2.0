@@ -1,70 +1,78 @@
-import * as React from 'react';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import InputBase from '@mui/material/InputBase';
-import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
+import React, { useState } from 'react';
+// MUI Components
 import { makeStyles } from '@mui/styles';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
+import Input from '@mui/material/Input';
+import InputBase from '@mui/material/InputBase';
+// MUI Icons
+import SearchIcon from '@mui/icons-material/Search';
 
-const useStyles = makeStyles(( theme ) => ({
-  textarea: {
-    // padding: '22px 16px',
-    // minHeight: '16px',
-    // resize: 'none',
-    
-    width: '100%',
-    outline: 'none',
-    backgroundColor: 'transparent',
-    border: `1px solid ${theme.palette.secondary.dark}`,
-    borderRadius: theme.shape.borderRadius,
-    color: 'white',
-    fontFamily: theme.typography.body1.fontFamily,
-    
-    '&::placeholder': {
-      fontFamily: 'Roboto Mono',
-      color: theme.palette.text.secondary,
-      opacity: '1',
-    },
-    '&:focus::placeholder': {
-      color: 'transparent',
-    }
-  }
-}));
+import { userHelper } from '../../helpers';
+import UserList from '../../components/user/UserList';
+
+// const useStyles = makeStyles(( theme ) => ({
+// }));
 
 const Users = () => {
-  const classes = useStyles();
+  // const classes = useStyles();
+
+  const [ inputValue, setInputValue ] = useState('');
+  const [ searchResult, setSearchResult ] = useState([]);
+
+  const handleChange = (e) => {
+    const {value} = e.target;
+    setInputValue(value);
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await userHelper.search(inputValue);
+      setSearchResult(res.data.result);
+      setInputValue('');
+    }
+    catch(error) {
+      // console.log(error);
+    }
+  }
 
   return (
     <>
-      <Box
-        component='form'
-        className={classes.textarea}
-        sx={{ 
-          p: '2px 4px', 
-          display: 'flex', 
-          alignItems: 'center', 
-        }}
-      >
-        <InputBase
-          inputProps={{ 
-            'aria-label': 'search user' 
+      <Container maxWidth='xs'>
+        <Box
+          component='form'
+          sx={{ 
+            display: 'flex', 
+            gap: '20px',
+            flexDirection: 'column', 
           }}
-          placeholder='Search user'
-          sx={{ ml: 1, flex: 1 }}
-        />
-        <IconButton 
-          type='submit' 
-          aria-label='search'
-          sx={{ p: '10px' }} 
         >
-          <SearchIcon />
-        </IconButton>
-      </Box>
+          <FormControl>
+            <InputBase
+              value={inputValue}
+              onChange={handleChange}
+              inputProps={{ 'aria-label': 'search user' }}
+              placeholder='Search user'
+              sx={{ ml: 1, flex: 1 }}
+            />
+            <IconButton 
+              type='submit' 
+              onClick={handleSubmit}
+              aria-label='search'
+              sx={{ p: '10px' }} 
+            >
+              <SearchIcon />
+            </IconButton>
+          </FormControl>
+        </Box>
+        <Box component='section'>
+          <UserList users={searchResult} itemWidth={12} />
+        </Box>
+      </Container>
     </>
   );
 }

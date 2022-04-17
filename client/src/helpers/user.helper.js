@@ -20,11 +20,16 @@ const isFollow = (receiverId, data) => {
   return axiosService.post(`/user/isFollow/${receiverId}`, data)
 }
 
+const search = (search) => {
+  return axiosService.get(`/user/search/${search}`)
+}
+
 
 export const userHelper = {
   follow,
   followers,
   following,
   get,
-  isFollow
+  isFollow,
+  search
 }
