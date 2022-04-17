@@ -52,7 +52,9 @@ const NavMenu = () => {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem component={Link} href='/settings'>Settings</MenuItem>
+        <MenuItem>
+          <NavLink to='/settings'>Settings</NavLink>
+        </MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </>

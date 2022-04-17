@@ -1,11 +1,11 @@
-// TODO reset password
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom'
 
+import { UserContext } from '../../context/UserContext';
 import { accountHelper } from '../../helpers';
 
 const Login = () => {
+  const { setUser } = useContext(UserContext)
   const navigate = useNavigate();
 
   const initialValues = {
@@ -53,6 +53,7 @@ const Login = () => {
     try {
       const res = await accountHelper.login(fields);
       localStorage.setItem('user', JSON.stringify(res.data.user));
+      setUser(res.data.user);
       navigate('/feed');
     } 
     catch (err) {

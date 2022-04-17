@@ -15,8 +15,8 @@ const App = () => {
   const [light, setLight] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('user', JSON.stringify(user));
-  }, [user])
+    user && localStorage.setItem('user', JSON.stringify(user));
+  }, [setUser])
   
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 // MUI Components
 import { makeStyles } from '@mui/styles';
 import Box from '@mui/material/Box';
