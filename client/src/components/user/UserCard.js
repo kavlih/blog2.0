@@ -82,8 +82,8 @@ export default function UserCard({ receiver, isButton=true }) {
 
   const [isFollowing, setIsFollowing] = useState(false);
   useEffect(() => {
-    setIsFollowing(receiver.followers.includes(user.id));
-  }, [user.id, receiver.followers]);
+    user && setIsFollowing(receiver.followers.includes(user.id));
+  }, [user, receiver.followers]);
 
   const navigate = useNavigate();  
   const handleClick = () => {
@@ -106,7 +106,7 @@ export default function UserCard({ receiver, isButton=true }) {
 
   const [buttonValue, setButtonValue] = useState('');
   useEffect(() => {
-    if(receiver.id === user.id){
+    if(user && receiver.id === user.id){
      setButtonValue('you');
     }
     else if(isFollowing) {
@@ -115,7 +115,7 @@ export default function UserCard({ receiver, isButton=true }) {
     else {
      setButtonValue('follow');
     }
-  }, [receiver.id, user.id, isFollowing])
+  }, [receiver.id, user, isFollowing])
   
   return (
     <StyledCard>
@@ -125,22 +125,24 @@ export default function UserCard({ receiver, isButton=true }) {
           </CardActionArea>
         : <MyCardHeader receiver={receiver} />
       }
-      <CardActions>
-      <Button 
-        aria-label={isFollowing ? 'unfollow' : 'follow'}
-        onClick={handleFollow}
-        disabled={receiver.id === user.id && true}
-        className={classes.button}
-        sx={{
-          color: isFollowing ? 'default' : 'success.main',
-          '&:hover': {
-            color: isFollowing ? 'error.main' : 'default'
-          }
-        }}
-      >
-        <span>{'>'}</span>{buttonValue}
-      </Button>
-      </CardActions>
+      {user &&
+        <CardActions>
+          <Button 
+            aria-label={isFollowing ? 'unfollow' : 'follow'}
+            onClick={handleFollow}
+            disabled={receiver.id === user.id && true}
+            className={classes.button}
+            sx={{
+              color: isFollowing ? 'default' : 'success.main',
+              '&:hover': {
+                color: isFollowing ? 'error.main' : 'default'
+              }
+            }}
+          >
+            <span>{'>'}</span>{buttonValue}
+          </Button>
+        </CardActions>
+      }
     </StyledCard>
   );
 };

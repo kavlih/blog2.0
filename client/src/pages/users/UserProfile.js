@@ -40,7 +40,7 @@ export default function UserProfile() {
   const navigate = useNavigate();
   const [ receiver, setReceiver ] = useState(null);
   useEffect(() => {
-    if(user.username === username) {
+    if(user && user.username === username) {
       navigate('/profile');
     }
 
@@ -56,7 +56,7 @@ export default function UserProfile() {
       .catch(console.error);;
 
     return () => isMounted = false;
-  }, [user.username, username, navigate]);
+  }, [user, username, navigate]);
 
   return (
   <>

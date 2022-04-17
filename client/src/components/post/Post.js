@@ -36,7 +36,7 @@ const Post = ({ post, setIsSubmit }) => {
 
   const navigate = useNavigate();  
   const handleClick = () => {
-    if(post.user_id === user.id) {
+    if(user && post.user_id === user.id) {
       navigate('/profile');
     }
     else {
@@ -133,7 +133,7 @@ const Post = ({ post, setIsSubmit }) => {
               </Typography>
             </Stack>
             {/* Header end */}
-            <PostActions post={post} />
+            {user && <PostActions post={post} />}
           </Stack>
           {/* Message */}
           <Typography variant='body1' >
