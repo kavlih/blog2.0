@@ -44,23 +44,17 @@ let theme = createTheme({
 
 theme = createTheme(theme, {
   typography: {
-    h1: {
-      fontFamily: 'Roboto Mono',
-      fontWeight: 400,
-    },
-    h2: {
-      fontFamily: 'Roboto Mono',
-      fontWeight: 400,
-    },
-    h3: {
-      fontFamily: 'Roboto Mono',
-      fontWeight: 400,
-    },
+    h1: undefined,
+    h2: undefined,
+    h3: undefined,
     h4: {
       fontFamily: 'Roboto Mono',
       fontWeight: 300,
+      color: theme.palette.primary.light,
     },
-    h5: undefined,
+    h5: {
+      fontWeight: 500
+    },
     h6: {
       fontWeight: 500,
     },
@@ -73,8 +67,6 @@ theme = createTheme(theme, {
     },
     button: {
       textTransform: 'none',
-      // fontSize: '0.75rem',
-      // color: theme.palette.text.secondary,
     },
     caption: undefined,
     overline: undefined,
@@ -136,6 +128,9 @@ theme = createTheme(theme, {
             '& .MuiButton-endIcon': {
               marginLeft: '2px'
             },
+            '&:hover': {
+              backgroundColor: 'transparent'
+            },
           },
         }
       ],
@@ -153,7 +148,23 @@ theme = createTheme(theme, {
             color: 'transparent',
           }
         }
-      }
+      },
+      variants: [
+        {
+          props: { variant: 'password' },
+          style: {
+            '& .MuiInputAdornment-root': {
+              display: 'none',
+              '& .MuiIconButton-root:hover': {
+                color: theme.palette.secondary.light,
+              }
+            },
+            '& .MuiInputBase-input:focus ~ .MuiInputAdornment-root': {
+              display: 'flex'
+            },
+          }
+        }
+      ]
     },
     MuiIconButton: {
       defaultProps: {
@@ -161,7 +172,10 @@ theme = createTheme(theme, {
       },
       styleOverrides: {
         root: {
-          color: theme.palette.secondary.light
+          color: theme.palette.secondary.light,
+          '&:hover': {
+            color: theme.palette.text.primary,
+          }
         }
       },
       variants: [
@@ -186,7 +200,14 @@ theme = createTheme(theme, {
         underline:'none',
         color: theme.palette.text.link
       }
-    }
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundColor: theme.palette.secondary.dark,
+        }
+      }
+    },
   }
 })
 

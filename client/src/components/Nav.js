@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-
 // MUI Components
+import { makeStyles } from '@mui/styles';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
@@ -11,9 +11,50 @@ import Stack from '@mui/material/Stack';
 // MUI Icons
 import SettingsIcon from '@mui/icons-material/Settings';
 
+import { UserContext } from '../context/UserContext';
 import { accountHelper } from '../helpers/account.helper';
 
+const useStyles = makeStyles((theme) => ({
+  nav: {
+    position: 'relative',
+    '& a': {
+      fontSize: theme.typography.h5.fontSize,
+      fontFamily: theme.typography.h5.fontFamily,
+      fontWeight: theme.typography.h5.fontWeight,
+      color: theme.palette.text.secondary,
+      textDecoration: 'none',
+      '&.active, &:hover': {
+        color: theme.palette.text.primary,
+      },
+      '&:before': {
+        content: "'>'",
+        marginRight: '4px',
+        opacity: 0
+      },
+      '&.active:before, &:hover:before': {
+        content: "'>'",
+        marginRight: '4px',
+        opacity: 1
+      }
+    },
+    '& button': {
+      position: 'absolute',
+      right: 0,
+    }
+  },
+  paper: {
+    '& .MuiMenuItem-root': {
+      '& a': {
+        color: theme.palette.text.primary,
+        textDecoration: 'none',
+      },
+      fontFamily: theme.typography.body2.fontFamily
+    }
+  }
+}))
+
 const NavMenu = () => {
+  const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -28,7 +69,8 @@ const NavMenu = () => {
   const navigate = useNavigate();  
   const handleLogout = () => {
     accountHelper.logout()
-    navigate('/account/login')
+    handleClose();
+    navigate('/account/login');
   };
 
   return (
@@ -48,13 +90,12 @@ const NavMenu = () => {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
+        className={classes.paper}
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem>
-          <NavLink to='/settings'>Settings</NavLink>
-        </MenuItem>
+        <MenuItem onClick={handleClose}><NavLink to='/settings'>Settings</NavLink></MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </>
@@ -62,18 +103,25 @@ const NavMenu = () => {
 }
 
 export default function Nav() {
-  const style = ({ isActive }) => ({
-    fontWeight: isActive ? 'bold' : 'normal',
-  });
+  const classes = useStyles();
+  const { user } = useContext(UserContext);
 
   return (
     <Container>
-      <Stack component='nav' direction='row' spacing={2} justifyContent='center'>
-        <NavLink to='/feed' style={style}>Feed</NavLink>
-        <NavLink to='/profile' style={style}>Profile</NavLink>
-        <NavLink to='/users' style={style}>Users</NavLink>
+      <Stack 
+        spacing={4} 
+        direction='row' 
+        justifyContent='center' 
+        alignItems='center' 
+        mt={6}
+        mb={10}
+        className={classes.nav}
+      >
+        <NavLink to='/feed'>Feed</NavLink>
+        <NavLink to='/profile'>Profile</NavLink>
+        <NavLink to='/users'>Users</NavLink>
+        {user && <NavMenu />}
       </Stack>
-      <NavMenu />
     </Container>
   );
 };

@@ -16,7 +16,7 @@ import Layout from '../../components/Layout';
 
 const NoRoute = () => {
   return (
-    <Typography variant='h3'>This page does not exist: 404!</Typography>
+    <Typography variant='h5'>This page does not exist: 404!</Typography>
   );
 };
 
