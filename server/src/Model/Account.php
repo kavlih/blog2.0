@@ -416,7 +416,7 @@ final class Account extends AbstractModel {
             if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $errors['email'][] = 'Email is not valid';
             }
-            else if($this->getUserbyEmail($unset, $email)) {
+            else if($this->getUserbyEmail($errors, $email)) {
                 $errors['email'][] = 'Email is already registered';
             }
         }

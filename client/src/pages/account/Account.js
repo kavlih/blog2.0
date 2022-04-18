@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
+// MUI Components
+import Container from '@mui/material/Container';
 
 import Login from './Login';
 import Register from './Register';
@@ -15,16 +17,12 @@ const Account = () => {
   });
 
   return (
-  <>
-    <div className='container-fluid h-100 d-flex'>
-      <div className='m-account col align-self-center justify-self-center'>
-        <Routes>
-          <Route path={`/login`} element={<Login />} />
-          <Route path={`/register`} element={<Register />} />
-        </Routes>
-      </div>
-    </div>
-  </>
+    <Container maxWidth='xs'>
+      <Routes>
+        <Route path={`/login`} element={<Login />} />
+        <Route path={`/register`} element={<Register />} />
+      </Routes>
+    </Container>
   );
 }
 

@@ -113,11 +113,11 @@ export default function Nav() {
         direction='row' 
         justifyContent='center' 
         alignItems='center' 
-        mt={6}
-        mb={10}
+        pt={6}
+        pb={10}
         className={classes.nav}
       >
-        <NavLink to='/feed'>Feed</NavLink>
+        <NavLink to='/feed' style={{marginLeft: '-10px'}}>Feed</NavLink>
         <NavLink to='/profile'>Profile</NavLink>
         <NavLink to='/users'>Users</NavLink>
         {user && <NavMenu />}

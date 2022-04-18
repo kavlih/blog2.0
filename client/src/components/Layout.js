@@ -7,7 +7,7 @@ const Layout = () => {
   return (
   <>
     <Nav />
-    <Container component='main' maxWidth='md'>
+    <Container component='main' maxWidth='md' sx={{ mb:20 }}>
       <Outlet />
     </Container>
   </>

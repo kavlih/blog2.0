@@ -8,8 +8,8 @@ const logout = () => {
   localStorage.clear();
 }
 
-const register = (data) => {
-  return axiosService.post('/account/register', data)
+const signUp = (data) => {
+  return axiosService.post('/account/signUp', data)
 }
 
 const updateUsername = (userId, data) => {
@@ -30,7 +30,7 @@ const updateIdenticon = (userId) => {
 
 export const accountHelper = {
   login,
-  register,
+  signUp,
   logout,
   updateUsername,
   updateEmail,

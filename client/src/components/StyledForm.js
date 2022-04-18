@@ -31,6 +31,11 @@ const StyledForm = styled(Box)(({ theme }) => ({
       color: theme.palette.text.primary
     },
     
+    '& a': {
+      color: theme.palette.text.link, 
+      textDecoration: 'none'
+    },
+    
   },
 
   '& .MuiInputBase-root': {

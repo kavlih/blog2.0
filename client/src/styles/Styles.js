@@ -68,7 +68,10 @@ theme = createTheme(theme, {
     button: {
       textTransform: 'none',
     },
-    caption: undefined,
+    caption: {
+      fontSize: '0.9rem',
+      color: theme.palette.text.secondary,
+    },
     overline: undefined,
   },
   shape: {
