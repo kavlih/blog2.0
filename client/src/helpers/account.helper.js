@@ -8,10 +8,6 @@ const login = (data) => {
   return axiosService.post('/account/login', data)
 }
 
-const logout = () => {
-  localStorage.clear();
-}
-
 const resetIdenticon = (userId) => {
   return axiosService.put(`/account/resetIdenticon/${userId}`)
 }
@@ -39,7 +35,6 @@ const updateIdenticon = (userId) => {
 export const accountHelper = {
   deleteUser,
   login,
-  logout,
   resetIdenticon,
   signUp,
   updateUsername,

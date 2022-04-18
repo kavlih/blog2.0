@@ -79,22 +79,19 @@ const PostForm = () => {
     }
   }
 
+  // validates messageValue on change
   useEffect(() => {
     setFormErrors([])
-    let errors = ''
+    let valid = false;
 
-    if (!messageValue) {
-      errors = 'Message is empty';
-    }
-    else if (messageValue.length < MESSAGE_MINLENGTH) {
-      errors = 'Message is too short';
+    if (messageValue.length >= MESSAGE_MINLENGTH && messageValue.length <= MESSAGE_MAXLENGTH) {
+      valid = true;
     }
     else if (messageValue.length > MESSAGE_MAXLENGTH) {
-      errors = 'Message is too long';
-      setFormErrors([errors])
+      setFormErrors(['Message is too long'])
     }
 
-    setIsValid(!errors);
+    setIsValid(valid);
 
   }, [messageValue])
 

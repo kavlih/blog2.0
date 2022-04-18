@@ -11,7 +11,6 @@ import Stack from '@mui/material/Stack';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import { UserContext } from '../context/UserContext';
-import { accountHelper } from '../helpers/account.helper';
 
 const useStyles = makeStyles((theme) => ({
   nav: {
@@ -67,7 +66,7 @@ const NavMenu = () => {
 
   const navigate = useNavigate();  
   const handleLogout = () => {
-    accountHelper.logout()
+    localStorage.clear();
     handleClose();
     navigate('/account/login');
   };
@@ -101,7 +100,7 @@ const NavMenu = () => {
   );
 }
 
-export default function Nav() {
+const Nav = () => {
   const classes = useStyles();
   const { user } = useContext(UserContext);
 
@@ -124,3 +123,5 @@ export default function Nav() {
     </Container>
   );
 };
+
+export default Nav;

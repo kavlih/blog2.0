@@ -3,8 +3,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-import Typography from '@mui/material/Typography';
-
 import PrivateRoute from './PrivateRoute';
 import Account from '../../pages/account/Account';
 import Feed from '../../pages/feed/Feed';
@@ -13,14 +11,9 @@ import Settings from '../../pages/settings/Settings';
 import Users from '../../pages/users/Users';
 import UserProfile from '../../pages/users/UserProfile';
 import Layout from '../../components/Layout';
+import NoContent from '../../components/NoContent';
 
-const NoRoute = () => {
-  return (
-    <Typography variant='h5'>This page does not exist: 404!</Typography>
-  );
-};
-
-export default function Router() {
+const Router = () => {
   return (
     <Routes>
       <Route element={<Layout />}>
@@ -34,7 +27,9 @@ export default function Router() {
         <Route path='users/:username' element={<UserProfile />} />
         <Route path='account/*' element={<Account />} />
       </Route>
-      <Route path='*' element={<NoRoute />} />
+      <Route path='*' element={<NoContent headline='This page does not exist: 404!' />} />
     </Routes>
   );
 };
+
+export default Router;

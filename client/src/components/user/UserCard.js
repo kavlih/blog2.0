@@ -55,12 +55,11 @@ const MyCardHeader = ({ receiver }) => {
         />
       }
       title={receiver.username}
-      // subheader=''
     />
   );
 };
 
-export default function UserCard({ receiver, isButton=true }) {
+const UserCard = ({ receiver, isButton=true }) => {
   const { user } = useContext(UserContext);
   const { isUpdatedUser, setIsUpdatedUser } = useContext(SubmitContext);
 
@@ -129,3 +128,5 @@ export default function UserCard({ receiver, isButton=true }) {
     </StyledCard>
   );
 };
+
+export default UserCard;

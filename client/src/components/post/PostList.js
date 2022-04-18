@@ -2,47 +2,12 @@ import React from 'react';
 // MUI Components
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import SvgIcon from '@mui/material/SvgIcon';
 
 import Post from './Post';
-import { ReactComponent as SnoopySleep } from '../../assets/graphics/SnoopySleep.svg';
+import NoContent from '../NoContent';
 
-const Graphic = (props) => {
-  return (
-    <SvgIcon {...props}>
-      <SnoopySleep />
-    </SvgIcon>
-  );
-}
-
-const EmptyList = () => {
-  return (
-    <Stack
-      alignItems='center'
-      alignSelf='center'
-      margin='auto'
-      sx={{
-        width: '100%',
-        maxWidth: '300px',
-      }}
-    >
-      <Graphic 
-        sx={{
-          width: '50%',
-          height: '100%',
-          color: 'primary.light'
-        }}  
-      />
-      <Typography variant='h4'>
-        No Content
-      </Typography>
-    </Stack>
-  );
-}
-
-export default function PostList({ posts }) {
+const PostList = ({ posts }) => {
   return (
   <>
     {posts 
@@ -57,7 +22,9 @@ export default function PostList({ posts }) {
             </ListItem>
           ))}
         </Stack>
-      : <EmptyList />}
+      : <NoContent headline='No Posts' />}
   </>
   );
 }
+
+export default PostList;

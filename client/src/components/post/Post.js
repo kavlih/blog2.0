@@ -34,6 +34,7 @@ const Post = ({ post, setIsSubmit }) => {
   const { user } = useContext(UserContext);
   const classes = useStyles();
 
+  // handle username navigation
   const navigate = useNavigate();  
   const handleClick = () => {
     if(user && post.user_id === user.id) {
@@ -44,6 +45,7 @@ const Post = ({ post, setIsSubmit }) => {
     }
   };
 
+  // format timestamp
   const [date, setDate] = useState('');
   useEffect(() => {
     const currentTime = Math.floor(Date.now() / 1000);

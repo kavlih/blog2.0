@@ -23,11 +23,13 @@ const LikeButton = ({ post }) => {
   const { user } = useContext(UserContext);
   const { isUpdatedPost, setIsUpdatedPost } = useContext(SubmitContext);
 
+  // set if posts is liked
   const [isLiked, setIsLiked] = useState(false);
   useEffect(() => {
     setIsLiked(post.likes.includes(user.id));
   }, [user.id, post.likes]);
 
+  // toggle like
   const toggleLike = async () => {
     const fields = new FormData();
     fields.append('userId', user.id)
@@ -37,8 +39,8 @@ const LikeButton = ({ post }) => {
       setIsLiked(!isLiked);
       setIsUpdatedPost(!isUpdatedPost);
     }
-    catch(err) {
-      // console.log(err.response.data.errors);
+    catch(error) {
+      console.log(error);
     }
   };
 
@@ -66,7 +68,7 @@ const MoreButton = ({ post }) => {
   const { user } = useContext(UserContext);
   const { isUpdatedPost, setIsUpdatedPost } = useContext(SubmitContext);
 
-  // Popper
+  // popper
   const [open, setOpen] = useState(false);
   const anchorRef = useRef(null);
 
@@ -99,14 +101,14 @@ const MoreButton = ({ post }) => {
     prevOpen.current = open;
   }, [open]);
   
-  // Delete post
+  // handle delete post
   const handleDelete = async () => {
     try {
       await postHelper.deletePost(post.id);
       setIsUpdatedPost(!isUpdatedPost);
     }
-    catch(err) {
-      // console.log(err.response.data.errors);
+    catch(error) {
+      console.log(error);
     }
   };
 
@@ -166,11 +168,13 @@ const MoreButton = ({ post }) => {
   );
 }
 
-export default function PostActions ({ post, setIsSubmit }) {
+const PostActions = ({ post }) => {
   return (
-    <Stack direction='row' spacing={1} sx={{ mr: '-5px' }} >
+    <Stack direction='row' spacing={1} sx={{ mr:'-5px' }} >
       <LikeButton post={post} />
       <MoreButton post={post} />      
     </Stack>
   );
 }
+
+export default PostActions;
