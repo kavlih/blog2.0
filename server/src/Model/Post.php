@@ -101,7 +101,7 @@ final class Post extends AbstractModel {
       */
      function getAllFeed(array &$result, int $userId) : bool {
           /** @var string $query */
-          $query = 'SELECT p.id, p.message, p.timestamp, p.user_id, u.username, i.identicon
+          $query = 'SELECT DISTINCT p.id, p.message, p.timestamp, p.user_id, u.username, i.identicon
           FROM followers AS f
           INNER JOIN posts AS p ON f.receiver_id = p.user_id 
           INNER JOIN users AS u ON p.user_id = u.id
@@ -135,7 +135,7 @@ final class Post extends AbstractModel {
       */
       function getAllLiked(array &$result, int $userId) : bool {
           /** @var string $query */
-          $query = 'SELECT p.id, p.message, p.timestamp, p.user_id, u.username, i.identicon
+          $query = 'SELECT DISTINCT p.id, p.message, p.timestamp, p.user_id, u.username, i.identicon
           FROM likes AS l
           INNER JOIN posts AS p ON p.id = l.post_id
           INNER JOIN users AS u ON u.id = p.user_id
@@ -170,7 +170,7 @@ final class Post extends AbstractModel {
       */
      function getAllUser(array &$errors, array &$result, int $userId) : bool {
           /** @var string $query */
-          $query = 'SELECT p.id, p.message, p.timestamp, p.user_id, u.username, i.identicon
+          $query = 'SELECT DISTINCT p.id, p.message, p.timestamp, p.user_id, u.username, i.identicon
                FROM posts AS p
                INNER JOIN users AS u ON p.user_id = u.id
                INNER JOIN identicon AS i ON u.id = i.user_id
