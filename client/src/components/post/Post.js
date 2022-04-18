@@ -7,14 +7,18 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+// import CardMedia from '@mui/material/CardMedia';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 // MUI Icons
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 
 import { UserContext } from '../../context/UserContext';
+import { postHelper } from '../../helpers';
 import { identiconService } from '../../services';
 import PostActions from './PostActions';
+
+const REGEX_YTLINK = /(?:https?:\/\/)?(?:www\.)?youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[-a-zA-Z0-9_]{11,}(?!\S))\/)|(?:\S*v=|v\/)))([-a-zA-Z0-9_]{11,})/g;
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -45,6 +49,35 @@ const Post = ({ post }) => {
     }
   };
 
+  // get youtube data
+  // not implementeed yet
+  // const [media, setMedia] = useState([]);
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   const matches = post.message.matchAll(REGEX_YTLINK);
+
+  //   for (const match of matches) {
+  //     const videoUrl = match[0];
+  //     const videoId = match[1];
+
+  //     const fetch = async () => {
+  //       const res = await postHelper.getYtData(match[1]);
+  //       let data = {
+  //         id: videoId,
+  //         url: videoUrl,
+  //         title: res.snippets.data.items[0].snippet.title,
+  //         thumbnail: res.snippets.data.items[0].snippet.thumbnails.default.url,
+  //         duration: res.details.data.items[0].contentDetails.duration,
+  //       };
+  //       setMedia([...media, data]);
+  //     };
+  //     fetch()
+  //       .catch(console.error);
+  //   }
+      
+  //   return () => isMounted = false;
+  // }, [post])
+  
   // format timestamp
   const [date, setDate] = useState('');
   useEffect(() => {
@@ -142,12 +175,14 @@ const Post = ({ post }) => {
             {post.message}
           </Typography>
         </CardContent>
-        {/* <CardMedia
-          component='img'
-          height='100%'
-          image='/static/images/cards/paella.jpg'
-          alt=''
-        /> */}
+        {/* {media.length > 0 && media.map(( video ) => (
+          <CardMedia
+            component='img'
+            height='100%'
+            image={video.thumbnail}
+            alt=''
+          />
+        ))} */}
       </Card>
     </Box>
   </>
