@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 // MUI Components
 import { makeStyles } from '@mui/styles';
 import Avatar from '@mui/material/Avatar';
@@ -14,6 +14,9 @@ import { UserContext } from '../../context/UserContext';
 import { SubmitContext } from '../../context/SubmitContext';
 import { identiconService } from '../../services';
 import { postHelper } from '../../helpers';
+
+const MESSAGE_MINLENGTH = 15;
+const MESSAGE_MAXLENGTH = 400;
 
 const useStyles = makeStyles(( theme ) => ({
   box: {
@@ -52,6 +55,7 @@ const PostForm = () => {
 
   const [ messageValue, setMessageValue ] = useState('');
   const [ formErrors, setFormErrors ] = useState([]);
+  const [ isValid, setIsValid ] = useState(false);
 
   const handleChange = (e) => {
     const {value} = e.target;
@@ -74,6 +78,25 @@ const PostForm = () => {
       setFormErrors(err.response.data.errors);
     }
   }
+
+  useEffect(() => {
+    setFormErrors([])
+    let errors = ''
+
+    if (!messageValue) {
+      errors = 'Message is empty';
+    }
+    else if (messageValue.length < MESSAGE_MINLENGTH) {
+      errors = 'Message is too short';
+    }
+    else if (messageValue.length > MESSAGE_MAXLENGTH) {
+      errors = 'Message is too long';
+      setFormErrors([errors])
+    }
+
+    setIsValid(!errors);
+
+  }, [messageValue])
 
   return (
   <>
@@ -108,6 +131,7 @@ const PostForm = () => {
         type='submit'
         aria-label='create post'
         onClick={handleSubmit} 
+        disabled={!isValid}
       >
         <ArrowForwardRoundedIcon fontSize='large' />
       </IconButton>

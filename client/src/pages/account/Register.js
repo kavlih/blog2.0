@@ -62,7 +62,7 @@ const Register = () => {
   const [ formValues, setFormValues ] = useState(initialValues);
   const [ formErrors, setFormErrors ] = useState(initialValues);
   const [ stateVal, setStateVal ] = useState(initialValues);
-  const [ isFocus, setIsFocus ] = useState({ username: false, email: false, password: false });
+  const [ isFocus, setIsFocus ] = useState('');
 
   const [ tooltipPwd, setTooltipPwd ] = useState({
     length:   false,
@@ -89,13 +89,12 @@ const Register = () => {
   };
   // Sets isFocus of target to false
   const handleBlur = (e) => {
-    setIsFocus({[e.target.name]: false});
+    setIsFocus('');
   };
   
   // Sets isFocus of target to true
   const handleFocus = (e) => {
-    const { name } = e.target;
-    setIsFocus({[name]: true});
+    setIsFocus(e.target.name);
   };
 
   const handleMouseDownPassword = (e) => {
@@ -228,7 +227,7 @@ const Register = () => {
           {/* <Tooltip fieldName='username' message={
             <p className='mb-0'>use 3-16 characters &<br />only letters or numbers</p>} 
           /> */}
-          {formErrors.username && !isFocus.username && <FormHelperText>{formErrors.username}</FormHelperText>}
+          {formErrors.username && isFocus !== 'username' && <FormHelperText>{formErrors.username}</FormHelperText>}
         </FormControl>
         {/* Input email */}
         <FormControl error={formErrors.email ? true : false} >
@@ -243,7 +242,7 @@ const Register = () => {
             aria-describedby="email"
             required
           />
-          {formErrors.email && !isFocus.email && <FormHelperText>{formErrors.email}</FormHelperText>}
+          {formErrors.email && isFocus !== 'email' && <FormHelperText>{formErrors.email}</FormHelperText>}
         </FormControl>
         {/* Input password */}
         <FormControl variant='password' error={formErrors.password ? true : false} >
@@ -280,7 +279,7 @@ const Register = () => {
               }
             />
           </StyledTooltip>
-          {formErrors.password && !isFocus.password && <FormHelperText>{formErrors.password}</FormHelperText>}
+          {formErrors.password && isFocus !== 'password' && <FormHelperText>{formErrors.password}</FormHelperText>}
           {/* {submitErrors && <FormHelperText>{submitErrors}</FormHelperText>} */}
         </FormControl>
         <Typography 
@@ -302,6 +301,7 @@ const Register = () => {
         aria-label='submit change password'
         onClick={handleSubmit} 
         disabled={isSubmitDisabled}
+        sx={{ display: isFocus !== '' ? 'flex' : 'none' }}
       >
         <ArrowForwardRoundedIcon fontSize='large' />
       </IconButton>
