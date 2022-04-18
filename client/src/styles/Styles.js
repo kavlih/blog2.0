@@ -110,6 +110,7 @@ theme = createTheme(theme, {
       },
       styleOverrides: {
         root: {
+          minWidth: '95px',
           border: '1px solid',
           color: theme.palette.secondary.light,
           '&:disabled': {

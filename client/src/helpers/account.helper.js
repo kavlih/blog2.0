@@ -1,5 +1,9 @@
 import { axiosService } from '../services';
 
+const deleteUser = (userId, data) => {
+  return axiosService.post(`/account/delete/${userId}`, data)
+}
+
 const login = (data) => {
   return axiosService.post('/account/login', data)
 }
@@ -33,6 +37,7 @@ const updateIdenticon = (userId) => {
 }
 
 export const accountHelper = {
+  deleteUser,
   login,
   logout,
   resetIdenticon,

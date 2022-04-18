@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom'
 // MUI Components
 import { makeStyles } from '@mui/styles';
 import Avatar from '@mui/material/Avatar';
@@ -39,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Settings() {
   const { user, setUser } = useContext(UserContext);
   const classes = useStyles(makeStyles);
+  const navigate = useNavigate();
 
   const initialValues = {
     email: [],
@@ -57,6 +59,7 @@ export default function Settings() {
     password: false,
     passwordNew: false,
     passwordNewRepeat: false,
+    delete: false,
   });
 
   const handleReroll = async () => {
@@ -166,6 +169,24 @@ export default function Settings() {
       });
     }
   }
+
+  const handleSubmitDelete = async (e) => {
+    e.preventDefault();
+
+    const fields = new FormData();
+    fields.append('password', formValues.delete);
+
+    try {
+      await accountHelper.deleteUser(user.id, fields);
+      localStorage.clear();
+      setUser(null);
+      navigate('/account/login');
+    }
+    catch(error) {
+      setFormErrors({...formErrors, 'delete': error.response.data.errors.password})
+      console.log(error.response.data.errors);
+    }
+  }
  
   return (
     <>
@@ -183,10 +204,7 @@ export default function Settings() {
             </Button>
           </Stack>
           {/* Update username form */}
-          <StyledForm
-            component='form'
-            autoComplete="off"
-          >
+          <StyledForm component='form' autoComplete="off" >
             <Card>
               <FormLabel>Change username</FormLabel>
               <FormControl error={formErrors.username.length ? true : false} >
@@ -214,10 +232,7 @@ export default function Settings() {
             </IconButton>
           </StyledForm>
           {/* Update email form */}
-          <StyledForm
-            component='form'
-            autoComplete="off"
-          >
+          <StyledForm component='form' autoComplete="off" >
             <Card>
               <FormLabel>Change email</FormLabel>
               <FormControl error={formErrors.email.length ? true : false} >
@@ -245,10 +260,7 @@ export default function Settings() {
             </IconButton>
           </StyledForm>
           {/* Update password form */}
-          <StyledForm
-            component='form'
-            autoComplete="off"
-          >
+          <StyledForm component='form' autoComplete="off" >
             <Card>
               <FormLabel>Change password</FormLabel>
               {/* Input password */}
@@ -344,6 +356,55 @@ export default function Settings() {
             >
               <ArrowForwardRoundedIcon fontSize='large' />
             </IconButton>
+          </StyledForm>
+          {/* Delete account */}
+          <StyledForm component='form' autoComplete="off" >
+            <Card>
+              <Stack>
+              <FormLabel>Delete Account</FormLabel>
+              <Typography variant='body2' sx={{ color:'error.main' }}>You can't undo this action!</Typography>
+              </Stack>
+              {/* Input password */}
+              <FormControl variant='password' error={formErrors.delete.length ? true : false}>
+                <Typography variant='body2'>Type in your password</Typography>
+                <InputBase
+                  value={formValues.delete}
+                  type={showPassword.delete ? 'text' : 'password'}
+                  name='delete'
+                  onChange={handleChange}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  aria-describedby="password"
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword.password ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                />
+                {formErrors.delete && <FormHelperText>{formErrors.delete}</FormHelperText>}
+              </FormControl>
+              <Button 
+                type='submit'
+                aria-label='submit delete account'
+                onClick={handleSubmitDelete} 
+                sx={{ 
+                  color: 'error.main', 
+                  '&:hover:before': {
+                    content: "'>'",
+                    marginRight: '4px'
+                  }
+                }}
+              >
+                Do it
+              </Button>
+            </Card>
           </StyledForm>
         </Stack>
       </Container>

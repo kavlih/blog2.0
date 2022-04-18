@@ -205,17 +205,26 @@ const Register = () => {
         {/* Input username */}
         <FormControl error={formErrors.username ? true : false} >
           <Typography variant='body2'>Username</Typography>
-          <InputBase
-            value={formValues.username}
-            name='username'
-            onChange={handleChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            aria-describedby="username"
-            autoFocus={true}
-            autoComplete='off'
-            required
-          />
+          <StyledTooltip
+            title={
+              <ul>
+                <li>• Use 3-16 characters</li>
+                <li>• Only letters or numbers</li>
+              </ul>
+            }
+          >
+            <InputBase
+              value={formValues.username}
+              name='username'
+              onChange={handleChange}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              aria-describedby="username"
+              autoFocus={true}
+              autoComplete='off'
+              required
+            />
+          </StyledTooltip>
           {/* <Tooltip fieldName='username' message={
             <p className='mb-0'>use 3-16 characters &<br />only letters or numbers</p>} 
           /> */}

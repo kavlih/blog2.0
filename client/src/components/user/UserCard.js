@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 // MUI Components
 import { styled } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -32,26 +31,12 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
   '& .MuiCardActionArea-root': {
     color: 'transparent',
-
-    '&:hover .MuiCardHeader-title:before': {
-      content: "'>'",
-      marginRight: '4px'
-    }
+  },
+  '& .MuiCardActionArea-root:hover .MuiCardHeader-title:before, & .MuiButton-root:hover span:before': {
+    content: "'>'",
+    marginRight: '4px'
   },
 }));
-
-const useStyles = makeStyles(() => ({
-  button: {
-    width: '90px',
-    '&> span': {
-      display: 'none',
-      marginRight: '4px'
-    },
-    '&:hover > span': {
-      display: 'block'
-    }
-  }
-})); 
 
 const MyCardHeader = ({ receiver }) => {
   return (
@@ -78,7 +63,6 @@ const MyCardHeader = ({ receiver }) => {
 export default function UserCard({ receiver, isButton=true }) {
   const { user } = useContext(UserContext);
   const { isUpdatedUser, setIsUpdatedUser } = useContext(SubmitContext);
-  const classes = useStyles();
 
   const [isFollowing, setIsFollowing] = useState(false);
   useEffect(() => {
@@ -131,7 +115,6 @@ export default function UserCard({ receiver, isButton=true }) {
             aria-label={isFollowing ? 'unfollow' : 'follow'}
             onClick={handleFollow}
             disabled={receiver.id === user.id && true}
-            className={classes.button}
             sx={{
               color: isFollowing ? 'default' : 'success.main',
               '&:hover': {
@@ -139,7 +122,7 @@ export default function UserCard({ receiver, isButton=true }) {
               }
             }}
           >
-            <span>{'>'}</span>{buttonValue}
+            <span>{buttonValue}</span>
           </Button>
         </CardActions>
       }
