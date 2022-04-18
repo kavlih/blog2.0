@@ -107,7 +107,7 @@ final class Post extends AbstractModel {
           INNER JOIN users AS u ON p.user_id = u.id
           INNER JOIN identicon AS i ON u.id = i.user_id
           WHERE f.follower_id = :userId
-          ORDER BY p.id DESC;';
+          ORDER BY p.timestamp DESC;';
 
           /** @var \PDOStatement $stmt */
           $stmt = $this->DbHandler->prepare($query);
@@ -141,7 +141,7 @@ final class Post extends AbstractModel {
           INNER JOIN users AS u ON u.id = p.user_id
           INNER JOIN identicon AS i ON i.user_id = u.id
           WHERE l.user_id = :userId
-          ORDER BY p.id DESC;';
+          ORDER BY p.timestamp DESC;';
 
           /** @var \PDOStatement $stmt */
           $stmt = $this->DbHandler->prepare($query);
@@ -175,7 +175,7 @@ final class Post extends AbstractModel {
                INNER JOIN users AS u ON p.user_id = u.id
                INNER JOIN identicon AS i ON u.id = i.user_id
                WHERE p.user_id = :userId
-               ORDER BY p.id DESC;';
+               ORDER BY p.timestamp DESC;';
 
           /** @var \PDOStatement $stmt */
           $stmt = $this->DbHandler->prepare($query);

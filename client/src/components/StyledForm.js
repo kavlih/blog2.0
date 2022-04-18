@@ -7,19 +7,19 @@ const StyledForm = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   gap: '16px',
 
-  // [theme.breakpoints.up('sm')]: {
-  //   flexDirection: 'row',
-  //   '& .MuiPaper-root': {
-  //     minWidth: '396px'
-  //   }
-  // },
+  [theme.breakpoints.up('sm')]: {
+    flexDirection: 'row',
+    '& .MuiPaper-root': {
+      minWidth: '396px'
+    }
+  },
 
   '& .MuiPaper-root': {
     width: '100%',
     display: 'flex', 
     flexDirection: 'column', 
-    gap: '20px',
-    padding: '20px',
+    gap: '10px',
+    padding: '15px',
     borderRadius: theme.shape.borderRadius,
     border: `1px solid ${theme.palette.secondary.main}`,
     backgroundColor: theme.palette.secondary.dark,

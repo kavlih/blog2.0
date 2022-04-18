@@ -47,6 +47,7 @@ const Users = () => {
               onChange={handleChange}
               aria-describedby="search user"
               placeholder='search user'
+              sx={{ height:'60px' }}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton 

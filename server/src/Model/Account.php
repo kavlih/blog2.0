@@ -364,7 +364,7 @@ final class Account extends AbstractModel {
         $query = 'UPDATE identicon SET identicon = :identicon WHERE user_id = :userId;';
 
         /** @var \PDOStatement $stmt */
-        $stmt = $this->DbHnadler->prepare($query);
+        $stmt = $this->DbHandler->prepare($query);
         $stmt->bindValue(':identicon', $identicon);
         $stmt->bindValue(':userId', $userId);
         $stmt->execute();

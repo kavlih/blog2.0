@@ -1,5 +1,8 @@
 import React, { useState, useContext } from 'react';
 // MUI Components
+import { makeStyles } from '@mui/styles';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
 import FormControl from '@mui/material/FormControl';
@@ -15,12 +18,27 @@ import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
+import { identiconService } from '../../services';
 import { UserContext } from '../../context/UserContext';
-import { accountHelper } from '../../helpers';
+import { accountHelper, userHelper } from '../../helpers';
 import StyledForm from '../../components/StyledForm';
 
+const useStyles = makeStyles((theme) => ({
+  avatar: {
+    padding:'18px !important',
+    width:'100px !important',
+    height:'100px !important',
+    [theme.breakpoints.up('sm')]: {
+      padding:'25px !important',
+      width:'150px !important',
+      height:'150px !important',
+    }
+  }
+}))
+
 export default function Settings() {
-  const { user, setUser } = useContext(UserContext)
+  const { user, setUser } = useContext(UserContext);
+  const classes = useStyles(makeStyles);
 
   const initialValues = {
     email: [],
@@ -41,6 +59,26 @@ export default function Settings() {
     passwordNewRepeat: false,
   });
 
+  const handleReroll = async () => {
+    try {
+      await accountHelper.updateIdenticon(user.id);
+      const res = await userHelper.get(user.username);
+      setUser({...user, 'identicon': res.data.result.identicon});
+    }
+    catch(error) {
+      console.log(error);
+    }
+  }
+
+  const handleReset = async () => {
+    try {
+      await accountHelper.resetIdenticon(user.id);
+      setUser({...user, 'identicon': user.id});
+    }
+    catch(error) {
+      console.log(error);
+    }
+  }
 
   const handleChange = (e) => {
     const {name, value} = e.target;
@@ -133,6 +171,17 @@ export default function Settings() {
     <>
       <Container maxWidth='xs'>
         <Stack spacing={4}>
+          <Avatar src={identiconService(user.identicon)} className={classes.avatar} sx={{ alignSelf:'center' }}/>
+          {/* Update identicon */}
+          <Stack direction='row' spacing={1}>
+            <Button variant='card' onClick={handleReroll} sx={{ width:'100%' }}>
+              Reroll Avatar
+            </Button>
+            {/* Reset identicon */}
+            <Button variant='card' onClick={handleReset} sx={{ width:'100%' }}>
+              Reset Avatar
+            </Button>
+          </Stack>
           {/* Update username form */}
           <StyledForm
             component='form'

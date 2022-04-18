@@ -113,7 +113,7 @@ final class Account extends AbstractController {
         }
         elseif(!$this->isMethod(self::METHOD_PUT) 
             || !$this->AccountModel->getUserById($errors, $userId)
-            || !$this->PostModel->resetIdenticon($userId))
+            || !$this->AccountModel->resetIdenticon($userId))
         {
             $this->responseCode(400);
             $this->printJSON(['success' => FALSE, 'errors' => $errors]);
@@ -163,7 +163,7 @@ final class Account extends AbstractController {
         if($this->isMethod(self::METHOD_OPTIONS)) {
             $this->responseCode(200);
         }
-        if(!$this->isMethod(self::METHOD_PUT)
+        elseif(!$this->isMethod(self::METHOD_PUT)
             || !$this->AccountModel->getUserById($errors, $userId)
             || !$this->AccountModel->updateIdenticon($userId))
         {

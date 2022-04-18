@@ -114,7 +114,7 @@ theme = createTheme(theme, {
           color: theme.palette.secondary.light,
           '&:disabled': {
             color: theme.palette.secondary.light,
-          }
+          },
         }
       },
       variants: [
@@ -133,6 +133,17 @@ theme = createTheme(theme, {
             },
             '&:hover': {
               backgroundColor: 'transparent'
+            },
+          },
+        },
+        {
+          props: { variant: 'card' },
+          style: {
+            border: `1px solid ${theme.palette.secondary.main}`,
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark,
+            '&:hover': {
+              backgroundColor: theme.palette.secondary.main,
             },
           },
         }
