@@ -5,7 +5,7 @@ Das Projekt wurde clientseitig mit React und MaterialUI und serverseitig mit PHP
 /client 
 > npm install
 <br>
-> configure server url in src/services/axios.service.js
+> configure server url in src/services/local.service.js
 
 /server 
 > composer install
@@ -45,13 +45,13 @@ Das Projekt wurde clientseitig mit React und MaterialUI und serverseitig mit PHP
 ##### /context
 > Beinhaltet alle Contexts
 ##### /helpers
-> Funktionen in Verbindung mit Axios. Definiert die jeweiligen Routen und die Methode (GET, POST, PUT oder DELETE)
+> Bereiten Funktionen für Fetchanfragen vor. Definiert die jeweiligen Pfade und die Methode (GET, POST, PUT oder DELETE)
 ##### /pages
 > Beinhaltet die Seiten und dessen Unterseiten
 ##### /services
-> Beinhaltet Funktionen die auf externe Daten zugreifen<br>
-> **WICHTIG: Urls werden hier in der jeweiligen Datei defineirt**
-##### /services/axios.service.js
+> Beinhaltet die Fetchanfragen und die BaseUrl<br>
+##### /services/local.service.js
+> Service für Fetchanfragen auf den eigenen Server
 ##### /styles
 > Beinhaltet das Styling, basierend auf MUI
 
