@@ -22,7 +22,7 @@ const _delete = (url) => {
   return axios.delete(CONFIG + url)
 }
 
-export const axiosService = {
+export const localService = {
   get,
   post,
   put,
