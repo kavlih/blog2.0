@@ -191,6 +191,11 @@ theme = createTheme(theme, {
               color: theme.palette.primary.dark,
               backgroundColor: theme.palette.success.dark,
             },
+            '&.Mui-disabled': {
+              opacity: 0.2,
+              color: theme.palette.primary.dark,
+              backgroundColor: theme.palette.success.dark,
+            },
           },
         },
       ],

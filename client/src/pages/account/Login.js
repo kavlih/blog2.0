@@ -1,8 +1,24 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom'
+// MUI Components
+import Card from '@mui/material/Card';
+import Container from '@mui/material/Container';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormLabel from '@mui/material/FormLabel';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import InputBase from '@mui/material/InputBase';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+// MUI Icons
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import { UserContext } from '../../context/UserContext';
 import { accountHelper } from '../../helpers';
+import StyledForm from '../../components/StyledForm';
 
 const Login = () => {
   const { setUser } = useContext(UserContext)
@@ -13,13 +29,13 @@ const Login = () => {
     password: '',
   };
 
-  const [formValues, setFormValues] = useState(initialValues);
-  const [formErrors, setFormErrors] = useState(initialValues);
-  const [stateVal, setStateVal]     = useState(initialValues);
+  const [ formValues, setFormValues ] = useState(initialValues);
+  const [ formErrors, setFormErrors ] = useState(initialValues);
+  const [ stateVal, setStateVal ]     = useState({user: false, password: false});
   
-  const [submitErrors, setSubmitErrors]   = useState();
-  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [ submitErrors, setSubmitErrors ]   = useState();
+  const [ isSubmitDisabled, setIsSubmitDisabled ] = useState(true);
+  const [ showPassword, setShowPassword ] = useState(false)
 
   // Sets isSubmitDisabled to false if all inputs are valid 
   useEffect(() => {
@@ -34,12 +50,18 @@ const Login = () => {
     setFormValues({...formValues, [name]: value}); 
     setFormErrors(formValidate(name, value));
   };
-  
-  // Toggles isPasswordVisible
-  const handleMouseDown = (e) => {
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleFocus = () => {
+    setFormErrors(initialValues); 
+  };
+
+  const handleMouseDownPassword = (e) => {
     e.preventDefault();
-    setIsPasswordVisible(!isPasswordVisible);
-  }
+  };
   
   // Submits form and calls accountHelper.login()
   // Navigates to feed on succes, else throws errors
@@ -56,7 +78,8 @@ const Login = () => {
       setUser(res.data.user);
       navigate('/feed');
     } 
-    catch (err) {
+    catch (error) {
+      console.log(error.response.data.errors);
       setSubmitErrors('Login or password is invalid')
     }
   };
@@ -79,57 +102,72 @@ const Login = () => {
     else {
         setStateVal({...stateVal, [name]: false})
     }
-
     return errors;
   };
 
   return (
-  <>
-    <form className='form-container d-flex flex-column' onSubmit={handleSubmit} noValidate>
-      <div className='card'>
-        <div className='card-body'>
-          <h3 className='text-center'>Login</h3>
-          {/* Submit Errors */}      
-          {submitErrors && <div className='alert alert-danger py-2 border-0' role='alert'>{submitErrors}</div>}
+    <Container maxWidth='xs'>
+      <StyledForm component='form' >
+        <Card>
+          <FormLabel sx={{ alignSelf:'center' }}>Login</FormLabel>
           {/* Input user */}
-          <div className='m-input-container mb-3'>
-            <label htmlFor='username' className='form-label'>Username or email</label>
-            <div className='m-input-group'>
-              <input 
-                type='text'
-                className='form-control' 
-                id='inputUser'
-                name='user'
-                value={formValues.user} 
-                onChange={handleChange} 
-                autoFocus={true}
-              />
-            </div>
-          </div>
+          <FormControl error={formErrors.user ? true : false} >
+            <Typography variant='body2'>Username or email</Typography>
+            <InputBase
+              value={formValues.user}
+              name='user'
+              onChange={handleChange}
+              onFocus={handleFocus}
+              aria-describedby="username or email"
+              autoFocus={true}
+            />
+            {formErrors.user && <FormHelperText>{formErrors.user}</FormHelperText>}
+          </FormControl>
           {/* Input password */}
-          <div className='m-input-container mb-3'>
-            <label htmlFor='password' className='form-label'>Password</label>
-            <div className='m-input-group'>
-              <input 
-                type={isPasswordVisible ? 'text' : 'password'}
-                className='form-control' 
-                id='inputPassword' 
-                name='password'
-                value={formValues.password} 
-                onChange={handleChange} 
-              />
-              <button className='btn position-absolute m-toggle-password' type='button' id='button-addon2' tabIndex='-1' onMouseDown={handleMouseDown}>
-                {/* <FontAwesomeIcon icon={isPasswordVisible ? faEyeSlash : faEye} /> */}
-              </button>
-            </div>
-          </div>
-          <p className='m-form-footer text-center mb-0'><small>New to Woosh? <Link to='/account/register'>Sign up</Link></small></p>
-          <p className='m-form-footer text-center'><small><Link to='/'>Forgot your password?</Link></small></p>
-        </div>
-      </div>
-      <button type='submit' className='btn m-btn m-btn-green' name='submit' disabled={isSubmitDisabled} style={{width: '30px', height: '30px'}}></button>
-    </form>
-  </>
+          <FormControl variant='password' error={formErrors.password ? true : false} >
+            <Typography variant='body2'>Password</Typography>
+            <InputBase
+              value={formValues.password}
+              type={showPassword ? 'text' : 'password'}
+              name='password'
+              onChange={handleChange}
+              onFocus={handleFocus}
+              aria-describedby="password"
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+            {formErrors.password && <FormHelperText>{formErrors.password}</FormHelperText>}
+            {submitErrors && <FormHelperText>{submitErrors}</FormHelperText>}
+          </FormControl>
+          <Typography 
+            variant='body2' 
+            textAlign='center' 
+            sx={{ '& a': { color: 'text.link', textDecoration: 'none' }} }
+          >
+            New to Woosh? <Link to='/account/register'>Sign up!</Link>
+          </Typography>
+        </Card>
+        <IconButton 
+          variant='submit'
+          type='submit'
+          aria-label='submit change password'
+          onClick={handleSubmit} 
+          disabled={isSubmitDisabled}
+        >
+          <ArrowForwardRoundedIcon fontSize='large' />
+        </IconButton>
+      </StyledForm>
+    </Container>
   );
 };
 
