@@ -30,7 +30,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const Post = ({ post, setIsSubmit }) => {
+const Post = ({ post }) => {
   const { user } = useContext(UserContext);
   const classes = useStyles();
 
