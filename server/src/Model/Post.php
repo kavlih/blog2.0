@@ -50,7 +50,8 @@ final class Post extends AbstractModel {
       */
      function delete(int $postId) : bool {
           /** @var string $query */
-          $query = 'DELETE FROM posts WHERE id = :postId;';
+          $query = 'DELETE FROM posts WHERE id = :postId;
+                    DELETE FROM likes WHERE post_id = :postId;';
 
           /** @var \PDOStatement $stmt */
           $stmt = $this->DbHandler->prepare($query);

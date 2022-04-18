@@ -98,12 +98,6 @@ const Register = () => {
     setIsFocus({[name]: true});
   };
 
-  // Toggles isPasswordVisible
-  const handleMouseDown = (e) => {
-    e.preventDefault();
-    // setIsPasswordVisible(isPasswordVisible ? false : true);
-  }
-
   const handleMouseDownPassword = (e) => {
     e.preventDefault();
   };
@@ -216,6 +210,7 @@ const Register = () => {
             name='username'
             onChange={handleChange}
             onFocus={handleFocus}
+            onBlur={handleBlur}
             aria-describedby="username"
             autoFocus={true}
             autoComplete='off'
@@ -235,6 +230,7 @@ const Register = () => {
             type='email'
             onChange={handleChange}
             onFocus={handleFocus}
+            onBlur={handleBlur}
             aria-describedby="email"
             required
           />
@@ -259,6 +255,7 @@ const Register = () => {
               name='password'
               onChange={handleChange}
               onFocus={handleFocus}
+              onBlur={handleBlur}
               aria-describedby="password"
               endAdornment={
                 <InputAdornment position="end">

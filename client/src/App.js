@@ -16,7 +16,7 @@ const App = () => {
 
   useEffect(() => {
     user && localStorage.setItem('user', JSON.stringify(user));
-  }, [setUser])
+  }, [user])
   
 
   return (

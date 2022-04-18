@@ -111,11 +111,11 @@ export default function Profile() {
           onChange={handleNav}
         >
           <ToggleButton value='posts' aria-label='posts' size='large'>
-            <Typography component='span' variant='body2'>{posts.length > 0 && posts.length}</Typography>
+            <Typography component='span' variant='body2'>{posts && posts.length}</Typography>
             POSTS
           </ToggleButton>
           <ToggleButton value='likes' aria-label='likes' size='large'>
-            <Typography component='span' variant='body2'>{liked.length > 0 && liked.length}</Typography>
+            <Typography component='span' variant='body2'>{liked && liked.length}</Typography>
             LIKES
           </ToggleButton>
         </StyledToggleButtonGroup>
@@ -126,11 +126,11 @@ export default function Profile() {
           onChange={handleNav}
         >
           <ToggleButton value='followers' aria-label='followers' size='large'>
-            <Typography component='span' variant='body2'>{followers.length > 0 && followers.length}</Typography>
+            <Typography component='span' variant='body2'>{followers && followers.length}</Typography>
             FOLLOWERS
           </ToggleButton>
           <ToggleButton value='following' aria-label='following' size='large'>
-            <Typography component='span' variant='body2'>{following.length > 0 && following.length}</Typography>
+            <Typography component='span' variant='body2'>{following && following.length}</Typography>
             FOLLOWING
           </ToggleButton>
         </StyledToggleButtonGroup>
