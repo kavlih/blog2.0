@@ -104,39 +104,128 @@ theme = createTheme(theme, {
         }
       }
     },
+    ToggleButton: {
+      styleOverrides: {
+        root: {
+          minWidth: '95px',
+          color: theme.palette.primary.light,
+          '&:disabled': {
+            color: theme.palette.secondary.light,
+          }
+        }
+      }
+    },
     MuiButton: {
       defaultProps: {
-        disableRipple: true
+        disableRipple: true,
+        disableArrow: false,
+        fixedArrow: false
       },
       styleOverrides: {
         root: {
           minWidth: '95px',
-          border: '1px solid',
-          color: theme.palette.secondary.light,
+          padding: '5px',
+          borderRadius: theme.shape.borderRadius,
           '&:disabled': {
-            color: theme.palette.secondary.light,
+            color: theme.palette.secondary.main,
           },
+          '&:before': {
+            content: "'>'",
+            marginRight: '2px',
+            display: 'none'
+          },
+          '&.active:before, &:hover:before': {
+            display: 'inherit'
+          }
         }
       },
       variants: [
-        {
-          props: { variant: 'post' },
+        { 
+          props: { color: 'success' }, 
           style: {
-            border: 'none',
-            fontSize: 'small',
-            padding: 0,
-            minWidth: 'unset',
-            '& .MuiButton-startIcon': {
-              marginRight: '4px'
+            borderColor: `${theme.palette.success.main} !important`,
+            '&:hover': {
+              backgroundColor: 'inherit'
+            } 
+          }
+        },
+        {
+          props: { disableArrow: true },
+          style: {
+            '&:before': {
+              content: "''",
+              marginRight: 0,
             },
-            '& .MuiButton-endIcon': {
-              marginLeft: '2px'
+          },
+        },
+        {
+          props: { fixedArrow: true },
+          style: {
+            '&:before': {
+              display: 'inherit',
+              opacity: 0,
             },
+            '&.active:before, &:hover:before': {
+              opacity: 1
+            }
+          },
+        },
+        {
+          props: { variant: 'text' },
+          style: {
+            borderRadius: 100,
+            '&:hover': {
+              backgroundColor: theme.palette.primary.light
+            },
+          },
+        },
+        {
+          props: { variant: 'outlined' },
+          style: {
+            color: theme.palette.secondary.light,
+            border: `1px solid ${theme.palette.secondary.light}`,
             '&:hover': {
               backgroundColor: 'transparent'
             },
           },
         },
+        {
+          props: { success: true },
+          style: {
+            color: theme.palette.success.main,
+            borderColor: theme.palette.success.main,
+            '&:hover': {
+              borderColor: theme.palette.success.main,
+            },
+          },
+        },
+        {
+          props: { success: false },
+          style: {
+            '&:hover': {
+              color: theme.palette.error.main,
+              borderColor: theme.palette.error.main,
+            },
+          },
+        },
+        // {
+        //   props: { variant: 'post' },
+        //   style: {
+        //     border: 'none',
+        //     fontSize: 'small',
+        //     padding: 0,
+        //     minWidth: 'unset',
+        //     '& .MuiButton-startIcon': {
+        //       marginRight: '4px'
+        //     },
+        //     '& .MuiButton-endIcon': {
+        //       marginLeft: '2px'
+        //     },
+        //     '&:hover': {
+        //       backgroundColor: 'transparent'
+        //     },
+        //   },
+        // },
         {
           props: { variant: 'card' },
           style: {

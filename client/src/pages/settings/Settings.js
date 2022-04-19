@@ -228,7 +228,7 @@ export default function Settings() {
               aria-label='submit username'
               onClick={handleSubmitUsername} 
               disabled={formValues.username.length === 0}
-              sx={{ display: isFocus === 'username' ? 'flex' : 'none' }}
+              // sx={{ display: isFocus === 'username' ? 'flex' : 'none' }}
             >
               <ArrowForwardRoundedIcon fontSize='large' />
             </IconButton>
@@ -258,7 +258,7 @@ export default function Settings() {
               aria-label='submit email'
               onClick={handleSubmitEmail} 
               disabled={formValues.email.length === 0}
-              sx={{ display: isFocus === 'email' ? 'flex' : 'none' }}
+              // sx={{ display: isFocus === 'email' ? 'flex' : 'none' }}
             >
               <ArrowForwardRoundedIcon fontSize='large' />
             </IconButton>
@@ -358,7 +358,7 @@ export default function Settings() {
               aria-label='submit change password'
               onClick={handleSubmitPassword} 
               disabled={formValues.password.length === 0 || formValues.passwordNew.length === 0 || formValues.passwordNewRepeat.length === 0}
-              sx={{ display: isFocus === 'password' || isFocus === 'passwordNew' || isFocus === 'passwordNewRepeat' ? 'flex' : 'none' }}
+              // sx={{ display: isFocus === 'password' || isFocus === 'passwordNew' || isFocus === 'passwordNewRepeat' ? 'flex' : 'none' }}
             >
               <ArrowForwardRoundedIcon fontSize='large' />
             </IconButton>
@@ -397,18 +397,13 @@ export default function Settings() {
                 {formErrors.delete && <FormHelperText>{formErrors.delete}</FormHelperText>}
               </FormControl>
               <Button 
+                variant='outlined'
                 type='submit'
                 aria-label='submit delete account'
                 onClick={handleSubmitDelete} 
                 disabled={formValues.delete.length === 0}
-                sx={{ 
-                  color: 'error.main', 
-                  '&:hover:before': {
-                    content: "'>'",
-                    marginRight: '4px'
-                  },
-                  display: isFocus === 'delete' ? 'flex' : 'none'
-                }}
+                success={false}
+                // sx={{ display: isFocus === 'delete' ? 'flex' : 'none' }}
               >
                 Do it
               </Button>

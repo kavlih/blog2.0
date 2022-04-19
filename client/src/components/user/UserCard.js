@@ -21,6 +21,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   position: 'relative',
   display: 'flex',
   alignItems: 'center',
+
   '& .MuiCardActions-root': {
     position: 'absolute',
     right: '16px',
@@ -31,10 +32,6 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
   '& .MuiCardActionArea-root': {
     color: 'transparent',
-  },
-  '& .MuiCardActionArea-root:hover .MuiCardHeader-title:before, & .MuiButton-root:hover span:before': {
-    content: "'>'",
-    marginRight: '4px'
   },
 }));
 
@@ -111,17 +108,13 @@ const UserCard = ({ receiver, isButton=true }) => {
       {user &&
         <CardActions>
           <Button 
+            variant='outlined'
             aria-label={isFollowing ? 'unfollow' : 'follow'}
             onClick={handleFollow}
             disabled={receiver.id === user.id && true}
-            sx={{
-              color: isFollowing ? 'default' : 'success.main',
-              '&:hover': {
-                color: isFollowing ? 'error.main' : 'default'
-              }
-            }}
+            success={!isFollowing}
           >
-            <span>{buttonValue}</span>
+            {buttonValue}
           </Button>
         </CardActions>
       }
