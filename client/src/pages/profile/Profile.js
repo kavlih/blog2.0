@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import ToggleButton from '@mui/material/ToggleButton';
+import Button from '@mui/material/Button';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
 
@@ -17,33 +18,34 @@ import UserList from '../../components/user/UserList';
 const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   justifyContent:'center',
   gap: '10px',
+
   '& .MuiToggleButtonGroup-grouped': {
-    border: 0,
-    padding: '7px 14px',
-    '&:not(:first-of-type)': {
-      borderRadius: 100,
-    },
-    '&:first-of-type': {
-      borderRadius: 100,
-    },
+      minWidth: '95px',
+      textTransform: 'uppercase',
+      borderRadius: '100px !important',
+      border: 0,
+      padding: '7px 14px',
     '&:hover': {
-      backgroundColor: theme.palette.primary.light,
-      '&:hover': {
-        backgroundColor: theme.palette.primary.light,
-      },
+      backgroundColor: 'rgba(255,255,255, 0.05)',
     },
     '&.Mui-selected': {
-      backgroundColor: theme.palette.primary.light,
-      '& .MuiTypography-root': {
-        color: theme.palette.text.primary,
+      backgroundColor: theme.palette.success.main,
+      fontWeight: 'bold',
+      '&:hover': {
+        backgroundColor: theme.palette.success.light,
       },
-    },
-    '& .MuiTypography-root': {
-      color: theme.palette.text.secondary,
-      marginRight: '5px',
-      marginTop: '-1px'
-    },
+      '& .MuiTypography-root': {
+        opacity: 1,
+        marginRight: '5px',
+      }
+    }
   },
+
+  '& .MuiTypography-root': {
+    color: theme.palette.text.primary,
+    opacity: 0.25,
+    marginRight: '5px',
+  }
 }));
 
 export default function Profile() {
@@ -112,11 +114,11 @@ export default function Profile() {
         >
           <ToggleButton value='posts' aria-label='posts' size='large'>
             <Typography component='span' variant='body2'>{posts && posts.length}</Typography>
-            POSTS
+            Posts
           </ToggleButton>
           <ToggleButton value='likes' aria-label='likes' size='large'>
             <Typography component='span' variant='body2'>{liked && liked.length}</Typography>
-            LIKES
+            Likes
           </ToggleButton>
         </StyledToggleButtonGroup>
         <StyledToggleButtonGroup
@@ -127,11 +129,11 @@ export default function Profile() {
         >
           <ToggleButton value='followers' aria-label='followers' size='large'>
             <Typography component='span' variant='body2'>{followers && followers.length}</Typography>
-            FOLLOWERS
+            Followers
           </ToggleButton>
           <ToggleButton value='following' aria-label='following' size='large'>
             <Typography component='span' variant='body2'>{following && following.length}</Typography>
-            FOLLOWING
+            Following
           </ToggleButton>
         </StyledToggleButtonGroup>
       </Stack>

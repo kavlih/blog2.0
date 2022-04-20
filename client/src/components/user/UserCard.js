@@ -27,11 +27,18 @@ const StyledCard = styled(Card)(({ theme }) => ({
     right: '16px',
     padding: '30px 0'
   },
-  '& .MuiButton-root': {
-    fontFamily: theme.typography.body2.fontFamily
-  },
+
   '& .MuiCardActionArea-root': {
     color: 'transparent',
+
+    '& .MuiCardHeader-title:before': {
+      content: "'>'",
+      marginRight: '5px',
+      opacity: 0,
+    },
+    '&:hover .MuiCardHeader-title:before': {
+        opacity: 1
+      }
   },
 }));
 
@@ -112,7 +119,9 @@ const UserCard = ({ receiver, isButton=true }) => {
             aria-label={isFollowing ? 'unfollow' : 'follow'}
             onClick={handleFollow}
             disabled={receiver.id === user.id && true}
-            success={!isFollowing}
+            hoverColor={isFollowing ? 'error' : 'inherit'}
+            color={isFollowing ? 'inherit' : 'success'}
+            sx={{ minWidth:'90px' }}
           >
             {buttonValue}
           </Button>

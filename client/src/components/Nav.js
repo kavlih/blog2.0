@@ -26,16 +26,8 @@ const StyledButton = styled(Button)(({ theme }) => ({
   '&:before': {
     color: theme.palette.text.primary,
   },
-
-  '&:hover': {
-    backgroundColor: 'transparent'
-  },
-
-  '& a': {
-    color: theme.palette.text.secondary,
-  },
  
-  '&:hover a, & a.active': {
+  '& a.active, &:hover a': {
     color: theme.palette.text.primary,
   }
 

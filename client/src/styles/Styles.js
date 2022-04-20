@@ -66,6 +66,7 @@ theme = createTheme(theme, {
       color: theme.palette.text.secondary,
     },
     button: {
+      fontFamily: 'Roboto Mono',
       textTransform: 'none',
     },
     caption: {
@@ -107,10 +108,13 @@ theme = createTheme(theme, {
     ToggleButton: {
       styleOverrides: {
         root: {
-          minWidth: '95px',
-          color: theme.palette.primary.light,
+          // color: theme.palette.primary.light,
+          // backgroundColor: theme.palette.primary.light,
           '&:disabled': {
-            color: theme.palette.secondary.light,
+            // color: theme.palette.secondary.main,
+          },
+          '&:hover': {
+            backgroundColor: theme.palette.primary.light,
           }
         }
       }
@@ -123,7 +127,6 @@ theme = createTheme(theme, {
       },
       styleOverrides: {
         root: {
-          minWidth: '95px',
           padding: '5px',
           borderRadius: theme.shape.borderRadius,
           '&:disabled': {
@@ -131,7 +134,7 @@ theme = createTheme(theme, {
           },
           '&:before': {
             content: "'>'",
-            marginRight: '2px',
+            marginRight: '4%',
             display: 'none'
           },
           '&.active:before, &:hover:before': {
@@ -140,15 +143,6 @@ theme = createTheme(theme, {
         }
       },
       variants: [
-        { 
-          props: { color: 'success' }, 
-          style: {
-            borderColor: `${theme.palette.success.main} !important`,
-            '&:hover': {
-              backgroundColor: 'inherit'
-            } 
-          }
-        },
         {
           props: { disableArrow: true },
           style: {
@@ -173,11 +167,15 @@ theme = createTheme(theme, {
         {
           props: { variant: 'text' },
           style: {
+            color: theme.palette.secondary.light,
+            '& a, & p': {
+              color: theme.palette.secondary.light,
+            },
             borderRadius: 100,
             '&:hover': {
-              backgroundColor: theme.palette.primary.light
-            },
-          },
+              backgroundColor: 'transparent',
+            }
+          }
         },
         {
           props: { variant: 'outlined' },
@@ -185,58 +183,60 @@ theme = createTheme(theme, {
             color: theme.palette.secondary.light,
             border: `1px solid ${theme.palette.secondary.light}`,
             '&:hover': {
-              backgroundColor: 'transparent'
-            },
-          },
+              borderColor: theme.palette.secondary.light,
+              backgroundColor: 'inherit',
+            }
+          }
         },
-        {
-          props: { success: true },
+        { 
+          props: { color: 'success' }, 
           style: {
             color: theme.palette.success.main,
             borderColor: theme.palette.success.main,
             '&:hover': {
               borderColor: theme.palette.success.main,
-            },
-          },
+            } 
+          }
         },
-        {
-          props: { success: false },
+        { 
+          props: { color: 'error' }, 
+          style: {
+            color: theme.palette.error.main,
+            borderColor: theme.palette.error.main,
+            '&:hover': {
+              borderColor: theme.palette.success.main,
+            } 
+          }
+        },
+        { 
+          props: { hoverColor: 'success' }, 
+          style: {
+            '&:hover': {
+              color: theme.palette.success.main,
+              borderColor: theme.palette.success.main,
+            } 
+          }
+        },
+        { 
+          props: { hoverColor: 'error' }, 
           style: {
             '&:hover': {
               color: theme.palette.error.main,
               borderColor: theme.palette.error.main,
-            },
-          },
+            } 
+          }
         },
         // {
-        //   props: { variant: 'post' },
+        //   props: { variant: 'card' },
         //   style: {
-        //     border: 'none',
-        //     fontSize: 'small',
-        //     padding: 0,
-        //     minWidth: 'unset',
-        //     '& .MuiButton-startIcon': {
-        //       marginRight: '4px'
-        //     },
-        //     '& .MuiButton-endIcon': {
-        //       marginLeft: '2px'
-        //     },
+        //     border: `1px solid ${theme.palette.secondary.main}`,
+        //     color: theme.palette.text.primary,
+        //     backgroundColor: theme.palette.secondary.dark,
         //     '&:hover': {
-        //       backgroundColor: 'transparent'
+        //       backgroundColor: theme.palette.secondary.main,
         //     },
         //   },
-        // },
-        {
-          props: { variant: 'card' },
-          style: {
-            border: `1px solid ${theme.palette.secondary.main}`,
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark,
-            '&:hover': {
-              backgroundColor: theme.palette.secondary.main,
-            },
-          },
-        }
+        // }
       ],
     },
     MuiFormControl: {

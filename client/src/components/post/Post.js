@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 // MUI Components
-import { makeStyles } from '@mui/styles';
+import { styled } from "@mui/material";
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -20,23 +20,25 @@ import PostActions from './PostActions';
 
 const REGEX_YTLINK = /(?:https?:\/\/)?(?:www\.)?youtu(?:\.be\/|be.com\/\S*(?:watch|embed)(?:(?:(?=\/[-a-zA-Z0-9_]{11,}(?!\S))\/)|(?:\S*v=|v\/)))([-a-zA-Z0-9_]{11,})/g;
 
-const useStyles = makeStyles(() => ({
-  button: {
-    marginTop: '-1px 0 0 0 !important',
-    '&:hover': {
-      marginLeft: '2px !important',
-      marginRight: '-2px !important',
-    },
-    '& .MuiButton-startIcon>svg': {
-      fontSize: '14px',
-      marginTop: '1px !important'
-    },
-  }
+const StyledButton = styled(Button)(({ theme }) => ({
+  padding: 0,
+  minWidth: 'unset',
+  marginTop: '-1px',
+  // '&:hover': {
+  //   marginLeft: '2px',
+  //   marginRight: '-2px',
+  // },
+  '& .MuiButton-startIcon>svg': {
+    fontSize: '14px',
+    marginTop: '1px'
+  },
+  '& .MuiButton-startIcon': {
+    marginLeft: '0px',
+  },
 }));
 
 const Post = ({ post }) => {
   const { user } = useContext(UserContext);
-  const classes = useStyles();
 
   // handle username navigation
   const navigate = useNavigate();  
@@ -50,33 +52,34 @@ const Post = ({ post }) => {
   };
 
   // get youtube data
-  // not implementeed yet
-  // const [media, setMedia] = useState([]);
-  // useEffect(() => {
-  //   let isMounted = true;
-  //   const matches = post.message.matchAll(REGEX_YTLINK);
+  const [media, setMedia] = useState([]);
+  useEffect(() => {
+    let isMounted = true;
+    const matches = post.message.matchAll(REGEX_YTLINK);
 
-  //   for (const match of matches) {
-  //     const videoUrl = match[0];
-  //     const videoId = match[1];
+    for (const match of matches) {
+      const videoUrl = match[0];
+      const videoId = match[1];
 
-  //     const fetch = async () => {
-  //       const res = await postHelper.getYtData(match[1]);
-  //       let data = {
-  //         id: videoId,
-  //         url: videoUrl,
-  //         title: res.snippets.data.items[0].snippet.title,
-  //         thumbnail: res.snippets.data.items[0].snippet.thumbnails.default.url,
-  //         duration: res.details.data.items[0].contentDetails.duration,
-  //       };
-  //       setMedia([...media, data]);
-  //     };
-  //     fetch()
-  //       .catch(console.error);
-  //   }
+      const fetch = async () => {
+        const res = await postHelper.getYtData(match[1]);
+        let data = {
+          id: videoId,
+          url: videoUrl,
+          title: res.snippets.data.items[0].snippet.title,
+          thumbnail: res.snippets.data.items[0].snippet.thumbnails.default.url,
+          duration: res.details.data.items[0].contentDetails.duration,
+        };
+        setMedia([...media, data]);
+      };
+      fetch()
+        .catch(console.error);
+    }
       
-  //   return () => isMounted = false;
-  // }, [post])
+    return () => isMounted = false;
+  }, [post])
+
+  console.log(media);
   
   // format timestamp
   const [date, setDate] = useState('');
@@ -152,16 +155,14 @@ const Post = ({ post }) => {
             {/* Header start */}
             <Stack direction='row' alignItems='center' spacing={2} >
               {/* Username */}
-              <Button
-                variant='post'
+              <StyledButton
                 aria-label='user'
                 onClick={handleClick}
-                size='small'
-                className={classes.button}
                 startIcon={<CircleOutlinedIcon />}
+                disableArrow
               >
                 {post.username}
-              </Button>
+              </StyledButton>
               {/* Date */}
               <Typography variant='body2' fontSize='small' >
                 {date}
