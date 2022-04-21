@@ -38,7 +38,7 @@ trait User {
    */
   function getFollowers(array &$result, int $userId) : bool {
     /** @var string $query */
-    $query = 'SELECT u.id, u.username, i.identicon
+    $query = 'SELECT DISTINCT u.id, u.username, i.identicon
     FROM followers AS f
     INNER JOIN users AS u ON f.follower_id = u.id
     INNER JOIN identicon AS i ON u.id = i.user_id
