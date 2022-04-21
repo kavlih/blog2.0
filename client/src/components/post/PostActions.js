@@ -46,16 +46,18 @@ const LikeButton = ({ post }) => {
 
   return(
     <Button 
-      variant='post'
       aria-label='like'
       onClick={toggleLike}
       size='small'
       endIcon={isLiked ? <FavoriteRoundedIcon fontSize='small' /> : <FavoriteBorderRoundedIcon fontSize='small' />}
+      hoverColor={isLiked ? 'inherit' : 'error'}
+      color={isLiked ? 'error' : 'inherit'}
+      disableArrow
       sx={{
-        color: isLiked ? 'error.main' : 'default',
-        '&:hover': {
-          bgcolor: 'transparent',
-          color: 'error.main',
+        padding: 0,
+        minWidth: 'unset',
+        '& .MuiButton-endIcon': {
+          ml: '2px'
         }
       }}
     >

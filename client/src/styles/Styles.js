@@ -7,7 +7,7 @@ const Colors = {
   secondaryLight: '#646973',
   secondary: '#32353c',
   secondaryDark: '#13161B',
-  // green: '#58c255',
+  green: '#58c255',
   // red: '#da3849',
   blue: '#80B0f5',
   white: '#f5f5f5',
@@ -37,7 +37,10 @@ let theme = createTheme({
       secondary: Colors.secondaryLight,
       disabled: Colors.secondary,
       icon: Colors.secondaryLight,
-      link: Colors.blue
+      link: Colors.green
+    },
+    success: {
+      main: Colors.green,
     }
   }
 })
@@ -66,6 +69,7 @@ theme = createTheme(theme, {
       color: theme.palette.text.secondary,
     },
     button: {
+      fontFamily: 'Roboto Mono',
       textTransform: 'none',
     },
     caption: {
@@ -94,61 +98,146 @@ theme = createTheme(theme, {
         }
       }
     },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          border: `1px solid ${theme.palette.secondary.main}`,
-          boxShadow: 'none',
-          backgroundColor: 'transparent',
-          backgroundImage: 'none'
-        }
-      }
-    },
     MuiButton: {
       defaultProps: {
-        disableRipple: true
+        disableRipple: true,
+        disableArrow: false,
+        fixedArrow: false
       },
       styleOverrides: {
         root: {
-          minWidth: '95px',
-          border: '1px solid',
           color: theme.palette.secondary.light,
-          '&:disabled': {
-            color: theme.palette.secondary.light,
+          backgroundColor: theme.palette.primary.main,
+          '&:hover': {
+            backgroundColor: theme.palette.primary.light,
           },
+          minHeight: '35px',
+          padding: '5px',
+          borderRadius: theme.shape.borderRadius,
+          '&:disabled': {
+            color: 'rgba(255,255,255, 0.1)',
+          },
+          '&:before': {
+            content: "'>'",
+            marginRight: '4px',
+            display: 'none'
+          },
+          '&.active:before, &:hover:before': {
+            display: 'inherit'
+          }
         }
       },
       variants: [
         {
-          props: { variant: 'post' },
+          props: { disableArrow: true },
           style: {
-            border: 'none',
-            fontSize: 'small',
-            padding: 0,
-            minWidth: 'unset',
-            '& .MuiButton-startIcon': {
-              marginRight: '4px'
-            },
-            '& .MuiButton-endIcon': {
-              marginLeft: '2px'
-            },
-            '&:hover': {
-              backgroundColor: 'transparent'
+            '&:before': {
+              content: "''",
+              marginRight: 0,
             },
           },
         },
         {
-          props: { variant: 'card' },
+          props: { fixedArrow: true },
           style: {
-            border: `1px solid ${theme.palette.secondary.main}`,
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark,
-            '&:hover': {
-              backgroundColor: theme.palette.secondary.main,
+            '&:before': {
+              display: 'inherit',
+              opacity: 0,
             },
+            '&.active:before, &:hover:before': {
+              opacity: 1
+            }
           },
-        }
+        },
+        { 
+          props: { color: 'primary' }, 
+          style: {
+            borderColor: theme.palette.secondary.light,
+          '&:hover': {
+            borderColor: theme.palette.secondary.light,
+          },
+          }
+        },
+        { 
+          props: { color: 'success' }, 
+          style: {
+            color: theme.palette.success.main,
+            backgroundColor: theme.palette.success.main,
+            '&:hover': {
+              backgroundColor: theme.palette.success.light,
+            }
+          }
+        },
+        { 
+          props: { color: 'error' }, 
+          style: {
+            color: theme.palette.error.main,
+            backgroundColor: theme.palette.error.main,
+            '&:hover': {
+              backgroundColor: theme.palette.error.light,
+            }
+          }
+        },        
+        { 
+          props: { hoverColor: true }, 
+          style: {
+            '&:not(:hover)': {
+              color: theme.palette.secondary.light,
+              borderColor: theme.palette.secondary.light,
+            } 
+          }
+        },
+        {
+          props: { variant: 'text' },
+          style: {
+            minHeight: 'unset',
+            borderRadius: 100,
+            backgroundColor: 'transparent',
+            '&:hover': {
+              backgroundColor: 'transparent',
+            }
+          }
+        },
+        {
+          props: { variant: 'contained' },
+          style: {
+            color: theme.palette.text.primary,
+            backgroundColor: 'rgba(255,255,255, 0.025)',
+            '&:hover': {
+              backgroundColor: 'rgba(255,255,255, 0.05)',
+            },
+          }
+        },
+        {
+          props: { variant: 'outlined' },
+          style: {
+            backgroundColor: 'transparent',
+            '&:hover': {
+              backgroundColor: 'transparent',
+            }
+          }
+        },
       ],
+    },
+    MuiCard: {
+      defaultProps: {
+        elevation:0,
+      },
+      styleOverrides: {
+        root: {
+          border: `1px solid ${theme.palette.secondary.main}`,
+          backgroundColor: theme.palette.secondary.dark,
+          backgroundImage: 'none'
+        }
+      },
+      variants: [
+        {
+          props: { variant: 'outlined' },
+          style: {
+            backgroundColor: 'transparent',
+          }
+        }
+      ]
     },
     MuiFormControl: {
       styleOverrides: {
@@ -197,14 +286,14 @@ theme = createTheme(theme, {
         {
           props: { variant: 'submit' },
           style: {
-            width: '40px',
-            height: '40px',
+            // width: '40px',
+            // height: '40px',
             color: theme.palette.primary.dark,
             backgroundColor: theme.palette.success.main,
-            padding: '4px',
+            // padding: '4px',
             '&:hover': {
               color: theme.palette.primary.dark,
-              backgroundColor: theme.palette.success.dark,
+              backgroundColor: theme.palette.success.light,
             },
             '&.Mui-disabled': {
               opacity: 0.2,
@@ -221,13 +310,11 @@ theme = createTheme(theme, {
         color: theme.palette.text.link
       }
     },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundColor: theme.palette.secondary.dark,
-        }
-      }
-    },
+    MuiToggleButton: {
+      defaultProps: {
+        disableRipple: true
+      },
+    }
   }
 })
 
