@@ -17,24 +17,27 @@ import { userHelper } from '../../helpers';
 const StyledCard = styled(Card)(({ theme }) => ({ 
   width: '100%', 
   maxWidth:{sm: '450px'}, 
-  backgroundColor: theme.palette.secondary.dark, 
   position: 'relative',
   display: 'flex',
   alignItems: 'center',
+
   '& .MuiCardActions-root': {
     position: 'absolute',
     right: '16px',
     padding: '30px 0'
   },
-  '& .MuiButton-root': {
-    fontFamily: theme.typography.body2.fontFamily
-  },
+
   '& .MuiCardActionArea-root': {
     color: 'transparent',
-  },
-  '& .MuiCardActionArea-root:hover .MuiCardHeader-title:before, & .MuiButton-root:hover span:before': {
-    content: "'>'",
-    marginRight: '4px'
+
+    '& .MuiCardHeader-title:before': {
+      content: "'>'",
+      marginRight: '5px',
+      opacity: 0,
+    },
+    '&:hover .MuiCardHeader-title:before': {
+        opacity: 1
+      }
   },
 }));
 
@@ -111,17 +114,15 @@ const UserCard = ({ receiver, isButton=true }) => {
       {user &&
         <CardActions>
           <Button 
+            variant='outlined'
             aria-label={isFollowing ? 'unfollow' : 'follow'}
             onClick={handleFollow}
             disabled={receiver.id === user.id && true}
-            sx={{
-              color: isFollowing ? 'default' : 'success.main',
-              '&:hover': {
-                color: isFollowing ? 'error.main' : 'default'
-              }
-            }}
+            hoverColor={isFollowing}
+            color={isFollowing ? 'error' : 'success'}
+            sx={{ minWidth:'90px' }}
           >
-            <span>{buttonValue}</span>
+            {buttonValue}
           </Button>
         </CardActions>
       }

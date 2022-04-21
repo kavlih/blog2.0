@@ -12,7 +12,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import { userHelper } from '../../helpers';
 import UserList from '../../components/user/UserList';
-import StyledForm from '../../components/StyledForm';
+import StyledForm from '../../components/styled/StyledForm';
 
 const Users = () => {
   const [ inputValue, setInputValue ] = useState('');
