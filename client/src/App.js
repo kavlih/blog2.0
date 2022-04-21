@@ -15,7 +15,7 @@ const globalStyle = {
     boxShadow: 'none !important'
   },
   a: {
-    color: theme.palette.text.primary,
+    color: 'inherit',
     textDecoration: 'none',
   }
 }

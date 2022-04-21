@@ -16,7 +16,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import { UserContext } from '../../context/UserContext';
 import { accountHelper } from '../../helpers';
-import StyledForm from '../../components/StyledForm';
+import StyledForm from '../../components/styled/StyledForm';
 
 const Login = () => {
   const { setUser } = useContext(UserContext)

@@ -22,10 +22,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
   fontSize: theme.typography.h5.fontSize,
   fontFamily: theme.typography.h5.fontFamily,
   fontWeight: theme.typography.h5.fontWeight,
-
-  '&:before': {
-    color: theme.palette.text.primary,
-  },
+  padding: '5px 20px',
  
   '& a.active, &:hover a': {
     color: theme.palette.text.primary,
@@ -92,8 +89,8 @@ const Nav = () => {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" color='transparent'>
+    <>
+      <AppBar position="static" color='transparent' sx={{ mt:1 }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters component='nav'>
             {/* Logo */}
@@ -119,7 +116,7 @@ const Nav = () => {
               <Menu
                 id="menu-appbar"
                 anchorElSettings={anchorElNav}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
                 keepMounted
                 transformOrigin={{ vertical: 'top', horizontal: 'left' }}
                 open={Boolean(anchorElNav)}
@@ -139,13 +136,13 @@ const Nav = () => {
             </Box>
             {/* Navigation */}
             <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'flex' }, justifyContent:'center', alignItems:'center' }}>
-              <StyledButton onClick={handleNavMenuClose} fixedArrow sx={{ ml:'-13px' }}>
+              <StyledButton onClick={handleNavMenuClose} disableArrow>
                 <NavLink to='/feed'>Feed</NavLink>
               </StyledButton>
-              <StyledButton onClick={handleNavMenuClose} fixedArrow>
+              <StyledButton onClick={handleNavMenuClose} disableArrow>
                 <NavLink to='/profile'>Profile</NavLink>
               </StyledButton>
-              <StyledButton onClick={handleNavMenuClose} fixedArrow>
+              <StyledButton onClick={handleNavMenuClose} disableArrow>
                 <NavLink to='/users'>Users</NavLink>
               </StyledButton>
             </Box>
@@ -162,15 +159,6 @@ const Nav = () => {
             {/* Settings */}
             {auth && (
               <Box sx={{ position:'absolute', right: 0 }}>
-                {/* <IconButton
-                  size="large"
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                >
-                  <Badge badgeContent={17} color="error">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton> */}
                 <IconButton
                   size="large"
                   edge="end"
@@ -187,7 +175,7 @@ const Nav = () => {
         </Container>
       </AppBar>
       {renderSettings}
-    </Box>
+    </>
   );
 };
 export default Nav;

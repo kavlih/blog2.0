@@ -17,7 +17,6 @@ import { userHelper } from '../../helpers';
 const StyledCard = styled(Card)(({ theme }) => ({ 
   width: '100%', 
   maxWidth:{sm: '450px'}, 
-  backgroundColor: theme.palette.secondary.dark, 
   position: 'relative',
   display: 'flex',
   alignItems: 'center',
@@ -119,8 +118,8 @@ const UserCard = ({ receiver, isButton=true }) => {
             aria-label={isFollowing ? 'unfollow' : 'follow'}
             onClick={handleFollow}
             disabled={receiver.id === user.id && true}
-            hoverColor={isFollowing ? 'error' : 'inherit'}
-            color={isFollowing ? 'inherit' : 'success'}
+            hoverColor={isFollowing}
+            color={isFollowing ? 'error' : 'success'}
             sx={{ minWidth:'90px' }}
           >
             {buttonValue}

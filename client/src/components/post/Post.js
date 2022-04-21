@@ -24,10 +24,6 @@ const StyledButton = styled(Button)(({ theme }) => ({
   padding: 0,
   minWidth: 'unset',
   marginTop: '-1px',
-  // '&:hover': {
-  //   marginLeft: '2px',
-  //   marginRight: '-2px',
-  // },
   '& .MuiButton-startIcon>svg': {
     fontSize: '14px',
     marginTop: '1px'
@@ -145,10 +141,10 @@ const Post = ({ post }) => {
         component='button'
         onClick={handleClick}
         src={identiconService(post.identicon)}
-        // alt={}
+        alt={user.username}
         sx={{ mt:'7px', cursor:'pointer' }}
       />
-      <Card sx={{ width: '100%' }} >
+      <Card variant='outlined' sx={{ width: '100%' }} >
         <CardContent sx={{ '&:last-child': { pb:'16px' } }}>
           {/* Header */}
           <Stack direction='row' justifyContent='space-between' sx={{ mt: '-10px' }} >

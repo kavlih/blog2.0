@@ -22,7 +22,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { identiconService } from '../../services';
 import { UserContext } from '../../context/UserContext';
 import { accountHelper, userHelper } from '../../helpers';
-import StyledForm from '../../components/StyledForm';
+import StyledForm from '../../components/styled/StyledForm';
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -194,12 +194,12 @@ export default function Settings() {
         <Stack spacing={4}>
           <Avatar src={identiconService(user.identicon)} className={classes.avatar} sx={{ alignSelf:'center' }}/>
           {/* Update identicon */}
-          <Stack direction='row' spacing={1}>
-            <Button variant='card' onClick={handleReroll} sx={{ width:'100%' }}>
+          <Stack direction='row' spacing={{ xs:1, sm:2 }} justifyContent='center'>
+            <Button variant='contained' onClick={handleReroll} sx={{ width:'100%' }}>
               Reroll Avatar
             </Button>
             {/* Reset identicon */}
-            <Button variant='card' onClick={handleReset} sx={{ width:'100%' }}>
+            <Button variant='contained' onClick={handleReset} sx={{ width:'100%' }}>
               Reset Avatar
             </Button>
           </Stack>
@@ -230,7 +230,7 @@ export default function Settings() {
               disabled={formValues.username.length === 0}
               // sx={{ display: isFocus === 'username' ? 'flex' : 'none' }}
             >
-              <ArrowForwardRoundedIcon fontSize='large' />
+              <ArrowForwardRoundedIcon />
             </IconButton>
           </StyledForm>
           {/* Update email form */}
@@ -260,7 +260,7 @@ export default function Settings() {
               disabled={formValues.email.length === 0}
               // sx={{ display: isFocus === 'email' ? 'flex' : 'none' }}
             >
-              <ArrowForwardRoundedIcon fontSize='large' />
+              <ArrowForwardRoundedIcon />
             </IconButton>
           </StyledForm>
           {/* Update password form */}
@@ -360,7 +360,7 @@ export default function Settings() {
               disabled={formValues.password.length === 0 || formValues.passwordNew.length === 0 || formValues.passwordNewRepeat.length === 0}
               // sx={{ display: isFocus === 'password' || isFocus === 'passwordNew' || isFocus === 'passwordNewRepeat' ? 'flex' : 'none' }}
             >
-              <ArrowForwardRoundedIcon fontSize='large' />
+              <ArrowForwardRoundedIcon />
             </IconButton>
           </StyledForm>
           {/* Delete account */}
@@ -402,7 +402,7 @@ export default function Settings() {
                 aria-label='submit delete account'
                 onClick={handleSubmitDelete} 
                 disabled={formValues.delete.length === 0}
-                success={false}
+                color='error'
                 // sx={{ display: isFocus === 'delete' ? 'flex' : 'none' }}
               >
                 Do it

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 // MUI Components
 import { makeStyles } from '@mui/styles';
 import Avatar from '@mui/material/Avatar';
@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 // MUI Icons
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 
 import { UserContext } from '../../context/UserContext';
 import { SubmitContext } from '../../context/SubmitContext';
@@ -41,9 +41,6 @@ const useStyles = makeStyles(( theme ) => ({
       fontFamily: 'Roboto Mono',
       color: theme.palette.text.secondary,
       opacity: '1',
-    },
-    '&:focus::placeholder': {
-      color: 'transparent',
     }
   }
 }));
@@ -130,7 +127,7 @@ const PostForm = () => {
         onClick={handleSubmit} 
         disabled={!isValid}
       >
-        <ArrowForwardRoundedIcon fontSize='large' />
+        <ArrowForwardIosRoundedIcon />
       </IconButton>
     </Box>
   </>

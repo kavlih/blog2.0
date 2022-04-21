@@ -20,7 +20,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import { accountHelper } from '../../helpers';
-import StyledForm from '../../components/StyledForm';
+import StyledForm from '../../components/styled/StyledForm';
 
 const PASSWORD_MINLENGTH = 8;
 const USERNAME_MINLENGTH = 3;

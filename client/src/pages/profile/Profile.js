@@ -20,11 +20,12 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   gap: '10px',
 
   '& .MuiToggleButtonGroup-grouped': {
-      minWidth: '95px',
+      width: '115px',
       textTransform: 'uppercase',
-      borderRadius: '100px !important',
+      borderRadius: `${theme.shape.borderRadius}px !important`,
       border: 0,
       padding: '7px 14px',
+      backgroundColor: 'rgba(255,255,255, 0.025)',
     '&:hover': {
       backgroundColor: 'rgba(255,255,255, 0.05)',
     },
@@ -138,7 +139,7 @@ export default function Profile() {
         </StyledToggleButtonGroup>
       </Stack>
       {/* Content */}
-      <Box component='section' mt={2}>
+      <Box component='section' mt={4}>
         {nav === 'posts' && <PostList posts={posts} />}
         {nav === 'likes' && <PostList posts={liked} />}
         {nav === 'followers' && <UserList users={followers} />}
