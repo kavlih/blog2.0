@@ -4,6 +4,7 @@ Das Projekt wurde clientseitig mit React und MaterialUI und serverseitig mit PHP
 
 /client 
 > npm install
+> npm start
 <br>
 > configure server url in src/services/local.service.js
 
